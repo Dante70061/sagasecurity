@@ -1,13 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { parseTurns } from "@/data/ask-saga";
+import { parseContext, parseTurns, type AskContext } from "@/data/ask-saga";
 
 export const Route = createFileRoute("/api/ask")({
   server: {
     handlers: {
       POST: async ({ request }) => {
         let messages: ReturnType<typeof parseTurns>;
+        let context: AskContext;
         try {
-          messages = parseTurns(await request.json());
+          const body: unknown = await request.json();
+          messages = parseTurns(body);
+          context = parseContext(body);
         } catch (error) {
           const message = error instanceof Error ? error.message : "Send a message list.";
           return Response.json({ ok: false, error: message }, { status: 400 });
@@ -21,7 +24,7 @@ export const Route = createFileRoute("/api/ask")({
             };
             try {
               const { streamAnswer } = await import("../../data/ask-saga.server");
-              await streamAnswer(messages, send);
+              await streamAnswer(messages, send, context);
             } catch {
               send({ type: "error", text: "The assistant request failed. No new analysis was added." });
             } finally {

@@ -1,28 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import {
-  ArrowUpRight,
-  ChevronDown,
-  Command,
-  LayoutDashboard,
-  ShieldCheck,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useMemo, useState } from "react";
+import { Command, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { InvestigationAssistant } from "@/components/security/assistant";
-import { SecurityAnalytics, SecurityMetrics } from "@/components/security/analytics";
-import { PriorityFindings } from "@/components/security/findings";
-import { loadLogSummary } from "@/data/log-summary";
+import { IncidentDetail } from "@/components/security/incident-detail";
+import { IncidentFunnel, IncidentQueue } from "@/components/security/incident-queue";
+import { loadIncidentQueue, type QueueView } from "@/data/incidents";
 import sagaMark from "@/assets/saga-mark.svg";
 
+const DEFAULT_RUN = "wilson_test";
+
 export const Route = createFileRoute("/")({
-  loader: () => loadLogSummary(),
+  loader: () => loadIncidentQueue({ data: { run: DEFAULT_RUN } }),
   head: () => ({
     meta: [
       { title: "Saga Security | Security overview" },
       {
         name: "description",
         content:
-          "Your AI-assisted security investigation workspace. Explore demo telemetry, ask investigation questions, and review prioritized findings when analysis is ready.",
+          "Your AI-assisted security investigation workspace. Review ranked, model-scored incidents and ask the assistant to explain them.",
       },
       { property: "og:title", content: "Saga Security | Security overview" },
       {
@@ -38,10 +33,39 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const summary = Route.useLoaderData();
-  const view = summary.ok ? summary.view : null;
+  const initial = Route.useLoaderData();
+  const [view, setView] = useState<QueueView | null>(initial.ok ? initial.view : null);
+  const [loadError, setLoadError] = useState<string | null>(initial.ok ? null : initial.error);
+  const [loading, setLoading] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(
+    initial.ok ? (initial.view.incidents[0]?.incident_id ?? null) : null,
+  );
   const [active, setActive] = useState("Overview");
-  const [shown, setShown] = useState(true);
+
+  const byId = useMemo(
+    () => new Map((view?.incidents ?? []).map((incident) => [incident.incident_id, incident])),
+    [view],
+  );
+  const selected = selectedId ? (byId.get(selectedId) ?? null) : null;
+
+  const reload = async (run: string, scenario?: string) => {
+    setLoading(true);
+    try {
+      const result = await loadIncidentQueue({ data: scenario ? { run, scenario } : { run } });
+      if (result.ok) {
+        setView(result.view);
+        setSelectedId(result.view.incidents[0]?.incident_id ?? null);
+        setLoadError(null);
+      } else {
+        setLoadError(result.error);
+      }
+    } catch {
+      setLoadError("The incident list could not be read.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <header className="border-b border-border bg-card/35">
@@ -88,45 +112,52 @@ function Index() {
               Security operations workspace
             </div>
             <h1 className="text-[28px] font-medium leading-tight">Security overview</h1>
-          </div>
-          <div className="flex items-center gap-3">
+            <p className="mt-2 text-xs text-muted-foreground">
+              {view
+                ? `Run ${view.run}${view.scenario ? ` · scenario ${view.scenario}` : ""} · incidents ranked for triage, scored by the window model.`
+                : "Incidents are not available."}
+            </p>
           </div>
         </div>
-        {view && shown ? (
-          <SecurityMetrics view={view} />
+        {view ? (
+          <IncidentFunnel view={view} />
         ) : (
           <div className="panel flex items-center justify-center gap-3 px-5 py-10 text-xs text-muted-foreground">
             <ShieldCheck className="size-5 text-primary" />
-            Log counts are hidden. The merged file is unchanged.
+            {loadError ?? "The incident list could not be read."}
           </div>
         )}
         <div className="mb-4 mt-7 flex items-center justify-between">
           <span className="kicker">Investigate & understand</span>
+          {loadError && view && <span className="text-[10px] text-warning">{loadError}</span>}
         </div>
         <div className="dashboard-grid">
-          <InvestigationAssistant />
-          {view && shown ? (
-            <SecurityAnalytics view={view} />
-          ) : (
-            <section className="panel flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center">
-              <ShieldCheck className="size-8 text-muted-foreground" />
-              <h2 className="text-sm">Log counts are hidden</h2>
-              <p className="text-xs text-muted-foreground">The chart is counted from the merged file when shown.</p>
-              <Button variant="outline" size="sm" disabled={!view} onClick={() => setShown(true)}>
-                Show log counts
-                <ArrowUpRight />
-              </Button>
-            </section>
-          )}
+          <InvestigationAssistant
+            run={view?.run ?? DEFAULT_RUN}
+            scenario={view?.scenario ?? null}
+          />
+          <IncidentDetail incident={selected} byId={byId} onSelect={setSelectedId} />
         </div>
         <div className="mb-4 mt-7 flex items-center justify-between">
           <span className="kicker">Focus on what matters</span>
+          <span className="text-[10px] text-muted-foreground">
+            Confirmed by model first, then below threshold. Within a group, highest peak z first.
+          </span>
         </div>
-        {view && shown ? (
-          <PriorityFindings view={view} />
+        {view ? (
+          <IncidentQueue
+            view={view}
+            selectedId={selectedId}
+            loading={loading}
+            onSelect={setSelectedId}
+            onRunChange={(run) => void reload(run)}
+            onScenarioChange={(scenario) =>
+              void reload(view.run, scenario === "all" ? undefined : scenario)
+            }
+          />
         ) : (
           <section className="panel px-5 py-10 text-center text-xs text-muted-foreground">
-            Findings from the merged log are hidden.
+            No incident queue to show.
           </section>
         )}
       </main>

@@ -85,9 +85,9 @@ async function readAskEvents(response: Response, onEvent: (event: AskEvent) => v
   if (buffer.trim()) consume(buffer);
 }
 const suggestions = [
-  { text: "Summarize the security posture", icon: ShieldCheck },
-  { text: "What activity should I investigate first?", icon: Fingerprint },
-  { text: "Explain unusual authentication patterns", icon: ChartNoAxesCombined },
+  { text: "Summarize the attack", icon: ShieldCheck },
+  { text: "Which IP is the attacker?", icon: Fingerprint },
+  { text: "What should I investigate next?", icon: ChartNoAxesCombined },
 ];
 
 function readHistory(): UIMessage[] {
@@ -112,7 +112,13 @@ function readHistory(): UIMessage[] {
   );
 }
 
-export function InvestigationAssistant() {
+export function InvestigationAssistant({
+  run,
+  scenario,
+}: {
+  run: string;
+  scenario: string | null;
+}) {
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [input, setInput] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -203,7 +209,7 @@ export function InvestigationAssistant() {
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ messages }),
+        body: JSON.stringify({ messages, run, ...(scenario ? { scenario } : {}) }),
         signal: controller.signal,
       });
       if (!response.ok || !response.headers.get("content-type")?.includes("text/event-stream")) {
@@ -278,8 +284,8 @@ export function InvestigationAssistant() {
                 <span className="kicker">Your investigation partner</span>
                 <h3 className="mt-2 text-xl font-medium">Clarity in every signal.</h3>
                 <p className="mx-auto mt-3 max-w-80 text-xs leading-6 text-muted-foreground">
-                  Ask about activity, explore patterns, and understand what matters to your security
-                  posture.
+                  Ask about the ranked incidents: what happened, in what order, who did it, and what
+                  to check next.
                 </p>
               </div>
               <div className="assistant-suggestions">
