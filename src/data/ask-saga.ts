@@ -9,8 +9,9 @@ export function parseTurns(input: unknown): Turn[] {
     throw new Error("Send a message list.");
   }
   const raw = (input as { messages: unknown }).messages;
-  if (!Array.isArray(raw) || raw.length === 0 || raw.length > 12) {
-    throw new Error("Send between 1 and 12 messages.");
+  // The whole thread is sent so a later question can refer to an earlier one.
+  if (!Array.isArray(raw) || raw.length === 0 || raw.length > 80) {
+    throw new Error("Send between 1 and 80 messages.");
   }
   const messages: Turn[] = [];
   for (const item of raw) {
@@ -21,7 +22,7 @@ export function parseTurns(input: unknown): Turn[] {
       throw new Error("Each message must have a role and text.");
     }
     const trimmed = text.trim();
-    if (!trimmed || trimmed.length > 2000) throw new Error("Each message must be 1–2000 characters.");
+    if (!trimmed || trimmed.length > 8000) throw new Error("Each message must be 1–8000 characters.");
     messages.push({ role, text: trimmed });
   }
   if (messages.at(-1)?.role !== "user") throw new Error("The latest message must be from the user.");
