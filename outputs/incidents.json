@@ -1,0 +1,4814 @@
+[
+  {
+    "incident_id": "INC-0001",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "10.143.2.4",
+    "start": "2022-01-24T03:56:00+00:00",
+    "end": "2022-01-24T03:59:00+00:00",
+    "peak_z": 53.3,
+    "n_windows": 3,
+    "n_alerts": 10886,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 53.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "high_level",
+        "z": 38.8,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 17.4,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "max_level",
+        "z": 3.9,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 7068
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New request method in Apache Access log.",
+        "count": 3169
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "count": 548
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 37
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New characters in Apache Access request.",
+        "count": 29
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:57:26+00:00",
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "level": 10,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:03:57:26 +0000] \"GET /randomfile1 HTTP/1.1\" 404 3383 \"-\" \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\""
+      },
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 intranet-server sshd[27751]: Did not receive identification string from 172.19.131.174 port 40876"
+      },
+      {
+        "ts": "2022-01-24T03:57:26+00:00",
+        "tool": "wazuh",
+        "detector": "31104: Common web attack.",
+        "level": 6,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:03:57:26 +0000] \"GET /_mem_bin HTTP/1.1\" 404 363 \"-\" \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:26+00:00",
+        "tool": "wazuh",
+        "detector": "31516: Suspicious URL access.",
+        "level": 6,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:03:57:26 +0000] \"GET /.htaccess HTTP/1.1\" 403 366 \"-\" \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:01+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:03:57:01 +0000] \"GET /nmaplowercheck1642996621 HTTP/1.1\" 404 360 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:26.696482897+00:00",
+        "tool": "wazuh",
+        "detector": "30305: Apache: Attempt to access forbidden file or directory.",
+        "level": 5,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "[Mon Jan 24 03:57:26.696483 2022] [authz_core:error] [pid 25711] [client 172.19.131.174:36072] AH01630: client denied by server configuration: /var/www/intranet.smith.russellmitchell.com/.hta"
+      },
+      {
+        "ts": "2022-01-24T03:57:54.058024883+00:00",
+        "tool": "wazuh",
+        "detector": "30306: Apache: Attempt to access forbidden directory index.",
+        "level": 5,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "[Mon Jan 24 03:57:54.058025 2022] [autoindex:error] [pid 23059] [client 172.19.131.174:36166] AH01276: Cannot serve directory /var/www/intranet.smith.russellmitchell.com/wp-content/uploads/: No matching DirectoryIndex (index.html,index.cgi,index.pl,index.php,index.xhtml,index.htm) found, and server-generated directory index forbidden by Options directive, referer: https://intranet.smith.russellmitchell.com"
+      },
+      {
+        "ts": "2022-01-24T03:57:56+00:00",
+        "tool": "wazuh",
+        "detector": "31122: Web server 500 error code (Internal Error).",
+        "level": 5,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:03:57:56 +0000] \"GET /wp-content/themes/go/ HTTP/1.1\" 500 191 \"https://intranet.smith.russellmitchell.com\" \"WPScan v3.8.20 (https://wpscan.com/wordpress-security-scanner)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:01.688222885+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed",
+        "level": 3,
+        "src_ip": "172.19.131.174",
+        "dst_ip": "10.143.2.4",
+        "raw": "ET SCAN Possible Nmap User-Agent Observed"
+      },
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 intranet-server sshd[27751]: Did not receive identification string from 172.19.131.174 port 40876"
+      }
+    ],
+    "related": [
+      "INC-0002",
+      "INC-0003",
+      "INC-0004",
+      "INC-0005",
+      "INC-0009",
+      "INC-0011",
+      "INC-0014",
+      "INC-0028",
+      "INC-0029",
+      "INC-0035",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0002",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.68",
+    "start": "2022-01-24T03:56:00+00:00",
+    "end": "2022-01-24T03:58:00+00:00",
+    "peak_z": 25.5,
+    "n_windows": 2,
+    "n_alerts": 101,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 25.5,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 9.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 7.7,
+        "text": "Wazuh alert volume far above normal"
+      },
+      {
+        "feature": "new_rule",
+        "z": 7.3,
+        "text": "alert type never seen before on this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 25
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New status code in Apache Access log.",
+        "count": 24
+      },
+      {
+        "tool": "wazuh",
+        "detector": "30305: Apache: Attempt to access forbidden file or directory.",
+        "count": 24
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 23
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:57:01+00:00",
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "level": 10,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "192.168.230.122 - - [24/Jan/2022:03:57:01 +0000] \"GET /HNAP1 HTTP/1.1\" 403 3284 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:04+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:04 webserver sshd[21361]: Did not receive identification string from 172.19.131.174 port 47390"
+      },
+      {
+        "ts": "2022-01-24T03:56:53+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "192.168.230.122 - - [24/Jan/2022:03:56:53 +0000] \"GET / HTTP/1.0\" 403 363 \"-\" \"-\""
+      },
+      {
+        "ts": "2022-01-24T03:56:53.606663942+00:00",
+        "tool": "wazuh",
+        "detector": "30305: Apache: Attempt to access forbidden file or directory.",
+        "level": 5,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "[Mon Jan 24 03:56:53.606664 2022] [authz_core:error] [pid 19928] [client 192.168.230.122:34548] AH01630: client denied by server configuration: /var/www/html/"
+      },
+      {
+        "ts": "2022-01-24T03:57:01.687866926+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed",
+        "level": 3,
+        "src_ip": "192.168.230.122",
+        "dst_ip": "172.19.130.68",
+        "raw": "ET SCAN Possible Nmap User-Agent Observed"
+      },
+      {
+        "ts": "2022-01-24T03:56:53+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New status code in Apache Access log.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "192.168.230.122 - - [24/Jan/2022:03:56:53 +0000] \"GET / HTTP/1.0\" 403 363 \"-\" \"-\""
+      },
+      {
+        "ts": "2022-01-24T03:56:53+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of Apache Access request methods.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "192.168.230.122 - - [24/Jan/2022:03:56:53 +0000] \"GET / HTTP/1.0\" 403 363 \"-\" \"-\""
+      },
+      {
+        "ts": "2022-01-24T03:56:53.609999895+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "[Mon Jan 24 03:56:53.606664 2022] [authz_core:error] [pid 19928] [client 192.168.230.122:34548] AH01630: client denied by server configuration: /var/www/html/"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0003",
+      "INC-0004",
+      "INC-0005",
+      "INC-0009",
+      "INC-0011",
+      "INC-0014",
+      "INC-0028",
+      "INC-0029",
+      "INC-0035",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0003",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.231.56",
+    "start": "2022-01-24T03:57:00+00:00",
+    "end": "2022-01-24T03:58:00+00:00",
+    "peak_z": 24.8,
+    "n_windows": 1,
+    "n_alerts": 44,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 24.8,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 7.6,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 7.4,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 40
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:57:04+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:04 davey-mail sshd[31684]: Did not receive identification string from 192.168.230.122 port 36028"
+      },
+      {
+        "ts": "2022-01-24T03:57:18+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "192.168.230.122 - - [24/Jan/2022:03:57:18 +0000] \"POST /sdk HTTP/1.1\" 404 3983 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:02+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:02 davey-mail dovecot: imap-login: Disconnected (disconnected before auth was ready, waited 0 secs): user=<>, rip=192.168.230.122, lip=192.168.231.56, session=<UrcN9kvWZM/AqOZ6>"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0004",
+      "INC-0005",
+      "INC-0009",
+      "INC-0011",
+      "INC-0014",
+      "INC-0028",
+      "INC-0029",
+      "INC-0035",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0004",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.4",
+    "start": "2022-01-24T03:56:00+00:00",
+    "end": "2022-01-24T03:58:00+00:00",
+    "peak_z": 23.5,
+    "n_windows": 2,
+    "n_alerts": 69,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 23.5,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 7.5,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "new_rule",
+        "z": 7.3,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 6.7,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 60
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid SSLv2 header",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:57:04+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:04 mail sshd[4092]: Did not receive identification string from 172.19.131.174 port 52602"
+      },
+      {
+        "ts": "2022-01-24T03:57:18+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:03:57:18 +0000] \"POST /sdk HTTP/1.1\" 404 4004 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:01.490982056+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid SSLv2 header",
+        "level": 3,
+        "src_ip": "192.168.230.122",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid SSLv2 header"
+      },
+      {
+        "ts": "2022-01-24T03:57:01.490982056+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "192.168.230.122",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      },
+      {
+        "ts": "2022-01-24T03:57:18.183439016+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed",
+        "level": 3,
+        "src_ip": "172.19.131.174",
+        "dst_ip": "172.19.130.4",
+        "raw": "ET SCAN Possible Nmap User-Agent Observed"
+      },
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 mail dovecot: imap-login: Disconnected (disconnected before auth was ready, waited 0 secs): user=<>, rip=192.168.230.122, lip=172.19.130.4, session=<iBUk9UvWdODAqOZ6>"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0003",
+      "INC-0005",
+      "INC-0009",
+      "INC-0011",
+      "INC-0014",
+      "INC-0028",
+      "INC-0029",
+      "INC-0035",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0005",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.231.164",
+    "start": "2022-01-24T03:56:00+00:00",
+    "end": "2022-01-24T03:58:00+00:00",
+    "peak_z": 23.5,
+    "n_windows": 2,
+    "n_alerts": 44,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 23.5,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 7.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 7.1,
+        "text": "AMiner alert volume far above normal"
+      },
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 40
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 morris-mail sshd[25517]: Did not receive identification string from 192.168.230.122 port 54752"
+      },
+      {
+        "ts": "2022-01-24T03:57:01+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "192.168.230.122 - - [24/Jan/2022:03:57:01 +0000] \"GET /nmaplowercheck1642996621 HTTP/1.1\" 404 4014 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 morris-mail sshd[25517]: Did not receive identification string from 192.168.230.122 port 54752"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0003",
+      "INC-0004",
+      "INC-0009",
+      "INC-0011",
+      "INC-0014",
+      "INC-0028",
+      "INC-0029",
+      "INC-0035",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0006",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.4",
+    "start": "2022-01-24T09:22:00+00:00",
+    "end": "2022-01-24T09:23:00+00:00",
+    "peak_z": 19.6,
+    "n_windows": 1,
+    "n_alerts": 30,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 19.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 6.9,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 5.9,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 18
+      },
+      {
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "count": 6
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 3
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T09:22:36+00:00",
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "level": 5,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "172.19.130.4",
+        "raw": "Jan 24 09:22:36 mail dovecot: imap-login: Disconnected (auth failed, 5 attempts in 18 secs): user=<alyssa.hayes>, method=PLAIN, rip=172.19.130.4, lip=172.19.130.4, TLS, session=<4pFEgVDWsNysE4IE>"
+      },
+      {
+        "ts": "2022-01-24T09:22:36.322576046+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "172.19.130.68",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-24T09:22:36.322576046+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "172.19.130.68",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      },
+      {
+        "ts": "2022-01-24T09:22:26+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 24 09:22:26 mail HORDE: [imp] [listMailboxes] Authentication failed. [pid 4874 on line 730 of \"/usr/share/horde/imp/lib/Imap.php\"]"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0007",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.4",
+    "start": "2022-01-24T09:47:00+00:00",
+    "end": "2022-01-24T09:58:00+00:00",
+    "peak_z": 18.5,
+    "n_windows": 7,
+    "n_alerts": 102,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 18.5,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 6.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 5.5,
+        "text": "AMiner alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 69
+      },
+      {
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "count": 24
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "9751: Dovecot brute force attack (multiple auth failures).",
+        "count": 3
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T09:49:46+00:00",
+        "tool": "wazuh",
+        "detector": "9751: Dovecot brute force attack (multiple auth failures).",
+        "level": 10,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "172.19.130.4",
+        "raw": "Jan 24 09:49:46 mail dovecot: imap-login: Disconnected (auth failed, 4 attempts in 20 secs): user=<alyssa.hayes>, method=PLAIN, rip=172.19.130.4, lip=172.19.130.4, TLS, session=<vxtc4lDW8tysE4IE>"
+      },
+      {
+        "ts": "2022-01-24T09:47:41+00:00",
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "level": 5,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "172.19.130.4",
+        "raw": "Jan 24 09:47:41 mail dovecot: imap-login: Disconnected (auth failed, 3 attempts in 14 secs): user=<alyssa.hayes>, method=PLAIN, rip=172.19.130.4, lip=172.19.130.4, TLS, session=<+cM621DW6tysE4IE>"
+      },
+      {
+        "ts": "2022-01-24T09:47:56.511316061+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "172.19.130.68",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-24T09:47:56.511316061+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "172.19.130.68",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      },
+      {
+        "ts": "2022-01-24T09:47:35+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 24 09:47:35 mail HORDE: [imp] [openMailbox] Authentication failed. [pid 6177 on line 730 of \"/usr/share/horde/imp/lib/Imap.php\"]"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0008",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.4",
+    "start": "2022-01-24T10:09:00+00:00",
+    "end": "2022-01-24T10:18:00+00:00",
+    "peak_z": 18.5,
+    "n_windows": 5,
+    "n_alerts": 72,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 18.5,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 6.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 5.5,
+        "text": "AMiner alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 48
+      },
+      {
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "count": 16
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "9751: Dovecot brute force attack (multiple auth failures).",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T10:13:45+00:00",
+        "tool": "wazuh",
+        "detector": "9751: Dovecot brute force attack (multiple auth failures).",
+        "level": 10,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "172.19.130.4",
+        "raw": "Jan 24 10:13:45 mail dovecot: imap-login: Disconnected (auth failed, 4 attempts in 20 secs): user=<alyssa.hayes>, method=PLAIN, rip=172.19.130.4, lip=172.19.130.4, TLS, session=<sqIWOFHWSt2sE4IE>"
+      },
+      {
+        "ts": "2022-01-24T10:09:56+00:00",
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "level": 5,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "172.19.130.4",
+        "raw": "Jan 24 10:09:56 mail dovecot: imap-login: Disconnected (auth failed, 3 attempts in 14 secs): user=<alyssa.hayes>, method=PLAIN, rip=172.19.130.4, lip=172.19.130.4, TLS, session=<ZCTMKlHWQt2sE4IE>"
+      },
+      {
+        "ts": "2022-01-24T10:09:00.110140085+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "172.19.130.68",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-24T10:09:00.110140085+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "172.19.130.68",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      },
+      {
+        "ts": "2022-01-24T10:09:50+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 24 10:09:50 mail HORDE: [imp] [openMailbox] Authentication failed. [pid 6556 on line 730 of \"/usr/share/horde/imp/lib/Imap.php\"]"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0009",
+    "kind": "actor",
+    "scenario": "russellmitchell",
+    "entity": "172.19.131.174",
+    "start": "2022-01-24T03:57:00+00:00",
+    "end": "2022-01-24T03:59:00+00:00",
+    "peak_z": 16.9,
+    "n_windows": 2,
+    "n_alerts": 10980,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": [
+      "10.143.0.103",
+      "10.143.2.4",
+      "172.19.130.106",
+      "172.19.130.4",
+      "172.19.130.68"
+    ],
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 17.4,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "web_attack",
+        "z": 16.9,
+        "text": "burst of web-attack alerts (scans, exploits)"
+      },
+      {
+        "feature": "auth_fail",
+        "z": 6.1,
+        "text": "spike in failed logins"
+      },
+      {
+        "feature": "n_rules",
+        "z": 3.9,
+        "text": "unusually many different alert types"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 7088
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New request method in Apache Access log.",
+        "count": 3169
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "count": 549
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 78
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New characters in Apache Access request.",
+        "count": 29
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:57:18+00:00",
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "level": 10,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "cloud.dmz.smith.russellmitchell.com:80 172.19.131.174 - - [24/Jan/2022:03:57:18 +0000] \"GET /HNAP1 HTTP/1.1\" 404 7525 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:04+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:04 cloud-share sshd[9119]: Did not receive identification string from 172.19.131.174 port 43150"
+      },
+      {
+        "ts": "2022-01-24T03:57:26+00:00",
+        "tool": "wazuh",
+        "detector": "31104: Common web attack.",
+        "level": 6,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:03:57:26 +0000] \"GET /_mem_bin HTTP/1.1\" 404 363 \"-\" \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:26+00:00",
+        "tool": "wazuh",
+        "detector": "31516: Suspicious URL access.",
+        "level": 6,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:03:57:26 +0000] \"GET /.htaccess HTTP/1.1\" 403 366 \"-\" \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:01+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:03:57:01 +0000] \"GET /nmaplowercheck1642996621 HTTP/1.1\" 404 360 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:10.177408934+00:00",
+        "tool": "wazuh",
+        "detector": "30305: Apache: Attempt to access forbidden file or directory.",
+        "level": 5,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "[Mon Jan 24 03:57:10.177409 2022] [authz_core:error] [pid 20558] [client 172.19.131.174:38860] AH01630: client denied by server configuration: /var/www/html/"
+      },
+      {
+        "ts": "2022-01-24T03:57:54.058024883+00:00",
+        "tool": "wazuh",
+        "detector": "30306: Apache: Attempt to access forbidden directory index.",
+        "level": 5,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "[Mon Jan 24 03:57:54.058025 2022] [autoindex:error] [pid 23059] [client 172.19.131.174:36166] AH01276: Cannot serve directory /var/www/intranet.smith.russellmitchell.com/wp-content/uploads/: No matching DirectoryIndex (index.html,index.cgi,index.pl,index.php,index.xhtml,index.htm) found, and server-generated directory index forbidden by Options directive, referer: https://intranet.smith.russellmitchell.com"
+      },
+      {
+        "ts": "2022-01-24T03:57:56+00:00",
+        "tool": "wazuh",
+        "detector": "31122: Web server 500 error code (Internal Error).",
+        "level": 5,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:03:57:56 +0000] \"GET /wp-content/themes/go/ HTTP/1.1\" 500 191 \"https://intranet.smith.russellmitchell.com\" \"WPScan v3.8.20 (https://wpscan.com/wordpress-security-scanner)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:01.688222885+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed",
+        "level": 3,
+        "src_ip": "172.19.131.174",
+        "dst_ip": "10.143.2.4",
+        "raw": "ET SCAN Possible Nmap User-Agent Observed"
+      },
+      {
+        "ts": "2022-01-24T03:57:17.978452921+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid SSLv2 header",
+        "level": 3,
+        "src_ip": "172.19.131.174",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid SSLv2 header"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0003",
+      "INC-0004",
+      "INC-0005",
+      "INC-0011",
+      "INC-0014",
+      "INC-0028",
+      "INC-0029",
+      "INC-0035",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0010",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "10.143.2.4",
+    "start": "2022-01-24T04:37:00+00:00",
+    "end": "2022-01-24T04:39:00+00:00",
+    "peak_z": 16.0,
+    "n_windows": 2,
+    "n_alerts": 27,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 16.0,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "new_rule",
+        "z": 13.0,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "rare_rule",
+        "z": 9.2,
+        "text": "alert type that is rare across the whole network"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 9
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New user_start parameter combination in Audit logs.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5402: Successful sudo to ROOT executed.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 2
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: High entropy in Apache Access request.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T04:37:40+00:00",
+        "tool": "wazuh",
+        "detector": "5304: User successfully changed UID.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 24 04:37:40 intranet-server su[27950]: + /dev/pts/1 www-data:jhall"
+      },
+      {
+        "ts": "2022-01-24T04:37:40+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 24 04:37:40 intranet-server su[27950]: pam_unix(su:session): session opened for user jhall by (uid=33)"
+      },
+      {
+        "ts": "2022-01-24T04:37:58+00:00",
+        "tool": "wazuh",
+        "detector": "5402: Successful sudo to ROOT executed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 24 04:37:58 intranet-server sudo:    jhall : TTY=pts/1 ; PWD=/var/www/intranet.smith.russellmitchell.com/wp-content/uploads/2022/01 ; USER=root ; COMMAND=list"
+      },
+      {
+        "ts": "2022-01-24T04:38:06+00:00",
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 24 04:38:06 intranet-server sudo: pam_unix(sudo:session): session closed for user root"
+      },
+      {
+        "ts": "2022-01-24T04:37:25+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: High entropy in Apache Access request.",
+        "level": 0,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:04:37:25 +0000] \"GET /wp-content/uploads/2022/01/ekmkimzkps-1642996700.9285.php?wp_meta=WyJiYXNoIiwgIi1jIiwgIiAnMDwmMTk2O2V4ZWMgMTk2PD4vZGV2L3RjcC8xOTIuMTY4LjIzMC4xMjIvNDcxMjQ7IHNoIDwmMTk2ID4mMTk2IDI%2BJjE5NiciLCAiJiJd HTTP/1.1\" 200 506741 \"-\" \"python-requests/2.27.1\""
+      },
+      {
+        "ts": "2022-01-24T04:37:25+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of Apache Access logs.",
+        "level": 0,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:04:37:25 +0000] \"GET /wp-content/uploads/2022/01/ekmkimzkps-1642996700.9285.php?wp_meta=WyJiYXNoIiwgIi1jIiwgIiAnMDwmMTk2O2V4ZWMgMTk2PD4vZGV2L3RjcC8xOTIuMTY4LjIzMC4xMjIvNDcxMjQ7IHNoIDwmMTk2ID4mMTk2IDI%2BJjE5NiciLCAiJiJd HTTP/1.1\" 200 506741 \"-\" \"python-requests/2.27.1\""
+      },
+      {
+        "ts": "2022-01-24T04:37:25+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of Apache Access request methods.",
+        "level": 0,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "172.19.131.174 - - [24/Jan/2022:04:37:25 +0000] \"GET /wp-content/uploads/2022/01/ekmkimzkps-1642996700.9285.php?wp_meta=WyJiYXNoIiwgIi1jIiwgIiAnMDwmMTk2O2V4ZWMgMTk2PD4vZGV2L3RjcC8xOTIuMTY4LjIzMC4xMjIvNDcxMjQ7IHNoIDwmMTk2ID4mMTk2IDI%2BJjE5NiciLCAiJiJd HTTP/1.1\" 200 506741 \"-\" \"python-requests/2.27.1\""
+      },
+      {
+        "ts": "2022-01-24T04:37:40+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 24 04:37:40 intranet-server su[27950]: Successful su for jhall by www-data"
+      },
+      {
+        "ts": "2022-01-24T04:37:40.599999905+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New user_acct parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=USER_ACCT msg=audit(1642999060.603:2227): pid=27950 uid=33 auid=4294967295 ses=4294967295 msg='op=PAM:accounting acct=\"jhall\" exe=\"/bin/su\" hostname=? addr=? terminal=/dev/pts/1 res=success'"
+      },
+      {
+        "ts": "2022-01-24T04:37:40.599999905+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New user_auth parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=USER_AUTH msg=audit(1642999060.603:2226): pid=27950 uid=33 auid=4294967295 ses=4294967295 msg='op=PAM:authentication acct=\"jhall\" exe=\"/bin/su\" hostname=? addr=? terminal=/dev/pts/1 res=success'"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0011",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "10.143.0.103",
+    "start": "2022-01-24T03:57:00+00:00",
+    "end": "2022-01-24T03:58:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 4,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 9.2,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "max_level",
+        "z": 3.9,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:57:04+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:04 internal-share sshd[18542]: Did not receive identification string from 172.19.131.174 port 45920"
+      },
+      {
+        "ts": "2022-01-24T03:57:04+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:04 internal-share sshd[18542]: Did not receive identification string from 172.19.131.174 port 45920"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0003",
+      "INC-0004",
+      "INC-0005",
+      "INC-0009",
+      "INC-0014",
+      "INC-0028",
+      "INC-0029",
+      "INC-0035",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0012",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "10.143.2.4",
+    "start": "2022-01-21T14:06:00+00:00",
+    "end": "2022-01-21T14:07:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 3,
+    "tools": [
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 2.8,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T14:06:40+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 21 14:06:40 intranet-server sshd[15014]: pam_unix(sshd:session): session opened for user jhall by (uid=0)"
+      },
+      {
+        "ts": "2022-01-21T14:06:40+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 21 14:06:40 intranet-server sshd[15014]: Accepted publickey for jhall from 172.19.131.174 port 39296 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0013",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "10.143.2.4",
+    "start": "2022-01-23T16:30:00+00:00",
+    "end": "2022-01-23T16:31:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 3,
+    "tools": [
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 2.8,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T16:30:46+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 23 16:30:46 intranet-server sshd[25184]: pam_unix(sshd:session): session opened for user jhall by (uid=0)"
+      },
+      {
+        "ts": "2022-01-23T16:30:46+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 23 16:30:46 intranet-server sshd[25184]: Accepted publickey for jhall from 172.19.131.174 port 49828 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0014",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.106",
+    "start": "2022-01-24T03:57:00+00:00",
+    "end": "2022-01-24T03:58:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 9,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 9.2,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.8,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "high_level",
+        "z": 4.6,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 5
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:57:18+00:00",
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "level": 10,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "cloud.dmz.smith.russellmitchell.com:80 172.19.131.174 - - [24/Jan/2022:03:57:18 +0000] \"GET /HNAP1 HTTP/1.1\" 404 7525 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:04+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:04 cloud-share sshd[9119]: Did not receive identification string from 172.19.131.174 port 43150"
+      },
+      {
+        "ts": "2022-01-24T03:57:18+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "cloud.dmz.smith.russellmitchell.com:443 172.19.131.174 - - [24/Jan/2022:03:57:18 +0000] \"POST /sdk HTTP/1.1\" 404 10490 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-01-24T03:57:18.259424924+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed",
+        "level": 3,
+        "src_ip": "172.19.131.174",
+        "dst_ip": "172.19.130.106",
+        "raw": "ET SCAN Possible Nmap User-Agent Observed"
+      },
+      {
+        "ts": "2022-01-24T03:57:04+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:04 cloud-share sshd[9119]: Did not receive identification string from 172.19.131.174 port 43150"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0003",
+      "INC-0004",
+      "INC-0005",
+      "INC-0009",
+      "INC-0011",
+      "INC-0028",
+      "INC-0029",
+      "INC-0035",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0015",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.4",
+    "start": "2022-01-21T15:05:00+00:00",
+    "end": "2022-01-21T15:06:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 8,
+    "tools": [
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 9.2,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "total",
+        "z": 4.4,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 3.9,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "2501: syslog: User authentication failure.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5503: PAM: User login failed.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T15:05:24+00:00",
+        "tool": "wazuh",
+        "detector": "5503: PAM: User login failed.",
+        "level": 5,
+        "src_ip": "172.19.130.4",
+        "dst_ip": null,
+        "raw": "Jan 21 15:05:24 mail auth: pam_unix(dovecot:auth): authentication failure; logname= uid=0 euid=0 tty=dovecot ruser=dorothy.ellis rhost=172.19.130.4  user=dorothy.ellis"
+      },
+      {
+        "ts": "2022-01-21T15:05:28+00:00",
+        "tool": "wazuh",
+        "detector": "2501: syslog: User authentication failure.",
+        "level": 5,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 21 15:05:28 mail HORDE: [horde] FAILED LOGIN for dorothy.ellis to horde (172.19.130.68) [pid 12428 on line 198 of \"/usr/share/horde/login.php\"]"
+      },
+      {
+        "ts": "2022-01-21T15:05:28+00:00",
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "level": 5,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "172.19.130.4",
+        "raw": "Jan 21 15:05:28 mail dovecot: imap-login: Disconnected (auth failed, 1 attempts in 4 secs): user=<dorothy.ellis>, method=PLAIN, rip=172.19.130.4, lip=172.19.130.4, TLS, session=<MB7I8hjWwMesE4IE>"
+      },
+      {
+        "ts": "2022-01-21T15:05:39.722378969+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "172.19.130.68",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-21T15:05:39.722378969+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "172.19.130.68",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0016",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.4",
+    "start": "2022-01-23T16:24:00+00:00",
+    "end": "2022-01-23T16:25:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 3,
+    "tools": [
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 2.8,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T16:24:36+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 23 16:24:36 mail sshd[597]: pam_unix(sshd:session): session opened for user jhall by (uid=0)"
+      },
+      {
+        "ts": "2022-01-23T16:24:36+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 23 16:24:36 mail sshd[597]: Accepted publickey for jhall from 172.19.131.174 port 46580 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0017",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.131.174",
+    "start": "2022-01-23T14:54:00+00:00",
+    "end": "2022-01-23T14:58:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 3,
+    "n_alerts": 7,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 9.2,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 2.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 2.8,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 7
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T14:54:54+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.230.165",
+        "dst_ip": null,
+        "raw": "2022-01-23 14:54:54 jhall/192.168.230.165:59814 TLS Error: TLS key negotiation failed to occur within 60 seconds (check your network connectivity)"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0018",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.231.164",
+    "start": "2022-01-22T14:07:00+00:00",
+    "end": "2022-01-22T14:08:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 6,
+    "tools": [
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 9.2,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "total",
+        "z": 3.9,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 3.9,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "2501: syslog: User authentication failure.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5503: PAM: User login failed.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T14:07:07+00:00",
+        "tool": "wazuh",
+        "detector": "5503: PAM: User login failed.",
+        "level": 5,
+        "src_ip": "192.168.231.164",
+        "dst_ip": null,
+        "raw": "Jan 22 14:07:07 morris-mail auth: pam_unix(dovecot:auth): authentication failure; logname= uid=0 euid=0 tty=dovecot ruser=matthew.begum rhost=192.168.231.164  user=matthew.begum"
+      },
+      {
+        "ts": "2022-01-22T14:07:12+00:00",
+        "tool": "wazuh",
+        "detector": "2501: syslog: User authentication failure.",
+        "level": 5,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 22 14:07:12 morris-mail HORDE: [horde] FAILED LOGIN for matthew.begum to horde (192.168.231.68) [pid 13404 on line 198 of \"/usr/share/horde/login.php\"]"
+      },
+      {
+        "ts": "2022-01-22T14:07:12+00:00",
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "level": 5,
+        "src_ip": "192.168.231.164",
+        "dst_ip": "192.168.231.164",
+        "raw": "Jan 22 14:07:12 morris-mail dovecot: imap-login: Disconnected (auth failed, 1 attempts in 5 secs): user=<matthew.begum>, method=PLAIN, rip=192.168.231.164, lip=192.168.231.164, TLS, session=<Zpw4QCzWStfAqOek>"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0019",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "10.143.0.103",
+    "start": "2022-01-24T00:00:00+00:00",
+    "end": "2022-01-24T00:01:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 7.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 2.2,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T00:00:01.140000105+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_START msg=audit(1642982401.140:701): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      },
+      {
+        "ts": "2022-01-24T00:00:01.140000105+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_STOP msg=audit(1642982401.140:702): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      }
+    ],
+    "related": [
+      "INC-0021",
+      "INC-0022",
+      "INC-0023",
+      "INC-0026",
+      "INC-0027"
+    ]
+  },
+  {
+    "incident_id": "INC-0020",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "10.143.0.103",
+    "start": "2022-01-24T13:50:00+00:00",
+    "end": "2022-01-24T13:51:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 7.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 2.2,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T13:50:39.299999952+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_START msg=audit(1643032239.298:807): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=put comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      },
+      {
+        "ts": "2022-01-24T13:50:39.299999952+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_STOP msg=audit(1643032239.298:808): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=put comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0021",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "10.143.2.4",
+    "start": "2022-01-24T00:00:00+00:00",
+    "end": "2022-01-24T00:01:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 7.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 2.2,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T00:00:12.519999981+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_START msg=audit(1642982412.518:2118): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      },
+      {
+        "ts": "2022-01-24T00:00:12.519999981+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_STOP msg=audit(1642982412.518:2119): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      }
+    ],
+    "related": [
+      "INC-0019",
+      "INC-0022",
+      "INC-0023",
+      "INC-0026",
+      "INC-0027"
+    ]
+  },
+  {
+    "incident_id": "INC-0022",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.128.1",
+    "start": "2022-01-24T00:00:00+00:00",
+    "end": "2022-01-24T00:01:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 7.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 2.2,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T00:00:18.690000057+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_START msg=audit(1642982418.694:697): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      },
+      {
+        "ts": "2022-01-24T00:00:18.690000057+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_STOP msg=audit(1642982418.694:698): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      }
+    ],
+    "related": [
+      "INC-0019",
+      "INC-0021",
+      "INC-0023",
+      "INC-0026",
+      "INC-0027"
+    ]
+  },
+  {
+    "incident_id": "INC-0023",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.106",
+    "start": "2022-01-24T00:01:00+00:00",
+    "end": "2022-01-24T00:02:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 7.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 2.2,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T00:01:17.849999905+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_START msg=audit(1642982477.849:4021): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      },
+      {
+        "ts": "2022-01-24T00:01:17.849999905+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_STOP msg=audit(1642982477.849:4022): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      }
+    ],
+    "related": [
+      "INC-0019",
+      "INC-0021",
+      "INC-0022",
+      "INC-0026",
+      "INC-0027"
+    ]
+  },
+  {
+    "incident_id": "INC-0024",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.4",
+    "start": "2022-01-22T08:05:00+00:00",
+    "end": "2022-01-22T08:06:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 7.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 2.2,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T08:05:03.119999886+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "172.19.130.68",
+        "dst_ip": null,
+        "raw": "[Sat Jan 22 08:05:03.120181 2022] [:error] [pid 18175] [client 172.19.130.68:33858] PHP Warning:  Declaration of Horde_Form_Type_pgp::init($gpg, $temp_dir = NULL, $rows = NULL, $cols = NULL) should be compatible with Horde_Form_Type_longtext::init($rows = 8, $cols = 80, $helper = Array) in /usr/share/php/Horde/Form/Type.php on line 863, referer: https://mail.smith.russellmitchell.com/turba/browse.php"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0025",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.68",
+    "start": "2022-01-22T06:25:00+00:00",
+    "end": "2022-01-22T06:26:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 7.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 2.2,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T06:25:12+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 22 06:25:12 webserver apachectl[11884]: AH00548: NameVirtualHost has no effect and will be removed in the next release /etc/apache2/sites-enabled/000-catch-all.conf:1"
+      }
+    ],
+    "related": [
+      "INC-0042",
+      "INC-0047"
+    ]
+  },
+  {
+    "incident_id": "INC-0026",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.68",
+    "start": "2022-01-24T00:00:00+00:00",
+    "end": "2022-01-24T00:01:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 7.3,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "aminer_novel",
+        "z": 7.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T00:00:33.019999981+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_START msg=audit(1642982433.015:2019): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      },
+      {
+        "ts": "2022-01-24T00:00:33.019999981+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_STOP msg=audit(1642982433.015:2020): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      }
+    ],
+    "related": [
+      "INC-0019",
+      "INC-0021",
+      "INC-0022",
+      "INC-0023",
+      "INC-0027"
+    ]
+  },
+  {
+    "incident_id": "INC-0027",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.131.174",
+    "start": "2022-01-24T00:01:00+00:00",
+    "end": "2022-01-24T00:02:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 7.3,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "aminer_novel",
+        "z": 7.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T00:01:18.490000010+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_START msg=audit(1642982478.486:716): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      },
+      {
+        "ts": "2022-01-24T00:01:18.490000010+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_STOP msg=audit(1642982478.486:717): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      }
+    ],
+    "related": [
+      "INC-0019",
+      "INC-0021",
+      "INC-0022",
+      "INC-0023",
+      "INC-0026"
+    ]
+  },
+  {
+    "incident_id": "INC-0028",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.231.254",
+    "start": "2022-01-24T03:56:00+00:00",
+    "end": "2022-01-24T03:57:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 4,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 7.3,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "max_level",
+        "z": 3.9,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 2
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of query records in DNS logs.",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 inet-dns sshd[15085]: Did not receive identification string from 192.168.230.122 port 44004"
+      },
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 inet-dns sshd[15085]: Did not receive identification string from 192.168.230.122 port 44004"
+      },
+      {
+        "ts": "2022-01-24T03:56:53+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of query records in DNS logs.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:53 dnsmasq[15084]: query[TXT] version.bind from 192.168.230.122"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0003",
+      "INC-0004",
+      "INC-0005",
+      "INC-0009",
+      "INC-0011",
+      "INC-0014",
+      "INC-0029",
+      "INC-0035",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0029",
+    "kind": "actor",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.122",
+    "start": "2022-01-24T03:56:00+00:00",
+    "end": "2022-01-24T03:58:00+00:00",
+    "peak_z": 5.8,
+    "n_windows": 2,
+    "n_alerts": 180,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": [
+      "172.19.128.1",
+      "172.19.130.4",
+      "172.19.130.68",
+      "192.168.230.4",
+      "192.168.231.164",
+      "192.168.231.254",
+      "192.168.231.56"
+    ],
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 9.3,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "web_attack",
+        "z": 5.8,
+        "text": "burst of web-attack alerts (scans, exploits)"
+      },
+      {
+        "feature": "auth_fail",
+        "z": 4.8,
+        "text": "spike in failed logins"
+      },
+      {
+        "feature": "n_rules",
+        "z": 4.2,
+        "text": "unusually many different alert types"
+      },
+      {
+        "feature": "n_targets",
+        "z": 3.6,
+        "text": "one source touching unusually many hosts (scan / lateral movement)"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 128
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 17
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New status code in Apache Access log.",
+        "count": 12
+      },
+      {
+        "tool": "wazuh",
+        "detector": "30305: Apache: Attempt to access forbidden file or directory.",
+        "count": 12
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "count": 4
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:57:01+00:00",
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "level": 10,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "192.168.230.122 - - [24/Jan/2022:03:57:01 +0000] \"GET /HNAP1 HTTP/1.1\" 403 3284 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 inet-dns sshd[15085]: Did not receive identification string from 192.168.230.122 port 44004"
+      },
+      {
+        "ts": "2022-01-24T03:56:53+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "192.168.230.122 - - [24/Jan/2022:03:56:53 +0000] \"GET / HTTP/1.0\" 403 363 \"-\" \"-\""
+      },
+      {
+        "ts": "2022-01-24T03:56:53.606663942+00:00",
+        "tool": "wazuh",
+        "detector": "30305: Apache: Attempt to access forbidden file or directory.",
+        "level": 5,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "[Mon Jan 24 03:56:53.606664 2022] [authz_core:error] [pid 19928] [client 192.168.230.122:34548] AH01630: client denied by server configuration: /var/www/html/"
+      },
+      {
+        "ts": "2022-01-24T03:57:01.490982056+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid SSLv2 header",
+        "level": 3,
+        "src_ip": "192.168.230.122",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid SSLv2 header"
+      },
+      {
+        "ts": "2022-01-24T03:57:01.490982056+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "192.168.230.122",
+        "dst_ip": "172.19.130.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      },
+      {
+        "ts": "2022-01-24T03:57:01.687866926+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed",
+        "level": 3,
+        "src_ip": "192.168.230.122",
+        "dst_ip": "172.19.130.68",
+        "raw": "ET SCAN Possible Nmap User-Agent Observed"
+      },
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 inet-dns sshd[15085]: Did not receive identification string from 192.168.230.122 port 44004"
+      },
+      {
+        "ts": "2022-01-24T03:56:53+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New status code in Apache Access log.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "192.168.230.122 - - [24/Jan/2022:03:56:53 +0000] \"GET / HTTP/1.0\" 403 363 \"-\" \"-\""
+      },
+      {
+        "ts": "2022-01-24T03:56:53+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of Apache Access request methods.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "192.168.230.122 - - [24/Jan/2022:03:56:53 +0000] \"GET / HTTP/1.0\" 403 363 \"-\" \"-\""
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0003",
+      "INC-0004",
+      "INC-0005",
+      "INC-0009",
+      "INC-0011",
+      "INC-0014",
+      "INC-0028",
+      "INC-0035",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0030",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.231.56",
+    "start": "2022-01-23T12:54:00+00:00",
+    "end": "2022-01-23T12:55:00+00:00",
+    "peak_z": 5.1,
+    "n_windows": 1,
+    "n_alerts": 12,
+    "tools": [
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 5.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 5.1,
+        "text": "Wazuh alert volume far above normal"
+      },
+      {
+        "feature": "auth_fail",
+        "z": 5.1,
+        "text": "spike in failed logins"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "count": 6
+      },
+      {
+        "tool": "wazuh",
+        "detector": "2501: syslog: User authentication failure.",
+        "count": 4
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5503: PAM: User login failed.",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T12:54:24+00:00",
+        "tool": "wazuh",
+        "detector": "5503: PAM: User login failed.",
+        "level": 5,
+        "src_ip": "192.168.231.56",
+        "dst_ip": null,
+        "raw": "Jan 23 12:54:24 davey-mail auth: pam_unix(dovecot:auth): authentication failure; logname= uid=0 euid=0 tty=dovecot ruser=shane.watson rhost=192.168.231.56  user=shane.watson"
+      },
+      {
+        "ts": "2022-01-23T12:54:29+00:00",
+        "tool": "wazuh",
+        "detector": "2501: syslog: User authentication failure.",
+        "level": 5,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 23 12:54:29 davey-mail HORDE: [horde] FAILED LOGIN for shane.watson to horde (192.168.231.75) [pid 23869 on line 198 of \"/usr/share/horde/login.php\"]"
+      },
+      {
+        "ts": "2022-01-23T12:54:29+00:00",
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "level": 5,
+        "src_ip": "192.168.231.56",
+        "dst_ip": "192.168.231.56",
+        "raw": "Jan 23 12:54:29 davey-mail dovecot: imap-login: Disconnected (auth failed, 1 attempts in 5 secs): user=<shane.watson>, method=PLAIN, rip=192.168.231.56, lip=192.168.231.56, TLS, session=<meQAWj/WgoTAqOc4>"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0031",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "10.143.2.4",
+    "start": "2022-01-21T14:58:00+00:00",
+    "end": "2022-01-21T14:59:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 4.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New status code in Apache Access log.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T14:58:50+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New status code in Apache Access log.",
+        "level": 0,
+        "src_ip": "10.143.3.65",
+        "dst_ip": null,
+        "raw": "10.143.3.65 - - [21/Jan/2022:14:58:50 +0000] \"GET /wp-content/plugins/wpdiscuz/themes/default/css/fonts/sqr721c-webfont.woff2 HTTP/1.1\" 304 187 \"https://intranet.smith.russellmitchell.com/wp-content/plugins/wpdiscuz/themes/default/style.css?ver=7.0.4\" \"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0\""
+      }
+    ],
+    "related": [
+      "INC-0043"
+    ]
+  },
+  {
+    "incident_id": "INC-0032",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "10.143.2.4",
+    "start": "2022-01-22T12:54:00+00:00",
+    "end": "2022-01-22T12:55:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 4.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T12:54:45.680000067+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "10.143.2.4",
+        "dst_ip": null,
+        "raw": "[Sat Jan 22 12:54:45.675233 2022] [php7:warn] [pid 19141] [client 10.143.2.4:45708] PHP Warning:  scandir(/var/www/intranet.smith.russellmitchell.com/wp-content/uploads/wpdiscuz/cache/gravatars/): failed to open dir: No such file or directory in /var/www/intranet.smith.russellmitchell.com/wp-content/plugins/wpdiscuz/utils/class.WpdiscuzCache.php on line 190"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0033",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.128.1",
+    "start": "2022-01-22T10:45:00+00:00",
+    "end": "2022-01-22T10:46:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T10:45:06.859337091+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD",
+        "level": 3,
+        "src_ip": "172.19.131.174",
+        "dst_ip": "172.19.128.1",
+        "raw": "ET INFO Observed DNS Query to .cloud TLD"
+      }
+    ],
+    "related": [
+      "INC-0048"
+    ]
+  },
+  {
+    "incident_id": "INC-0034",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.128.1",
+    "start": "2022-01-23T20:00:00+00:00",
+    "end": "2022-01-23T20:01:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of DNS query IPs.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T20:00:12+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of DNS query IPs.",
+        "level": 0,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "Jan 23 20:00:12 dnsmasq[3468]: query[A] intranet.smith.russellmitchell.com from 172.19.131.174"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0035",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.128.1",
+    "start": "2022-01-24T03:56:00+00:00",
+    "end": "2022-01-24T03:57:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "aminer_novel",
+        "z": 4.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "max_level",
+        "z": 3.9,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 inet-firewall sshd[23007]: Did not receive identification string from 192.168.230.122 port 35464"
+      },
+      {
+        "ts": "2022-01-24T03:56:47+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.230.122",
+        "dst_ip": null,
+        "raw": "Jan 24 03:56:47 inet-firewall sshd[23007]: Did not receive identification string from 192.168.230.122 port 35464"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0003",
+      "INC-0004",
+      "INC-0005",
+      "INC-0009",
+      "INC-0011",
+      "INC-0014",
+      "INC-0028",
+      "INC-0029",
+      "INC-0045",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0036",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.128.1",
+    "start": "2022-01-24T18:02:00+00:00",
+    "end": "2022-01-24T18:03:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 2.2,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of DNS query IPs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of DNS query records.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T18:02:57+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of DNS query IPs.",
+        "level": 0,
+        "src_ip": "10.143.2.91",
+        "dst_ip": null,
+        "raw": "Jan 24 18:02:57 dnsmasq[3468]: query[AAAA] mail.smith.russellmitchell.com from 10.143.2.91"
+      },
+      {
+        "ts": "2022-01-24T18:02:57+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of DNS query records.",
+        "level": 0,
+        "src_ip": "10.143.2.91",
+        "dst_ip": null,
+        "raw": "Jan 24 18:02:57 dnsmasq[3468]: query[AAAA] mail.smith.russellmitchell.com from 10.143.2.91"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0037",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.106",
+    "start": "2022-01-21T15:38:00+00:00",
+    "end": "2022-01-21T15:39:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 3,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 2.8,
+        "text": "network IDS alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+        "count": 3
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T15:38:11.359826088+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+        "level": 3,
+        "src_ip": "172.19.130.106",
+        "dst_ip": "91.189.88.142",
+        "raw": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0038",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.106",
+    "start": "2022-01-21T17:00:00+00:00",
+    "end": "2022-01-21T17:01:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of Apache Access request methods.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T17:00:19+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: Unusual occurrence frequencies of Apache Access request methods.",
+        "level": 0,
+        "src_ip": "172.19.130.68",
+        "dst_ip": null,
+        "raw": "cloud.dmz.smith.russellmitchell.com:443 172.19.130.68 - - [21/Jan/2022:17:00:19 +0000] \"GET /ocs/v2.php/apps/notifications/api/v1/notifications?format=json HTTP/1.1\" 200 4912 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/97.0.4692.71 Safari/537.36\""
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0039",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.106",
+    "start": "2022-01-21T17:50:00+00:00",
+    "end": "2022-01-21T17:51:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: High entropy in Apache Access request.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T17:50:00+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: High entropy in Apache Access request.",
+        "level": 0,
+        "src_ip": "172.19.130.68",
+        "dst_ip": null,
+        "raw": "cloud.dmz.smith.russellmitchell.com:443 172.19.130.68 - - [21/Jan/2022:17:50:00 +0000] \"GET /index.php/logout?requesttoken=dSIaPwx0DyAMCSMACgR2BwAaMmIlIzwNdwlyDmANUDk%3D:CuHKO7CKVmEp30Y2Dcy0lEQO1CEb6c1RGcwpQk2tKMI%3D HTTP/1.1\" 303 4556 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/97.0.4692.71 Safari/537.36\""
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0040",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.106",
+    "start": "2022-01-22T11:42:00+00:00",
+    "end": "2022-01-22T11:43:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 4.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New status code in Apache Access log.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T11:42:19+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New status code in Apache Access log.",
+        "level": 0,
+        "src_ip": "172.19.130.68",
+        "dst_ip": null,
+        "raw": "cloud.dmz.smith.russellmitchell.com:443 172.19.130.68 - - [22/Jan/2022:11:42:19 +0000] \"DELETE /remote.php/dav/files/tstevenson/Documents/Example.odt HTTP/1.1\" 204 539 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/97.0.4692.71 Safari/537.36\""
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0041",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.4",
+    "start": "2022-01-21T13:28:00+00:00",
+    "end": "2022-01-21T13:29:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 4.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T13:28:27+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "2022-01-21 13:28:27 1nAtxr-0003Bc-2k Spool file is locked (another process is handling this message)"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0042",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.4",
+    "start": "2022-01-22T06:25:00+00:00",
+    "end": "2022-01-22T06:26:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 4.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T06:25:03+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 22 06:25:03 mail liblogging-stdlog:  [origin software=\"rsyslogd\" swVersion=\"8.24.0\" x-pid=\"516\" x-info=\"http://www.rsyslog.com\"] rsyslogd was HUPed"
+      }
+    ],
+    "related": [
+      "INC-0025",
+      "INC-0047"
+    ]
+  },
+  {
+    "incident_id": "INC-0043",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.130.68",
+    "start": "2022-01-21T14:57:00+00:00",
+    "end": "2022-01-21T14:58:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 4.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T14:57:18.160000086+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "172.19.131.174",
+        "dst_ip": null,
+        "raw": "[Fri Jan 21 14:57:18.162465 2022] [proxy_http:error] [pid 8554] (70014)End of file found: [client 172.19.131.174:35752] AH01102: error reading status line from remote server cloud.dmz.smith.russellmitchell.com:443"
+      }
+    ],
+    "related": [
+      "INC-0031"
+    ]
+  },
+  {
+    "incident_id": "INC-0044",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.131.174",
+    "start": "2022-01-22T10:24:00+00:00",
+    "end": "2022-01-22T10:25:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 98,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 9.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 9.2,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 49
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 49
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T10:24:14.353286028+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "151.101.192.200",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-22T10:24:14.353286028+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "151.101.192.200",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": [
+      "INC-0050"
+    ]
+  },
+  {
+    "incident_id": "INC-0045",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.131.174",
+    "start": "2022-01-24T03:57:00+00:00",
+    "end": "2022-01-24T03:58:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 7,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "aminer_novel",
+        "z": 4.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 4.2,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA HTTP invalid response chunk len",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA SMTP invalid reply",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA SMTP no server welcome message",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid SSLv2 header",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:57:04+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "10.9.0.10",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:04 vpn sshd[1603]: Did not receive identification string from 10.9.0.10 port 55432"
+      },
+      {
+        "ts": "2022-01-24T03:57:02.071836948+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA HTTP invalid response chunk len",
+        "level": 3,
+        "src_ip": "10.143.2.4",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA HTTP invalid response chunk len"
+      },
+      {
+        "ts": "2022-01-24T03:57:15.160859108+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA SMTP no server welcome message",
+        "level": 3,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA SMTP no server welcome message"
+      },
+      {
+        "ts": "2022-01-24T03:57:15.708704948+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA SMTP invalid reply",
+        "level": 3,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA SMTP invalid reply"
+      },
+      {
+        "ts": "2022-01-24T03:57:18.019081116+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid SSLv2 header",
+        "level": 3,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA TLS invalid SSLv2 header"
+      },
+      {
+        "ts": "2022-01-24T03:57:18.019081116+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA TLS invalid record/traffic"
+      },
+      {
+        "ts": "2022-01-24T03:57:04+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "10.9.0.10",
+        "dst_ip": null,
+        "raw": "Jan 24 03:57:04 vpn sshd[1603]: Did not receive identification string from 10.9.0.10 port 55432"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0003",
+      "INC-0004",
+      "INC-0005",
+      "INC-0009",
+      "INC-0011",
+      "INC-0014",
+      "INC-0028",
+      "INC-0029",
+      "INC-0035",
+      "INC-0046"
+    ]
+  },
+  {
+    "incident_id": "INC-0046",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.122",
+    "start": "2022-01-24T03:56:00+00:00",
+    "end": "2022-01-24T03:57:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 4,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "total",
+        "z": 3.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 3.2,
+        "text": "network IDS alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA SMTP invalid reply",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA SMTP no server welcome message",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T03:56:58.599059105+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA SMTP no server welcome message",
+        "level": 3,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "192.168.230.122",
+        "raw": "SURICATA SMTP no server welcome message"
+      },
+      {
+        "ts": "2022-01-24T03:56:59.159787893+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA SMTP invalid reply",
+        "level": 3,
+        "src_ip": "172.19.130.4",
+        "dst_ip": "192.168.230.122",
+        "raw": "SURICATA SMTP invalid reply"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0003",
+      "INC-0004",
+      "INC-0005",
+      "INC-0009",
+      "INC-0011",
+      "INC-0014",
+      "INC-0028",
+      "INC-0029",
+      "INC-0035",
+      "INC-0045"
+    ]
+  },
+  {
+    "incident_id": "INC-0047",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.231.254",
+    "start": "2022-01-22T06:25:00+00:00",
+    "end": "2022-01-22T06:26:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 4.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T06:25:01+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 22 06:25:01 inet-dns rsyslogd:  [origin software=\"rsyslogd\" swVersion=\"8.32.0\" x-pid=\"845\" x-info=\"http://www.rsyslog.com\"] rsyslogd was HUPed"
+      }
+    ],
+    "related": [
+      "INC-0025",
+      "INC-0042"
+    ]
+  },
+  {
+    "incident_id": "INC-0048",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.231.254",
+    "start": "2022-01-22T10:47:00+00:00",
+    "end": "2022-01-22T10:48:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 1,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T10:47:46.329668999+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD",
+        "level": 3,
+        "src_ip": "192.168.230.4",
+        "dst_ip": "192.168.231.254",
+        "raw": "ET INFO Observed DNS Query to .cloud TLD"
+      }
+    ],
+    "related": [
+      "INC-0033"
+    ]
+  },
+  {
+    "incident_id": "INC-0049",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.231.56",
+    "start": "2022-01-21T19:28:00+00:00",
+    "end": "2022-01-21T19:29:00+00:00",
+    "peak_z": 4.6,
+    "n_windows": 1,
+    "n_alerts": 7,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "aminer_novel",
+        "z": 4.6,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "total",
+        "z": 4.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 3.9,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "2501: syslog: User authentication failure.",
+        "count": 2
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5503: PAM: User login failed.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T19:28:44+00:00",
+        "tool": "wazuh",
+        "detector": "5503: PAM: User login failed.",
+        "level": 5,
+        "src_ip": "192.168.231.56",
+        "dst_ip": null,
+        "raw": "Jan 21 19:28:44 davey-mail auth: pam_unix(dovecot:auth): authentication failure; logname= uid=0 euid=0 tty=dovecot ruser=shane.watson rhost=192.168.231.56  user=shane.watson"
+      },
+      {
+        "ts": "2022-01-21T19:28:48+00:00",
+        "tool": "wazuh",
+        "detector": "2501: syslog: User authentication failure.",
+        "level": 5,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 21 19:28:48 davey-mail HORDE: [horde] FAILED LOGIN for shane.watson to horde (192.168.231.75) [pid 6884 on line 198 of \"/usr/share/horde/login.php\"]"
+      },
+      {
+        "ts": "2022-01-21T19:28:48+00:00",
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "level": 5,
+        "src_ip": "192.168.231.56",
+        "dst_ip": "192.168.231.56",
+        "raw": "Jan 21 19:28:48 davey-mail dovecot: imap-login: Disconnected (auth failed, 1 attempts in 4 secs): user=<shane.watson>, method=PLAIN, rip=192.168.231.56, lip=192.168.231.56, TLS, session=<3F2FoBzWSOrAqOc4>"
+      },
+      {
+        "ts": "2022-01-21T19:28:44+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Jan 21 19:28:44 davey-mail HORDE: [gollem] PHP ERROR: Invalid argument supplied for foreach() [pid 6884 on line 338 of \"/usr/share/horde/gollem/lib/Auth.php\"]"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0050",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.4",
+    "start": "2022-01-22T10:24:00+00:00",
+    "end": "2022-01-22T10:25:00+00:00",
+    "peak_z": 4.4,
+    "n_windows": 1,
+    "n_alerts": 82,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.8,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 41
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 41
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T10:24:14.352899075+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "151.101.192.200",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-22T10:24:14.352899075+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "151.101.192.200",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": [
+      "INC-0044"
+    ]
+  },
+  {
+    "incident_id": "INC-0051",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.131.174",
+    "start": "2022-01-21T16:13:00+00:00",
+    "end": "2022-01-21T16:14:00+00:00",
+    "peak_z": 4.3,
+    "n_windows": 1,
+    "n_alerts": 70,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.5,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.5,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 34
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 34
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA HTTP unable to match response to request",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T16:13:13.298791885+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "163.172.125.158",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-21T16:13:13.298791885+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "163.172.125.158",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA TLS invalid record/traffic"
+      },
+      {
+        "ts": "2022-01-21T16:13:14.595082045+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA HTTP unable to match response to request",
+        "level": 3,
+        "src_ip": "144.217.146.12",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA HTTP unable to match response to request"
+      }
+    ],
+    "related": [
+      "INC-0056"
+    ]
+  },
+  {
+    "incident_id": "INC-0052",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.4",
+    "start": "2022-01-22T13:43:00+00:00",
+    "end": "2022-01-22T13:44:00+00:00",
+    "peak_z": 4.3,
+    "n_windows": 1,
+    "n_alerts": 72,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.6,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.6,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 36
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 36
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-22T13:43:31.694870949+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "151.101.194.63",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-22T13:43:31.694870949+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "151.101.194.63",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0053",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.4",
+    "start": "2022-01-23T10:12:00+00:00",
+    "end": "2022-01-23T10:13:00+00:00",
+    "peak_z": 4.2,
+    "n_windows": 1,
+    "n_alerts": 68,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.5,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.5,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 34
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 34
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T10:12:29.657965899+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "217.74.65.23",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-23T10:12:29.657965899+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "217.74.65.23",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0054",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.4",
+    "start": "2022-01-23T14:35:00+00:00",
+    "end": "2022-01-23T14:36:00+00:00",
+    "peak_z": 4.2,
+    "n_windows": 1,
+    "n_alerts": 64,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.3,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.3,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 32
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 32
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T14:35:49.353127956+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "161.71.10.44",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-23T14:35:49.353127956+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "161.71.10.44",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0055",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.4",
+    "start": "2022-01-24T08:17:00+00:00",
+    "end": "2022-01-24T08:18:00+00:00",
+    "peak_z": 4.2,
+    "n_windows": 1,
+    "n_alerts": 64,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.3,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.3,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 32
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 32
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T08:17:52.710948944+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "3.225.225.252",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-24T08:17:52.710948944+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "3.225.225.252",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0056",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.4",
+    "start": "2022-01-21T16:13:00+00:00",
+    "end": "2022-01-21T16:14:00+00:00",
+    "peak_z": 4.1,
+    "n_windows": 1,
+    "n_alerts": 62,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.3,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.3,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 30
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 30
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA HTTP unable to match response to request",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-21T16:13:12.305397987+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA HTTP unable to match response to request",
+        "level": 3,
+        "src_ip": "144.217.146.12",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA HTTP unable to match response to request"
+      },
+      {
+        "ts": "2022-01-21T16:13:13.298789978+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "163.172.125.158",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-21T16:13:13.298789978+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "163.172.125.158",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": [
+      "INC-0051"
+    ]
+  },
+  {
+    "incident_id": "INC-0057",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.4",
+    "start": "2022-01-23T13:48:00+00:00",
+    "end": "2022-01-23T13:49:00+00:00",
+    "peak_z": 4.1,
+    "n_windows": 1,
+    "n_alerts": 60,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.2,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 30
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 30
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T13:48:34.934067011+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "94.245.192.49",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-23T13:48:34.934067011+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "94.245.192.49",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0058",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.4",
+    "start": "2022-01-23T19:50:00+00:00",
+    "end": "2022-01-23T19:51:00+00:00",
+    "peak_z": 4.1,
+    "n_windows": 1,
+    "n_alerts": 60,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.2,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 30
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 30
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T19:50:02.955616951+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "185.64.190.78",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-23T19:50:02.955616951+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "185.64.190.78",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0059",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "172.19.131.174",
+    "start": "2022-01-23T15:25:00+00:00",
+    "end": "2022-01-23T15:26:00+00:00",
+    "peak_z": 4.0,
+    "n_windows": 1,
+    "n_alerts": 56,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.1,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 28
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 28
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T15:25:05.152654886+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "133.208.146.120",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-23T15:25:05.152654886+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "133.208.146.120",
+        "dst_ip": "172.19.131.174",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": [
+      "INC-0060"
+    ]
+  },
+  {
+    "incident_id": "INC-0060",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.4",
+    "start": "2022-01-23T15:25:00+00:00",
+    "end": "2022-01-23T15:26:00+00:00",
+    "peak_z": 4.0,
+    "n_windows": 1,
+    "n_alerts": 56,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.1,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 28
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 28
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-23T15:25:05.151891947+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "133.208.146.120",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-23T15:25:05.151891947+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "133.208.146.120",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": [
+      "INC-0059"
+    ]
+  },
+  {
+    "incident_id": "INC-0061",
+    "kind": "host",
+    "scenario": "russellmitchell",
+    "entity": "192.168.230.4",
+    "start": "2022-01-24T20:45:00+00:00",
+    "end": "2022-01-24T20:46:00+00:00",
+    "peak_z": 4.0,
+    "n_windows": 1,
+    "n_alerts": 56,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.1,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 2.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "count": 28
+      },
+      {
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "count": 28
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-01-24T20:45:37.748703957+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid handshake message",
+        "level": 3,
+        "src_ip": "151.101.129.54",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid handshake message"
+      },
+      {
+        "ts": "2022-01-24T20:45:37.748703957+00:00",
+        "tool": "suricata",
+        "detector": "86601: Suricata: Alert - SURICATA TLS invalid record/traffic",
+        "level": 3,
+        "src_ip": "151.101.129.54",
+        "dst_ip": "192.168.230.4",
+        "raw": "SURICATA TLS invalid record/traffic"
+      }
+    ],
+    "related": []
+  }
+]
