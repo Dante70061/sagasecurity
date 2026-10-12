@@ -21,7 +21,7 @@ export function PriorityFindings({ view }: { view: LogView }) {
         : (b.level ?? -1) - (a.level ?? -1) || b.count - a.count,
     );
   return (
-    <section className="panel focus-section" id="findings">
+    <section className="panel">
       <div className="panel-heading flex-wrap">
         <div className="flex items-center gap-2.5">
           <ShieldAlert className="size-4 text-primary" />

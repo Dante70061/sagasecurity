@@ -39,7 +39,7 @@ import sagaMark from "@/assets/saga-mark.svg";
 import { Spinner } from "@/components/ui/spinner";
 import { parseTurns } from "@/data/ask-saga";
 
-const storageKey = "saga-security-conversation-v1";
+const storageKey = "saga-security-conversation-v2";
 
 type AskEvent =
   | { type: "status"; text: string }
@@ -249,8 +249,7 @@ export function InvestigationAssistant({
   };
   return (
     <section
-      className="panel assistant-panel focus-section"
-      id="assistant"
+      className="panel assistant-panel"
       aria-label="AI investigation assistant"
     >
       <div className="panel-heading">
@@ -365,19 +364,20 @@ export function InvestigationAssistant({
         <PromptInput allowAttachments={false} maxFiles={0} onSubmit={({ text }) => send(text)}>
           <PromptInputTextarea
             aria-label="Ask Saga a security question"
-            placeholder="Ask Saga about your security data..."
+            placeholder="Ask Saga about the ranked incidents..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             ref={textareaRef}
           />
           <PromptInputFooter>
             <PromptInputSubmit
+              className="size-6 rounded-full"
               disabled={!input.trim() || !ready || pending}
               status={pending ? "submitted" : undefined}
               aria-label="Send question"
               title="Send question"
             >
-              <ArrowUp className="size-4" />
+              <ArrowUp className="size-3" />
             </PromptInputSubmit>
           </PromptInputFooter>
         </PromptInput>

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { Incident } from "@/data/incidents";
 import { parseSelection } from "@/data/incidents";
 import {
+  assertNoLabels,
   buildQueueView,
   describeIncident,
   evidencePackFor,
@@ -151,6 +152,14 @@ describe("evidence pack", () => {
   it("says when the model score is unavailable", () => {
     const text = describeIncident({ ...fake("Z", 3, null), rank: 1, group: "unscored" });
     expect(text).toContain("model score unavailable");
+  });
+});
+
+describe("label guard", () => {
+  it("rejects a phase name and any label field", () => {
+    expect(() => assertNoLabels([{ phase: "scan" }])).toThrow(/phase/);
+    expect(() => assertNoLabels({ a: [{ label_is_attack: 1 }] })).toThrow(/label_is_attack/);
+    expect(() => assertNoLabels({ reasons: [{ feature: "x", z: 1, text: "t" }] })).not.toThrow();
   });
 });
 

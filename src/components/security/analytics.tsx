@@ -4,16 +4,29 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 import { Button } from "@/components/ui/button";
 import type { LogView } from "@/data/log-summary";
+
+const NAMED_SLICE_COLORS = [
+  "var(--primary)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--warning)",
+];
+
+function sliceColor(name: string, namedIndex: number): { color: string; nextNamed: number } {
+  if (name === "Other") return { color: "var(--muted-foreground)", nextNamed: namedIndex };
+  return { color: NAMED_SLICE_COLORS[namedIndex % NAMED_SLICE_COLORS.length], nextNamed: namedIndex + 1 };
+}
 
 export function SecurityMetrics({ view }: { view: LogView }) {
   const metrics = [
@@ -39,14 +52,14 @@ export function SecurityMetrics({ view }: { view: LogView }) {
     },
   ];
   return (
-    <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {metrics.map(({ label, value, icon: Icon }) => (
         <article className="panel metric-card" key={label}>
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs text-muted-foreground">{label}</span>
             <Icon className="size-4 text-muted-foreground" />
           </div>
-          <div className="mt-2">
+          <div className="mt-1">
             <span className="metric-number">{value}</span>
           </div>
         </article>
@@ -58,6 +71,13 @@ export function SecurityMetrics({ view }: { view: LogView }) {
 export function SecurityAnalytics({ view }: { view: LogView }) {
   const [range, setRange] = useState("24h");
   const data = range === "24h" ? view.hours : view.days;
+  const dayLabel = `${view.days.length}d`;
+  let namedSlice = 0;
+  const slices = view.distribution.map((row) => {
+    const colored = sliceColor(row.name, namedSlice);
+    namedSlice = colored.nextNamed;
+    return { ...row, color: colored.color };
+  });
   return (
     <div className="analytics-column focus-section" id="analytics">
       <section className="panel">
@@ -73,18 +93,22 @@ export function SecurityAnalytics({ view }: { view: LogView }) {
             <p className="mt-1 text-[11px] text-muted-foreground">
               {range === "24h" ? "Last 24 hours of this file" : "Each day in this file"}
             </p>
+            <p className="mt-1 text-[11px] text-muted-foreground">{view.spanLabel}</p>
           </div>
           <div className="flex rounded-md border border-border p-0.5">
-            {["24h", "7d"].map((r) => (
+            {[
+              { id: "24h", label: "24h" },
+              { id: "days", label: dayLabel },
+            ].map((option) => (
               <Button
-                key={r}
+                key={option.id}
                 size="sm"
-                variant={range === r ? "secondary" : "ghost"}
-                aria-pressed={range === r}
-                onClick={() => setRange(r)}
+                variant={range === option.id ? "secondary" : "ghost"}
+                aria-pressed={range === option.id}
+                onClick={() => setRange(option.id)}
                 className="h-6 px-2.5 text-[10px]"
               >
-                {r}
+                {option.label}
               </Button>
             ))}
           </div>
@@ -132,7 +156,7 @@ export function SecurityAnalytics({ view }: { view: LogView }) {
               <Area
                 type="monotone"
                 dataKey="baseline"
-                name="Baseline-flagged"
+                name="Baseline-tagged"
                 stroke="var(--chart-2)"
                 strokeWidth={1.5}
                 strokeDasharray="4 4"
@@ -158,57 +182,66 @@ export function SecurityAnalytics({ view }: { view: LogView }) {
           </span>
           <span className="flex items-center gap-2">
             <span className="w-3 border-t border-dashed border-muted-foreground" />
-            Baseline-flagged
+            Baseline-tagged
           </span>
         </div>
       </section>
-      <section className="panel flex-1">
+      <section className="panel flex-1" aria-label="Event distribution">
         <div className="panel-heading">
           <div className="flex items-center gap-2.5">
             <Database className="size-4 text-primary" />
             <h2>Event distribution</h2>
           </div>
         </div>
-        <div className="flex items-center justify-center gap-7 px-5 py-6">
-          <div
-            className="source-chart"
-            role="img"
-            aria-label={view.distribution.map((s) => `${s.name} ${s.percent}%`).join(", ")}
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={view.distribution}
-                  dataKey="count"
-                  innerRadius={53}
-                  outerRadius={66}
-                  paddingAngle={4}
-                  stroke="none"
-                  startAngle={90}
-                  endAngle={-270}
-                  isAnimationActive={false}
-                >
-                  {view.distribution.map((s) => (
-                    <Cell key={s.name} fill={s.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-xl font-semibold">{view.events.toLocaleString("en-US")}</span>
-              <span className="mt-1 text-[10px] text-muted-foreground">Rows in file</span>
-            </div>
-          </div>
-          <div className="min-w-0 flex-1 space-y-4">
-            {view.distribution.map((s) => (
-              <div className="flex items-center justify-between gap-2 text-xs" key={s.name}>
-                <span className="flex items-center gap-2.5 text-muted-foreground">
-                  <span className="size-1.5 rounded-full" style={{ background: s.color }} />
-                  {s.name}
-                </span>
-                <span className="font-mono text-[11px]">{s.percent}%</span>
+        <div className="px-5 py-4">
+          <p className="text-xs text-muted-foreground">Every row in this file</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">{view.spanLabel}</p>
+          <div className="mt-4 flex items-center gap-5">
+            <div
+              className="source-chart"
+              role="img"
+              aria-label={slices.map((row) => `${row.name} ${row.share}%`).join(", ")}
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={slices}
+                    dataKey="count"
+                    nameKey="name"
+                    innerRadius={46}
+                    outerRadius={62}
+                    paddingAngle={2}
+                    stroke="none"
+                    startAngle={90}
+                    endAngle={-270}
+                    isAnimationActive={false}
+                  >
+                    {slices.map((row) => (
+                      <Cell key={row.name} fill={row.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-sm font-semibold">{view.events.toLocaleString("en-US")}</span>
+                <span className="mt-0.5 text-[10px] text-muted-foreground">events</span>
               </div>
-            ))}
+            </div>
+            <div className="min-w-0 flex-1 space-y-3">
+              {slices.map((row) => (
+                <div className="flex items-baseline justify-between gap-3 text-xs" key={row.name}>
+                  <span className="flex min-w-0 items-center gap-2 text-muted-foreground">
+                    <span className="size-1.5 shrink-0 rounded-full" style={{ background: row.color }} />
+                    <span className="truncate" title={row.name}>
+                      {row.name}
+                    </span>
+                  </span>
+                  <span className="shrink-0 font-mono text-[11px]">
+                    {row.count.toLocaleString("en-US")} · {row.share}%
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
