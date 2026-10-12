@@ -118,7 +118,7 @@ export function IncidentQueue({
   onScenarioChange: (scenario: string) => void;
 }) {
   return (
-    <section className="panel focus-section" id="findings" aria-busy={loading}>
+    <section className="panel" aria-busy={loading}>
       <div className="panel-heading flex-wrap">
         <div className="flex items-center gap-2.5">
           <ListOrdered className="size-4 text-primary" />

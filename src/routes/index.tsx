@@ -90,10 +90,15 @@ function Index() {
     let holdUntil = 0;
     const update = () => {
       frame = 0;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       let name = "Overview";
       for (const section of markers) {
         const el = document.getElementById(section.id);
-        if (el && el.getBoundingClientRect().top <= 180) name = section.name;
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        const topAtEnd = top + window.scrollY - maxScroll;
+        const line = Math.max(180, topAtEnd + 48);
+        if (top <= line) name = section.name;
       }
       setActive((current) => (current === name ? current : name));
     };
