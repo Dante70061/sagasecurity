@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Activity, ArrowUpRight, Database, Fingerprint, Globe, ChevronDown } from "lucide-react";
+import { Activity, Database, Fingerprint, Globe, ChevronDown } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -13,57 +13,41 @@ import {
   Cell,
 } from "recharts";
 import { Button } from "@/components/ui/button";
-import { activityDemo, sourceDemo } from "@/lib/security-demo";
+import type { LogView } from "@/data/log-summary";
 
-export function SecurityMetrics() {
+export function SecurityMetrics({ view }: { view: LogView }) {
   const metrics = [
     {
-      label: "Events analyzed",
-      value: "24,892",
-      change: "+12.8%",
-      detail: "vs. previous period",
+      label: "Events in file",
+      value: view.events.toLocaleString("en-US"),
       icon: Activity,
     },
     {
-      label: "Data sources",
-      value: "12",
-      change: "4 categories",
-      detail: "sample integrations",
+      label: "Log files",
+      value: view.logFiles.toLocaleString("en-US"),
       icon: Database,
     },
     {
       label: "Unique IP addresses",
-      value: "1,284",
-      change: "+5.2%",
-      detail: "vs. previous period",
+      value: view.srcIps.toLocaleString("en-US"),
       icon: Globe,
     },
     {
       label: "Identities observed",
-      value: "386",
-      change: "Across all sources",
-      detail: "sample identities",
+      value: view.identities.length.toLocaleString("en-US"),
       icon: Fingerprint,
     },
   ];
   return (
     <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-      {metrics.map(({ label, value, change, detail, icon: Icon }) => (
+      {metrics.map(({ label, value, icon: Icon }) => (
         <article className="panel metric-card" key={label}>
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs text-muted-foreground">{label}</span>
             <Icon className="size-4 text-muted-foreground" />
           </div>
-          <div className="mt-2 flex items-center justify-between gap-2">
+          <div className="mt-2">
             <span className="metric-number">{value}</span>
-            <span className="demo-badge">DEMO</span>
-          </div>
-          <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px]">
-            <span className={change.startsWith("+") ? "text-success" : "text-primary"}>
-              {change.startsWith("+") && <ArrowUpRight className="mr-0.5 inline size-3" />}
-              {change}
-            </span>
-            <span className="text-muted-foreground">{detail}</span>
           </div>
         </article>
       ))}
@@ -71,19 +55,9 @@ export function SecurityMetrics() {
   );
 }
 
-export function SecurityAnalytics() {
+export function SecurityAnalytics({ view }: { view: LogView }) {
   const [range, setRange] = useState("24h");
-  const data =
-    range === "24h"
-      ? activityDemo
-      : activityDemo
-          .map((item, i) => ({
-            ...item,
-            time: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i % 7],
-            events: item.events * 7,
-            baseline: item.baseline * 7,
-          }))
-          .slice(0, 7);
+  const data = range === "24h" ? view.hours : view.days;
   return (
     <div className="analytics-column focus-section" id="analytics">
       <section className="panel">
@@ -92,12 +66,13 @@ export function SecurityAnalytics() {
             <Activity className="size-4 text-primary" />
             <h2>Activity overview</h2>
           </div>
-          <span className="demo-badge">DEMO DATA</span>
         </div>
         <div className="flex items-center justify-between px-5 pt-4">
           <div>
             <p className="text-xs text-muted-foreground">Event volume over time</p>
-            <p className="mt-1 text-[11px] text-muted-foreground">All event sources</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              {range === "24h" ? "Last 24 hours of this file" : "Each day in this file"}
+            </p>
           </div>
           <div className="flex rounded-md border border-border p-0.5">
             {["24h", "7d"].map((r) => (
@@ -114,7 +89,7 @@ export function SecurityAnalytics() {
             ))}
           </div>
         </div>
-        <div className="chart-box" role="img" aria-label={`Demo event activity chart for ${range}`}>
+        <div className="chart-box" role="img" aria-label={`Event counts from the merged log for ${range}`}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
@@ -144,7 +119,7 @@ export function SecurityAnalytics() {
                 content={({ active, payload, label }) =>
                   active && payload?.length ? (
                     <div className="chart-tooltip">
-                      <strong>{label} · Demo</strong>
+                      <strong>{label}</strong>
                       {payload.map((p) => (
                         <p key={String(p.dataKey)}>
                           {p.name}: {p.value}
@@ -157,7 +132,7 @@ export function SecurityAnalytics() {
               <Area
                 type="monotone"
                 dataKey="baseline"
-                name="Baseline"
+                name="Baseline-flagged"
                 stroke="var(--chart-2)"
                 strokeWidth={1.5}
                 strokeDasharray="4 4"
@@ -183,7 +158,7 @@ export function SecurityAnalytics() {
           </span>
           <span className="flex items-center gap-2">
             <span className="w-3 border-t border-dashed border-muted-foreground" />
-            Baseline
+            Baseline-flagged
           </span>
         </div>
       </section>
@@ -193,19 +168,18 @@ export function SecurityAnalytics() {
             <Database className="size-4 text-primary" />
             <h2>Event distribution</h2>
           </div>
-          <span className="demo-badge">DEMO DATA</span>
         </div>
         <div className="flex items-center justify-center gap-7 px-5 py-6">
           <div
             className="source-chart"
             role="img"
-            aria-label="Demo event distribution: Network 42%, Authentication 28%, Endpoint 18%, Application 12%"
+            aria-label={view.distribution.map((s) => `${s.name} ${s.percent}%`).join(", ")}
           >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={sourceDemo}
-                  dataKey="value"
+                  data={view.distribution}
+                  dataKey="count"
                   innerRadius={53}
                   outerRadius={66}
                   paddingAngle={4}
@@ -214,31 +188,28 @@ export function SecurityAnalytics() {
                   endAngle={-270}
                   isAnimationActive={false}
                 >
-                  {sourceDemo.map((s) => (
+                  {view.distribution.map((s) => (
                     <Cell key={s.name} fill={s.color} />
                   ))}
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-xl font-semibold">24.9k</span>
-              <span className="mt-1 text-[10px] text-muted-foreground">Demo events</span>
+              <span className="text-xl font-semibold">{view.events.toLocaleString("en-US")}</span>
+              <span className="mt-1 text-[10px] text-muted-foreground">Rows in file</span>
             </div>
           </div>
           <div className="min-w-0 flex-1 space-y-4">
-            {sourceDemo.map((s) => (
+            {view.distribution.map((s) => (
               <div className="flex items-center justify-between gap-2 text-xs" key={s.name}>
                 <span className="flex items-center gap-2.5 text-muted-foreground">
-                  <span className={`size-1.5 rounded-full source-${s.name.toLowerCase()}`} />
+                  <span className="size-1.5 rounded-full" style={{ background: s.color }} />
                   {s.name}
                 </span>
-                <span className="font-mono text-[11px]">{s.value}%</span>
+                <span className="font-mono text-[11px]">{s.percent}%</span>
               </div>
             ))}
           </div>
-        </div>
-        <div className="border-t border-border px-5 py-3 text-[11px] text-muted-foreground">
-          Sample telemetry · Not connected to a live dataset
         </div>
       </section>
     </div>

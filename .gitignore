@@ -111,5 +111,6 @@ logs/
 *.temp
 .tmp/
 tmp/
-dataset/merged.jsonl
+dataset/*
+!dataset/labels.csv
 *.parquet

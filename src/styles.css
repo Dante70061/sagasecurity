@@ -1,6 +1,13 @@
 @import "tailwindcss" source(none);
 @import "tw-animate-css";
+@import "katex/dist/katex.min.css";
+@import "streamdown/styles.css";
 @source "../src";
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";
+@source "../node_modules/@streamdown/cjk/dist/*.js";
+@source "../node_modules/@streamdown/math/dist/*.js";
+@source "../node_modules/@streamdown/mermaid/dist/*.js";
 @custom-variant dark (&:is(.dark *));
 @theme inline {
   --font-sans: "IBM Plex Sans", sans-serif;
@@ -180,7 +187,7 @@
   min-height: 61px;
 }
 .chat-composer [data-slot="input-group-addon"] {
-  padding: 0 12px 11px;
+  padding: 0 12px;
 }
 .analytics-column {
   display: flex;

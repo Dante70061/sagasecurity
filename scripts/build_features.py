@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Turn the merged alert stream into per-window feature rows for an Isolation Forest.
+"""Turn the merged alert stream into per-window feature rows, one feature file per scenario.
 
-Input : merged JSONL from merge_alerts.py (one alert per line)
-Output: one row per 1-minute window (network-wide), every feature stored as a
-        Z-score with negative values clipped to 0.
+Input : merged JSONL from merge_alerts.py (all scenarios; each row has a `scenario` field)
+Output: <out-dir>/<scenario>_features.csv  one row per window, every feature a Z-score (negatives clipped to 0)
+        <out-dir>/<scenario>_features.stats.json  the mean/std used, so another scenario can be scored with them
+        <out-dir>/<scenario>_labels.csv  (only with --labels) EVALUATION/TRAINING TARGETS, never model input
 
-Pipeline: filter -> window -> raw features -> log1p -> Z-score -> clip at 0
+Each scenario is normalised against ITSELF: a Z-score means "unusual for this network".
+Pipeline per scenario: filter -> window -> raw features -> log1p -> Z-score -> clip at 0
 """
 
 from __future__ import annotations
@@ -15,50 +17,70 @@ import csv
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Iterator
 
 import numpy as np
 import pandas as pd
 
-WINDOW_S = 60
+DEFAULT_WINDOW_S = 60
 CORR_RULES = {"20100", "20151", "20152", "20162"}   # Wazuh IDS correlation rules
 AUTH_FAIL_RULES = {"2501", "5503", "9705", "9751", "5706"}
 PRIV_RULES = {"5402", "5304"}                       # sudo to root, UID change
 DROP_FASTLOG_RULES = {"20101"}                      # fast.log copy of eve.json events
 RARE_FRAC = 0.001                                   # rule seen in < 0.1% of a source's alerts
+NOISE_SIG_PREFIX = "SURICATA TLS invalid"           # routine low-severity Suricata TLS noise
 BURST_LOOKBACK = 60                                 # windows, for the trailing-median burst features
+BURST_PHASES = {"service_scans", "dirb", "wpscan", "webshell", "reverse_shell", "privilege_escalation"}
 
 
-def load(path: Path) -> pd.DataFrame:
-    rows = []
+def flatten(r: dict) -> dict:
+    ex = r.get("extras") or {}
+    dst = r.get("dst_ip")
+    return {
+        "ts": float(r["ts"]), "source": r["source"], "host": r.get("host"),
+        "location": r.get("location") or "", "detector": r.get("detector") or "",
+        "rule_id": str(r.get("detector_id")), "src_ip": r.get("src_ip"),
+        "dst_ip": dst.split(":")[0] if dst else None,           # strip stray ":port"
+        "http_path": r.get("http_path"), "status": r.get("status"), "ua": r.get("ua"),
+        "is_baseline": bool(r.get("is_baseline")),
+        "level": ex.get("rule_level"), "signature": ex.get("signature"),
+        "dst_port": ex.get("dst_port"), "training": bool(ex.get("training_mode")),
+    }
+
+
+def iter_scenarios(path: Path, default_scenario: str, only: set[str] | None) -> Iterator[tuple[str, pd.DataFrame]]:
+    """Stream the merged file and yield one DataFrame per scenario (the file is written scenario by scenario)."""
+    cur, rows, seen = None, [], set()
     with path.open() as f:
         for line in f:
             line = line.strip()
             if not line:
                 continue
             r = json.loads(line)
-            ex = r.get("extras") or {}
-            dst = r.get("dst_ip")
-            rows.append({
-                "ts": float(r["ts"]), "source": r["source"], "host": r.get("host"),
-                "location": r.get("location") or "", "detector": r.get("detector") or "",
-                "rule_id": str(r.get("detector_id")), "src_ip": r.get("src_ip"),
-                "dst_ip": dst.split(":")[0] if dst else None,       # strip stray ":port"
-                "http_path": r.get("http_path"), "status": r.get("status"), "ua": r.get("ua"),
-                "is_baseline": bool(r.get("is_baseline")),
-                "level": ex.get("rule_level"), "signature": ex.get("signature"),
-                "dst_port": ex.get("dst_port"), "training": bool(ex.get("training_mode")),
-            })
-    return pd.DataFrame(rows)
+            s = r.get("scenario") or default_scenario
+            if s != cur:
+                if rows:
+                    yield cur, pd.DataFrame(rows)
+                if s in seen:
+                    raise SystemExit(f"scenario {s!r} appears in more than one block of {path}")
+                cur, rows = s, []
+                seen.add(s)
+            if only is None or s in only:
+                rows.append(flatten(r))
+    if rows:
+        yield cur, pd.DataFrame(rows)
 
 
 def clean(df: pd.DataFrame) -> pd.DataFrame:
-    n0 = len(df)
     df = df[~((df.source == "aminer") & df.training)]                      # detector still learning
     dup_fast = (df.source == "wazuh") & df.location.str.contains("fast.log") \
         & df.rule_id.isin(DROP_FASTLOG_RULES)
-    df = df[~dup_fast]
-    print(f"cleaned {n0} -> {len(df)} alerts")
-    return df.reset_index(drop=True)
+    return df[~dup_fast].reset_index(drop=True)
+
+
+def is_noise(df: pd.DataFrame) -> pd.Series:
+    """Known routine alert families: Dovecot success / ClamAV (is_baseline) and Suricata TLS-invalid noise."""
+    return (df.source == "wazuh") & (df.is_baseline | df.signature.fillna("").str.startswith(NOISE_SIG_PREFIX))
 
 
 def add_rarity(df: pd.DataFrame) -> pd.DataFrame:
@@ -72,11 +94,12 @@ def add_rarity(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def raw_features(df: pd.DataFrame) -> pd.DataFrame:
-    """One row per WINDOW_S window (including empty ones) of non-negative counts/measures."""
+def raw_features(df: pd.DataFrame, window_s: int, idx=None, noise: pd.DataFrame | None = None) -> pd.DataFrame:
+    """One row per window (including empty ones) of non-negative counts/measures."""
     df = df.copy()
-    df["win"] = (df.ts // WINDOW_S).astype(np.int64)
-    idx = pd.RangeIndex(df.win.min(), df.win.max() + 1, name="win")
+    df["win"] = (df.ts // window_s).astype(np.int64)
+    if idx is None:
+        idx = pd.RangeIndex(df.win.min(), df.win.max() + 1, name="win")
     wz, am = df[df.source == "wazuh"], df[df.source == "aminer"]
     F = pd.DataFrame(index=idx)
 
@@ -133,6 +156,9 @@ def raw_features(df: pd.DataFrame) -> pd.DataFrame:
     cnt(am[am.detector.str.contains("CPU")], "am_cpu")
     cnt(am[am.is_rare], "am_rare_n")
     F["am_max_rarity"] = am.groupby("win").rarity.max().reindex(idx, fill_value=0)
+    if noise is not None:                              # --noise discount: noise gets its own count
+        nz = noise.assign(win=(noise.ts // window_s).astype(np.int64))
+        F["wz_noise_n"] = nz.groupby("win").size().reindex(idx, fill_value=0)
     return F.astype(float)
 
 
@@ -155,57 +181,86 @@ def zscore(L: pd.DataFrame, stats: dict | None = None):
     return Z.clip(lower=0.0), stats
 
 
-def window_labels(win_idx, labels_csv: Path, scenario: str) -> pd.DataFrame:
-    """EVALUATION ONLY. Phase with the largest overlap per window, else 'benign'."""
+def read_intervals(labels_csv: Path) -> dict[str, list[tuple[str, float, float]]]:
+    out: dict[str, list] = {}
     with labels_csv.open() as f:
-        iv = [(r["attack"], float(r["start"]), float(r["end"]))
-              for r in csv.DictReader(f) if r["scenario"] == scenario]
-    out = []
+        for r in csv.DictReader(f):
+            out.setdefault(r["scenario"], []).append((r["attack"], float(r["start"]), float(r["end"])))
+    return out
+
+
+def window_labels(win_idx, intervals, window_s: int) -> pd.DataFrame:
+    """TARGETS ONLY. phase = largest overlap ('benign' if none); is_attack = overlaps any phase;
+    is_burst = overlaps a loud burst phase (the ones the alerts can actually show)."""
+    rows = []
     for w in win_idx:
-        s, e = w * WINDOW_S, (w + 1) * WINDOW_S
-        best, ov = "benign", 0.0
-        for name, a, b in iv:
+        s, e = w * window_s, (w + 1) * window_s
+        best, ov, any_att, any_burst = "benign", 0.0, False, False
+        for name, a, b in intervals:
             o = min(e, b) - max(s, a)
-            if o > ov:
-                best, ov = name, o
-        out.append((w * WINDOW_S, best, best != "benign"))
-    return pd.DataFrame(out, columns=["win_start", "phase", "is_attack"])
+            if o > 0:
+                any_att = True
+                any_burst |= name in BURST_PHASES
+                if o > ov:
+                    best, ov = name, o
+        rows.append((s, best, any_att, any_burst))
+    return pd.DataFrame(rows, columns=["win_start", "phase", "is_attack", "is_burst"])
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description=__doc__)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("merged", type=Path, help="merged JSONL from merge_alerts.py")
-    ap.add_argument("-o", "--output", type=Path, help="features CSV (default: <merged>_features.csv)")
-    ap.add_argument("--stats-in", type=Path, help="reuse mean/std from another scenario instead of fitting")
-    ap.add_argument("--raw-out", type=Path, help="also save the un-normalised (log1p) features")
-    ap.add_argument("--labels", type=Path, help="labels.csv; writes a separate *_labels.csv for evaluation")
-    ap.add_argument("--scenario", default="russellmitchell")
+    ap.add_argument("-o", "--out-dir", type=Path, help="default: <merged dir>/features")
+    ap.add_argument("--scenarios", help="comma-separated subset, e.g. shaw,santos (default: all)")
+    ap.add_argument("--window-s", type=int, default=DEFAULT_WINDOW_S, help="window length in seconds")
+    ap.add_argument("--labels", type=Path, help="labels.csv; also writes <scenario>_labels.csv")
+    ap.add_argument("--noise", choices=["keep", "discount", "drop"], default="keep",
+                    help="keep: as before | discount: noise removed from main features, counted in wz_noise_n | drop: removed")
+    ap.add_argument("--stats-in", type=Path, help="reuse mean/std from another scenario (single-scenario runs)")
+    ap.add_argument("--default-scenario", default="russellmitchell",
+                    help="name to use for old merged files that have no `scenario` field")
     a = ap.parse_args()
 
-    out = a.output or a.merged.with_name(a.merged.stem + "_features.csv")
-    df = add_rarity(clean(load(a.merged)))
-    L = add_bursts(np.log1p(raw_features(df)))
-    stats = json.loads(a.stats_in.read_text()) if a.stats_in else None
-    Z, stats = zscore(L, stats)
+    out_dir = a.out_dir or a.merged.parent / "features"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    only = set(a.scenarios.split(",")) if a.scenarios else None
+    intervals = read_intervals(a.labels) if a.labels else {}
+    stats_in = json.loads(a.stats_in.read_text()) if a.stats_in else None
 
-    Z.insert(0, "win_start", Z.index.values * WINDOW_S)
-    Z.insert(1, "win_start_utc", [datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%d %H:%M")
-                                  for t in Z.win_start])
-    Z.to_csv(out, index=False)
-    out.with_suffix(".stats.json").write_text(json.dumps(stats, indent=1))
-    if a.raw_out:
-        L.to_csv(a.raw_out)
-    feats = [c for c in Z.columns if c not in ("win_start", "win_start_utc")]
-    print(f"wrote {len(Z)} windows x {len(feats)} features -> {out}")
+    summary = []
+    for scenario, raw in iter_scenarios(a.merged, a.default_scenario, only):
+        full, idx, noise_rows = clean(raw), None, None
+        if a.noise != "keep":
+            m = is_noise(full)
+            idx = pd.RangeIndex(int(full.ts.min() // a.window_s), int(full.ts.max() // a.window_s) + 1, name="win")
+            noise_rows = full[m] if a.noise == "discount" else None
+            full = full[~m].reset_index(drop=True)
+        df = add_rarity(full)
+        L = add_bursts(np.log1p(raw_features(df, a.window_s, idx=idx, noise=noise_rows)))
+        Z, stats = zscore(L, stats_in)
+        Z.insert(0, "win_start", Z.index.values * a.window_s)
+        Z.insert(1, "win_start_utc", [datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+                                      for t in Z.win_start])
+        Z.to_csv(out_dir / f"{scenario}_features.csv", index=False)
+        (out_dir / f"{scenario}_features.stats.json").write_text(json.dumps(stats, indent=1))
 
-    score = Z[feats].sum(axis=1)
-    top = Z.assign(score=score).nlargest(10, "score")[["win_start_utc", "score"]]
-    if a.labels:
-        lab = window_labels(Z.index, a.labels, a.scenario)
-        lab.to_csv(out.with_name(out.stem.replace("_features", "") + "_labels.csv"), index=False)
-        top["phase"] = lab.set_index(lab.win_start).phase.reindex(Z.loc[top.index, "win_start"]).values
-        print(f"attack windows: {int(lab.is_attack.sum())} of {len(lab)}")
-    print("top 10 windows by summed Z:\n", top.to_string())
+        row = {"scenario": scenario, "raw": len(raw), "kept": len(df), "windows": len(Z)}
+        if a.labels:
+            if scenario in intervals:
+                lab = window_labels(Z.index, intervals[scenario], a.window_s)
+                lab.to_csv(out_dir / f"{scenario}_labels.csv", index=False)
+                row.update(attack=int(lab.is_attack.sum()), burst=int(lab.is_burst.sum()))
+            else:
+                print(f"warning: no rows for {scenario!r} in {a.labels}")
+        summary.append(row)
+        print(row, flush=True)
+
+    s = pd.DataFrame(summary)
+    print(f"\nwrote {len(s)} scenarios x {Z.shape[1] - 2} features, window={a.window_s}s -> {out_dir}")
+    print(s.to_string(index=False))
+    if "burst" in s:
+        print(f"\ntotal burst-phase windows (the realistic positives): {int(s.burst.sum())} "
+              f"| all attack windows: {int(s.attack.sum())} | all windows: {int(s.windows.sum())}")
 
 
 if __name__ == "__main__":
