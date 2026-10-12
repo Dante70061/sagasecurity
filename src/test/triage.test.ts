@@ -2,7 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import type { Incident, RankedIncident } from "@/data/incidents";
 import { buildQueueView } from "@/data/incidents.server";
-import { extract, featureFamily, narrative, riskLevel, shortLabel } from "@/data/triage";
+import {
+  attackChain,
+  extract,
+  featureFamily,
+  narrative,
+  riskLevel,
+  shortLabel,
+  stageOf,
+} from "@/data/triage";
 
 function fake(partial: Partial<Incident> & { id: string }): RankedIncident {
   const { id, ...rest } = partial;
@@ -233,5 +241,50 @@ describe("follow-on incidents", () => {
     expect(story.blind).toMatch(/Offline password cracking/);
     expect(extract(inc).users.join(" ")).not.toMatch(/pam_unix|\(/);
     expect(extract(inc).users).toContain("jwilkinson");
+  });
+});
+
+describe("attack chain", () => {
+  it("maps template families to stages and leaves unclear ones out", () => {
+    expect(stageOf(fake({ id: "a", kind: "actor" }))).toBe("initial_access");
+    expect(stageOf(fake({ id: "b", reasons: [{ feature: "web_attack", z: 9, text: "" }] }))).toBe(
+      "initial_access",
+    );
+    expect(stageOf(fake({ id: "c", reasons: [{ feature: "sig_scan", z: 9, text: "" }] }))).toBe(
+      "reconnaissance",
+    );
+    expect(stageOf(fake({ id: "d", reasons: [{ feature: "new_rule", z: 9, text: "" }] }))).toBe(
+      "foothold",
+    );
+    expect(stageOf(fake({ id: "e", reasons: [{ feature: "priv", z: 9, text: "" }] }))).toBe(
+      "privilege_escalation",
+    );
+    expect(stageOf(fake({ id: "f", reasons: [{ feature: "total", z: 9, text: "" }] }))).toBeNull();
+    expect(stageOf(fake({ id: "g", reasons: [] }))).toBeNull();
+  });
+
+  it("builds the wilson chain from confirmed incidents only, with the two blind stages", async () => {
+    const view = await buildQueueView("wilson_test");
+    const chain = attackChain(view.incidents);
+    const by = new Map(chain.map((c) => [c.key, c]));
+    expect(chain.map((c) => c.key)).toEqual([
+      "reconnaissance",
+      "initial_access",
+      "foothold",
+      "privilege_escalation",
+      "credential_access",
+      "exfiltration",
+      "impact",
+    ]);
+    expect(by.get("initial_access")!.incidents.map((i) => i.incident_id)).toEqual(
+      expect.arrayContaining(["INC-0001", "INC-0002"]),
+    );
+    expect(by.get("privilege_escalation")!.incidents.map((i) => i.incident_id)).toContain(
+      "INC-0003",
+    );
+    expect(by.get("credential_access")!.status).toBe("not_visible");
+    expect(by.get("exfiltration")!.status).toBe("not_visible");
+    expect(by.get("impact")!.status).toBe("none");
+    for (const c of chain) for (const i of c.incidents) expect(i.group).toBe("confirmed");
   });
 });

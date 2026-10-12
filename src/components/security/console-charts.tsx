@@ -2,10 +2,19 @@
 // except the ablation panel, whose constants cite outputs/ablation/README.md.
 
 import { Link } from "@tanstack/react-router";
+import { CircleCheck, CircleDashed, EyeOff } from "lucide-react";
 import { Cell, Pie, PieChart } from "recharts";
 import { ABLATION_ARMS, ABLATION_NOTE, ABLATION_SOURCE } from "@/data/ablation";
 import type { QueueView, RankedIncident, SensorCounts } from "@/data/incidents";
-import { clockUtc, riskLabel, riskLevel, shortLabel } from "@/data/triage";
+import {
+  attackChain,
+  clockUtc,
+  riskLabel,
+  riskLevel,
+  shortLabel,
+  stageOf,
+  type Stage,
+} from "@/data/triage";
 
 const n = (v: number) => v.toLocaleString("en-US");
 const hhmm = (ms: number) => new Date(ms).toISOString().slice(11, 16);
@@ -86,7 +95,103 @@ const RISK_COLOR = {
   low: "#4a5372",
 } as const;
 
-export function AttackTimeline({ view }: { view: QueueView }) {
+export function AttackChain({
+  view,
+  selected,
+  onSelect,
+}: {
+  view: QueueView;
+  selected: Stage | null;
+  onSelect: (stage: Stage | null) => void;
+}) {
+  const chain = attackChain(view.incidents);
+  return (
+    <section aria-labelledby="chain-title" className="card px-4 py-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-2 px-1">
+        <h2 id="chain-title" className="section-title">
+          Attack chain
+        </h2>
+        <span className="text-xs text-muted-foreground">
+          {selected
+            ? "click the stage again to clear the filter"
+            : "click a stage to filter the timeline"}
+        </span>
+      </div>
+      <ol className="chain mt-2">
+        {chain.map((c, k) => {
+          const active = selected === c.key;
+          const dim = selected !== null && !active;
+          return (
+            <li key={c.key} className={`chain-item ${dim ? "chain-dim" : ""}`}>
+              {k > 0 && (
+                <span className="chain-arrow" aria-hidden="true">
+                  →
+                </span>
+              )}
+              <div
+                className={`chain-box ${c.status === "not_visible" ? "chain-box-blind" : ""} ${active ? "chain-box-active" : ""}`}
+                title={c.notVisible ?? undefined}
+              >
+                {c.status === "detected" ? (
+                  <button
+                    type="button"
+                    className="chain-head"
+                    aria-pressed={active}
+                    onClick={() => onSelect(active ? null : c.key)}
+                  >
+                    <span className="chain-label">{c.label}</span>
+                    <span className="chain-chip chain-chip-detected">
+                      <CircleCheck className="size-3" aria-hidden="true" />
+                      Detected
+                    </span>
+                  </button>
+                ) : (
+                  <div className="chain-head">
+                    <span className="chain-label">{c.label}</span>
+                    <span className="chain-chip">
+                      {c.status === "not_visible" ? (
+                        <EyeOff className="size-3" aria-hidden="true" />
+                      ) : (
+                        <CircleDashed className="size-3" aria-hidden="true" />
+                      )}
+                      {c.status === "not_visible" ? "Not visible" : "No confirmed incident"}
+                    </span>
+                  </div>
+                )}
+                {c.status === "detected" && (
+                  <div className="chain-ids num">
+                    <span className="text-foreground">
+                      {c.firstSeen ? clockUtc(c.firstSeen) : ""}
+                    </span>
+                    {c.incidents.map((i) => (
+                      <Link
+                        key={i.incident_id}
+                        to="/incident/$id"
+                        params={{ id: i.incident_id }}
+                        search={{ run: view.run }}
+                        className="text-primary hover:underline"
+                      >
+                        {i.incident_id}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
+export function AttackTimeline({
+  view,
+  highlight = null,
+}: {
+  view: QueueView;
+  highlight?: Stage | null;
+}) {
   const confirmed = view.incidents.filter((i) => i.group === "confirmed");
   const peak = busiestDay(confirmed);
   if (!peak) return null;
@@ -109,15 +214,31 @@ export function AttackTimeline({ view }: { view: QueueView }) {
     timeZone: "UTC",
   });
   return (
-    <section aria-labelledby="timeline-title" className="card px-6 py-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <div>
-          <h2 id="timeline-title" className="section-title">
-            Attack timeline · {date} (UTC)
-          </h2>
-          <div className="mt-0.5 text-xs text-muted-foreground">confirmed incidents</div>
-        </div>
-        <span className="flex items-center gap-3 text-xs text-muted-foreground">
+    <section aria-labelledby="timeline-title" className="card px-4 py-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-1">
+        <h2 id="timeline-title" className="section-title">
+          Attack timeline · {date} (UTC)
+        </h2>
+        <span className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
+          {others.length > 0 && (
+            <span>
+              Also confirmed on other days:{" "}
+              {others.map((i, k) => (
+                <span key={i.incident_id}>
+                  {k > 0 ? ", " : ""}
+                  <Link
+                    to="/incident/$id"
+                    params={{ id: i.incident_id }}
+                    search={{ run: view.run }}
+                    className="num text-primary hover:underline"
+                  >
+                    {i.incident_id}
+                  </Link>
+                  {` (${clockUtc(i.start)})`}
+                </span>
+              ))}
+            </span>
+          )}
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-3 rounded-sm" style={{ background: RISK_COLOR.high }} />
             High risk
@@ -128,10 +249,10 @@ export function AttackTimeline({ view }: { view: QueueView }) {
           </span>
         </span>
       </div>
-      <div className="relative mt-4">
+      <div className="relative mt-2">
         <div className="lane-axis num">
           <span />
-          <span className="relative h-5">
+          <span className="relative h-4">
             {ticks.map((t) => (
               <span
                 key={t}
@@ -148,7 +269,7 @@ export function AttackTimeline({ view }: { view: QueueView }) {
             {ticks.map((t) => (
               <span
                 key={t}
-                className="absolute inset-y-0 w-px bg-[#222a44]"
+                className="absolute inset-y-0 w-px bg-[#222a44] opacity-60"
                 style={{ left: `${pct(t)}%` }}
               />
             ))}
@@ -157,25 +278,25 @@ export function AttackTimeline({ view }: { view: QueueView }) {
             const left = pct(Date.parse(i.start));
             const width = Math.max(0, pct(Date.parse(i.end)) - left);
             const risk = riskLevel(i);
+            const dim = highlight !== null && stageOf(i) !== highlight;
+            const text = `${hhmm(Date.parse(i.start))} ${i.incident_id} ${plainLabel(i)}`;
             return (
               <Link
                 key={i.incident_id}
                 to="/incident/$id"
                 params={{ id: i.incident_id }}
                 search={{ run: view.run }}
-                className="lane-row"
-                title={`${i.incident_id} · ${hhmm(Date.parse(i.start))} to ${hhmm(Date.parse(i.end))} UTC · ${riskLabel(risk)}`}
+                className={`lane-row ${dim ? "lane-dim" : ""}`}
+                title={`${text} · ${hhmm(Date.parse(i.start))} to ${hhmm(Date.parse(i.end))} UTC · ${riskLabel(risk)}`}
               >
                 <span className="lane-left">
-                  <span className="num w-11 shrink-0 text-foreground">
-                    {hhmm(Date.parse(i.start))}
-                  </span>
-                  <span className="num w-[72px] shrink-0 font-medium">{i.incident_id}</span>
+                  <span className="num shrink-0 text-foreground">{hhmm(Date.parse(i.start))}</span>
+                  <span className="num shrink-0 font-medium">{i.incident_id}</span>
                   <span className="truncate text-muted-foreground">{plainLabel(i)}</span>
                 </span>
-                <span className="relative block h-5">
+                <span className="relative block h-4">
                   <span
-                    className="absolute top-1 h-3 rounded-sm"
+                    className="absolute top-1 h-2 rounded-sm"
                     style={{
                       left: `${left}%`,
                       width: `${width}%`,
@@ -192,26 +313,6 @@ export function AttackTimeline({ view }: { view: QueueView }) {
           })}
         </div>
       </div>
-      {others.length > 0 && (
-        <p className="mt-3 text-xs text-muted-foreground">
-          Also confirmed on other days:{" "}
-          {others.map((i, k) => (
-            <span key={i.incident_id}>
-              {k > 0 ? ", " : ""}
-              <Link
-                to="/incident/$id"
-                params={{ id: i.incident_id }}
-                search={{ run: view.run }}
-                className="num text-primary hover:underline"
-              >
-                {i.incident_id}
-              </Link>
-              {` (${clockUtc(i.start)})`}
-            </span>
-          ))}
-          {"."}
-        </p>
-      )}
     </section>
   );
 }

@@ -678,7 +678,7 @@ mark.hl {
 .lane-axis,
 .lane-row {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
+  grid-template-columns: 200px minmax(0, 1fr);
   column-gap: 12px;
   align-items: center;
 }
@@ -686,19 +686,21 @@ mark.hl {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 272px;
+  left: 212px;
   right: 0;
   pointer-events: none;
 }
 .lane-row {
   position: relative;
-  min-height: 30px;
-  padding: 3px 4px;
+  min-height: 22px;
+  padding: 1px 4px;
   margin: 0 -4px;
-  border-radius: 6px;
+  border-radius: 4px;
   color: inherit;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 20px;
+  transition: opacity 120ms;
 }
 .lane-row:hover {
   background: #161c33;
@@ -707,6 +709,9 @@ mark.hl {
   outline: 2px solid var(--primary);
   outline-offset: -2px;
   background: #1a2140;
+}
+.lane-dim {
+  opacity: 0.3;
 }
 .lane-left {
   display: flex;
@@ -717,9 +722,108 @@ mark.hl {
 @media (max-width: 640px) {
   .lane-axis,
   .lane-row {
-    grid-template-columns: 180px minmax(0, 1fr);
+    grid-template-columns: 150px minmax(0, 1fr);
   }
   .lane-grid {
-    left: 192px;
+    left: 162px;
+  }
+}
+
+/* ---- attack chain (console) ---- */
+.chain {
+  list-style: none;
+  margin: 0;
+  padding: 0 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 0;
+}
+.chain-item {
+  display: flex;
+  align-items: stretch;
+  flex: 1 1 0;
+  min-width: 0;
+  transition: opacity 120ms;
+}
+.chain-dim {
+  opacity: 0.4;
+}
+.chain-arrow {
+  align-self: center;
+  padding: 0 6px;
+  color: #4a5372;
+  font-size: 14px;
+}
+.chain-box {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #0f1426;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.chain-box-blind {
+  border-style: dashed;
+  background: transparent;
+  color: var(--muted-foreground);
+}
+.chain-box-active {
+  border-color: var(--brand-accent);
+  box-shadow: inset 0 0 0 1px var(--brand-accent);
+}
+.chain-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  width: 100%;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  border-radius: 6px;
+}
+button.chain-head {
+  cursor: pointer;
+}
+button.chain-head:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+.chain-label {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.chain-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.chain-chip-detected {
+  color: var(--brand-accent);
+}
+.chain-ids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  font-size: 11px;
+}
+@media (max-width: 1200px) {
+  .chain-item {
+    flex-basis: calc(25% - 1px);
   }
 }

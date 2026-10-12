@@ -454,3 +454,83 @@ export function narrative(incident: Incident, byId: Map<string, RankedIncident>)
       };
   }
 }
+
+// ------------------------------------------------------------------ attack chain stages
+
+export type Stage =
+  | "reconnaissance"
+  | "initial_access"
+  | "foothold"
+  | "privilege_escalation"
+  | "credential_access"
+  | "exfiltration"
+  | "impact";
+
+export type StageInfo = {
+  key: Stage;
+  label: string;
+  /** null = the sensors can show it; a string = why they cannot (shown as "Not visible"). */
+  notVisible: string | null;
+};
+
+export const STAGES: readonly StageInfo[] = [
+  { key: "reconnaissance", label: "Reconnaissance", notVisible: null },
+  { key: "initial_access", label: "Initial access", notVisible: null },
+  { key: "foothold", label: "Foothold", notVisible: null },
+  { key: "privilege_escalation", label: "Privilege escalation", notVisible: null },
+  {
+    key: "credential_access",
+    label: "Credential access",
+    notVisible: "Offline password cracking leaves no alerts in these sensors.",
+  },
+  {
+    key: "exfiltration",
+    label: "Exfiltration",
+    notVisible: "DNS exfiltration is not in the IDS alerts.",
+  },
+  { key: "impact", label: "Impact", notVisible: null },
+];
+
+/** Stage of a confirmed incident from its template family. Families that do not map cleanly
+ *  (volume bursts on an internal host, "other") return null and are left out of the chain. */
+export function stageOf(incident: Incident): Stage | null {
+  switch (featureFamily(incident)) {
+    case "scan":
+      return "reconnaissance";
+    case "volume":
+      return incident.kind === "actor" ? "reconnaissance" : null;
+    case "entry_point":
+    case "web_attack":
+      return "initial_access";
+    case "first_time":
+      return "foothold";
+    case "privilege":
+      return "privilege_escalation";
+    default:
+      return null;
+  }
+}
+
+export type ChainStage = StageInfo & {
+  status: "detected" | "none" | "not_visible";
+  firstSeen: string | null;
+  incidents: RankedIncident[];
+};
+
+/** One entry per stage, in kill-chain order, from the confirmed incidents only. */
+export function attackChain(incidents: RankedIncident[]): ChainStage[] {
+  const confirmed = incidents.filter((i) => i.group === "confirmed");
+  return STAGES.map((stage) => {
+    const hits = confirmed
+      .filter((i) => stageOf(i) === stage.key)
+      .sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+    if (stage.notVisible)
+      return { ...stage, status: "not_visible", firstSeen: null, incidents: [] };
+    return {
+      ...stage,
+      status: hits.length ? "detected" : "none",
+      firstSeen: hits[0]?.start ?? null,
+      incidents: hits,
+    };
+  });
+}

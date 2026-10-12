@@ -4,6 +4,7 @@ import { Command, LayoutDashboard, Search, ShieldCheck } from "lucide-react";
 import { InvestigationAssistant } from "@/components/security/assistant";
 import {
   AblationPanel,
+  AttackChain,
   AttackTimeline,
   FunnelTiles,
   HostBars,
@@ -12,6 +13,7 @@ import {
 } from "@/components/security/console-charts";
 import { IncidentTable } from "@/components/security/incident-table";
 import { loadIncidentQueue, type QueueView } from "@/data/incidents";
+import type { Stage } from "@/data/triage";
 import sagaMark from "@/assets/saga-mark.svg";
 
 const DEFAULT_RUN = "wilson_test";
@@ -138,6 +140,7 @@ function Index() {
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState("Triage");
   const [compact, setCompact] = useState(false);
+  const [stage, setStage] = useState<Stage | null>(null);
 
   const reload = async (run: string, scenario?: string) => {
     setLoading(true);
@@ -310,7 +313,8 @@ function Index() {
         {view ? (
           <>
             <FunnelTiles view={view} />
-            <AttackTimeline view={view} />
+            <AttackChain view={view} selected={stage} onSelect={setStage} />
+            <AttackTimeline view={view} highlight={stage} />
             <section aria-labelledby="charts-title" className="flex flex-col gap-3">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h2 id="charts-title" className="section-title">
