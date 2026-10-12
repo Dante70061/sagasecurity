@@ -6,8 +6,10 @@
 import incidentsSnapshot from "./incidents_scored.json";
 import scenarioSnapshot from "./scenario_summary.json";
 import type {
+  HostAlerts,
   Incident,
   IncidentGroup,
+  IncidentPageView,
   QueueView,
   RankedIncident,
   ScenarioSummary,
@@ -151,6 +153,30 @@ export function scenariosIn(incidents: Incident[], run: string): string[] {
   return [...new Set(incidents.filter((i) => i.run === run).map((i) => i.scenario))].sort();
 }
 
+export function hostAlertTotals(ranked: RankedIncident[]): HostAlerts[] {
+  const totals = new Map<string, HostAlerts>();
+  for (const i of ranked) {
+    if (i.kind !== "host") continue;
+    const row = totals.get(i.entity) ?? { entity: i.entity, alerts: 0, incidents: 0 };
+    row.alerts += i.n_alerts;
+    row.incidents += 1;
+    totals.set(i.entity, row);
+  }
+  return [...totals.values()].sort(
+    (a, b) => b.alerts - a.alerts || a.entity.localeCompare(b.entity),
+  );
+}
+
+/** "mostly recurring activity on X" when one entity holds at least 40% of the below-threshold group. */
+export function belowThresholdNote(ranked: RankedIncident[]): string | null {
+  const below = ranked.filter((i) => i.group === "below");
+  if (below.length < 3) return null;
+  const counts = new Map<string, number>();
+  for (const i of below) counts.set(i.entity, (counts.get(i.entity) ?? 0) + 1);
+  const [entity, count] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0] ?? ["", 0];
+  return count / below.length >= 0.4 ? `mostly recurring activity on ${entity}` : null;
+}
+
 export async function buildQueueView(run?: string, scenario?: string): Promise<QueueView> {
   const { incidents, scenarios } = await loadIncidents();
   const runs = runsIn(incidents);
@@ -173,8 +199,21 @@ export async function buildQueueView(run?: string, scenario?: string): Promise<Q
     scenarios: runScenarios,
     summary,
     counts,
+    hostAlerts: hostAlertTotals(ranked),
+    belowNote: belowThresholdNote(ranked),
     incidents: ranked,
   };
+}
+
+/** The breakdown page: the run's queue (for the nav and related links) plus one incident. */
+export async function buildIncidentPage(
+  id: string,
+  run?: string,
+  scenario?: string,
+): Promise<IncidentPageView | null> {
+  const queue = await buildQueueView(run, scenario);
+  const incident = queue.incidents.find((i) => i.incident_id === id);
+  return incident ? { queue, incident } : null;
 }
 
 // ---------------------------------------------------------------- evidence pack for the assistant

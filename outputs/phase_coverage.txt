@@ -1,0 +1,99 @@
+Phase coverage · 2026-10-12 15:01 · evaluation only, not shown in the UI
+rank = position in the scenario's full incident list (statistics only); top40 = handed off; confirmed = model p_attack >= 0.5 (only hand-off incidents are scored)
+
+=== wilson (held-out) ===
+               phase incident kind         entity  rank  of top40 confirmed  p_attack
+       network_scans INC-0001 host 172.26.243.167     1 504   yes       yes     1.000
+       service_scans INC-0001 host 172.26.243.167     1 504   yes       yes     1.000
+              wpscan INC-0001 host 172.26.243.167     1 504   yes       yes     1.000
+                dirb INC-0001 host 172.26.243.167     1 504   yes       yes     1.000
+            webshell INC-0001 host 172.26.243.167     1 504   yes       yes     1.000
+            cracking INC-0001 host 172.26.243.167     1 504   yes       yes     1.000
+       reverse_shell INC-0003 host 172.26.243.167     3 504   yes       yes     1.000
+privilege_escalation INC-0003 host 172.26.243.167     3 504   yes       yes     1.000
+        service_stop INC-0016 host 10.182.193.181    16 504   yes        no     0.001
+             dnsteal INC-0016 host 10.182.193.181    16 504   yes        no     0.001
+phases 10 · found by any incident 10 · in top 40 10 · confirmed 8
+
+=== dev scenarios (7) · per scenario ===
+       scenario  phases  found  in_top40  confirmed
+            fox      10     10        10         10
+       harrison      10     10         9          8
+russellmitchell      10      9         8          8
+         santos      10     10        10          8
+           shaw      10     10         8          8
+       wardbeck      10      8         8          8
+        wheeler       9      9         7          5
+total: phases 69 · found 66 · in top 40 60 · confirmed 55
+
+=== dev scenarios · per phase ===
+       scenario                phase incident  rank  of top40 confirmed  p_attack
+russellmitchell        network_scans INC-0005   1.0 124   yes       yes     1.000
+russellmitchell        service_scans INC-0005   1.0 124   yes       yes     1.000
+russellmitchell                 dirb INC-0005   1.0 124   yes       yes     1.000
+russellmitchell               wpscan INC-0005   1.0 124   yes       yes     1.000
+russellmitchell             webshell INC-0005   1.0 124   yes       yes     1.000
+russellmitchell             cracking INC-0005   1.0 124   yes       yes     1.000
+russellmitchell        reverse_shell INC-0020   3.0 124   yes       yes     1.000
+russellmitchell privilege_escalation INC-0020   3.0 124   yes       yes     1.000
+russellmitchell         service_stop        —   NaN 124    no         —       NaN
+russellmitchell              dnsteal INC-0677  42.0 124    no         —       NaN
+            fox        network_scans INC-0002   1.0 159   yes       yes     1.000
+            fox        service_scans INC-0002   1.0 159   yes       yes     1.000
+            fox               wpscan INC-0002   1.0 159   yes       yes     1.000
+            fox                 dirb INC-0002   1.0 159   yes       yes     1.000
+            fox             webshell INC-0002   1.0 159   yes       yes     1.000
+            fox             cracking INC-0002   1.0 159   yes       yes     1.000
+            fox        reverse_shell INC-0023   3.0 159   yes       yes     1.000
+            fox privilege_escalation INC-0023   3.0 159   yes       yes     1.000
+            fox         service_stop INC-0109  12.0 159   yes       yes     0.635
+            fox              dnsteal INC-0109  12.0 159   yes       yes     0.635
+       harrison        network_scans INC-0043   6.0 340   yes       yes     1.000
+       harrison        service_scans INC-0003   1.0 340   yes       yes     1.000
+       harrison               wpscan INC-0003   1.0 340   yes       yes     1.000
+       harrison                 dirb INC-0003   1.0 340   yes       yes     1.000
+       harrison             webshell INC-0003   1.0 340   yes       yes     1.000
+       harrison             cracking INC-0003   1.0 340   yes       yes     1.000
+       harrison        reverse_shell INC-0009   2.0 340   yes       yes     1.000
+       harrison privilege_escalation INC-0009   2.0 340   yes       yes     1.000
+       harrison         service_stop INC-1375 246.0 340    no         —       NaN
+       harrison              dnsteal INC-0042   5.0 340   yes        no     0.001
+         santos        network_scans INC-0004   1.0 247   yes       yes     1.000
+         santos        service_scans INC-0004   1.0 247   yes       yes     1.000
+         santos                 dirb INC-0004   1.0 247   yes       yes     1.000
+         santos               wpscan INC-0004   1.0 247   yes       yes     1.000
+         santos             webshell INC-0004   1.0 247   yes       yes     1.000
+         santos             cracking INC-0004   1.0 247   yes       yes     1.000
+         santos        reverse_shell INC-0013   2.0 247   yes       yes     1.000
+         santos privilege_escalation INC-0013   2.0 247   yes       yes     1.000
+         santos         service_stop INC-0058  14.0 247   yes        no     0.047
+         santos              dnsteal INC-0058  14.0 247   yes        no     0.047
+           shaw        network_scans INC-0006   1.0 220   yes       yes     1.000
+           shaw        service_scans INC-0006   1.0 220   yes       yes     1.000
+           shaw               wpscan INC-0006   1.0 220   yes       yes     1.000
+           shaw                 dirb INC-0006   1.0 220   yes       yes     1.000
+           shaw             webshell INC-0006   1.0 220   yes       yes     1.000
+           shaw             cracking INC-0006   1.0 220   yes       yes     1.000
+           shaw        reverse_shell INC-0021   4.0 220   yes       yes     1.000
+           shaw privilege_escalation INC-0021   4.0 220   yes       yes     1.000
+           shaw         service_stop INC-0243  51.0 220    no         —       NaN
+           shaw              dnsteal INC-0243  51.0 220    no         —       NaN
+       wardbeck        network_scans INC-0007   1.0 233   yes       yes     1.000
+       wardbeck        service_scans INC-0007   1.0 233   yes       yes     1.000
+       wardbeck               wpscan INC-0007   1.0 233   yes       yes     1.000
+       wardbeck                 dirb INC-0007   1.0 233   yes       yes     1.000
+       wardbeck             webshell INC-0007   1.0 233   yes       yes     1.000
+       wardbeck             cracking INC-0007   1.0 233   yes       yes     1.000
+       wardbeck        reverse_shell INC-0026   3.0 233   yes       yes     1.000
+       wardbeck privilege_escalation INC-0026   3.0 233   yes       yes     1.000
+       wardbeck         service_stop        —   NaN 233    no         —       NaN
+       wardbeck              dnsteal        —   NaN 233    no         —       NaN
+        wheeler        network_scans INC-0001   1.0 449   yes       yes     1.000
+        wheeler        service_scans INC-0001   1.0 449   yes       yes     1.000
+        wheeler               wpscan INC-0001   1.0 449   yes       yes     1.000
+        wheeler                 dirb INC-0001   1.0 449   yes       yes     1.000
+        wheeler             webshell INC-0001   1.0 449   yes       yes     1.000
+        wheeler        reverse_shell INC-0012   3.0 449   yes        no     0.485
+        wheeler privilege_escalation INC-0012   3.0 449   yes        no     0.485
+        wheeler         service_stop INC-0348  81.0 449    no         —       NaN
+        wheeler              dnsteal INC-0348  81.0 449    no         —       NaN

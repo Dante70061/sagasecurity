@@ -1,0 +1,6 @@
+Incident-level ablation · dev scenarios ['fox', 'harrison', 'russellmitchell', 'santos', 'shaw', 'wardbeck', 'wheeler'] · holdout 'wilson' never loaded
+2026-10-12 14:40 · threshold p_attack >= 0.5 · out-of-fold logreg, leave-one-scenario-out
+280 hand-off incidents (top 40 per scenario), 60 overlap an attack phase
+
+his      features=35  attack incidents kept 57/60  benign incidents passed 86/220  total handed to the analyst 143
+his+st   features=61  attack incidents kept 54/60  benign incidents passed 22/220  total handed to the analyst 76

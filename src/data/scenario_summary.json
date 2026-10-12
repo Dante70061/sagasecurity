@@ -1,7 +1,13 @@
 {
  "fox": {
   "run": "dev",
+  "raw_alerts": 472100,
   "alerts": 430085,
+  "alerts_by_sensor": {
+   "wazuh": 411233,
+   "suricata": 9095,
+   "aminer": 9757
+  },
   "minutes": 6971,
   "hosts": 16,
   "start": "2022-01-15T03:45:00+00:00",
@@ -9,7 +15,13 @@
  },
  "harrison": {
   "run": "dev",
+  "raw_alerts": 593027,
   "alerts": 489548,
+  "alerts_by_sensor": {
+   "wazuh": 415753,
+   "suricata": 64140,
+   "aminer": 9655
+  },
   "minutes": 7200,
   "hosts": 14,
   "start": "2022-02-04T00:00:00+00:00",
@@ -17,7 +29,13 @@
  },
  "russellmitchell": {
   "run": "dev",
+  "raw_alerts": 44996,
   "alerts": 18985,
+  "alerts_by_sensor": {
+   "wazuh": 7904,
+   "suricata": 7425,
+   "aminer": 3656
+  },
   "minutes": 5692,
   "hosts": 13,
   "start": "2022-01-21T00:14:00+00:00",
@@ -25,7 +43,13 @@
  },
  "santos": {
   "run": "dev",
+  "raw_alerts": 130087,
   "alerts": 53252,
+  "alerts_by_sensor": {
+   "wazuh": 7982,
+   "suricata": 41528,
+   "aminer": 3742
+  },
   "minutes": 5752,
   "hosts": 13,
   "start": "2022-01-14T00:00:00+00:00",
@@ -33,7 +57,13 @@
  },
  "shaw": {
   "run": "dev",
+  "raw_alerts": 70124,
   "alerts": 21151,
+  "alerts_by_sensor": {
+   "wazuh": 5768,
+   "suricata": 13548,
+   "aminer": 1835
+  },
   "minutes": 8521,
   "hosts": 16,
   "start": "2022-01-25T00:20:00+00:00",
@@ -41,7 +71,13 @@
  },
  "wardbeck": {
   "run": "dev",
+  "raw_alerts": 90301,
   "alerts": 28209,
+  "alerts_by_sensor": {
+   "wazuh": 5671,
+   "suricata": 20235,
+   "aminer": 2303
+  },
   "minutes": 7138,
   "hosts": 13,
   "start": "2022-01-19T01:02:00+00:00",
@@ -49,7 +85,13 @@
  },
  "wheeler": {
   "run": "dev",
+  "raw_alerts": 588622,
   "alerts": 477530,
+  "alerts_by_sensor": {
+   "wazuh": 419725,
+   "suricata": 46146,
+   "aminer": 11659
+  },
   "minutes": 7079,
   "hosts": 16,
   "start": "2022-01-26T01:56:00+00:00",
@@ -57,7 +99,13 @@
  },
  "wilson": {
   "run": "wilson_test",
+  "raw_alerts": 633021,
   "alerts": 490300,
+  "alerts_by_sensor": {
+   "wazuh": 427607,
+   "suricata": 54481,
+   "aminer": 8212
+  },
   "minutes": 8320,
   "hosts": 13,
   "start": "2022-02-03T05:11:00+00:00",

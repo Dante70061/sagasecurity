@@ -142,9 +142,24 @@ def incident_rows(inc_json: Path, eval_csv: Path) -> pd.DataFrame:
     return df[front + peak_cols + label]
 
 
-def scenario_summary(parquets: list[Path]) -> dict:
-    """Per-scenario funnel numbers for the dashboard: alerts analysed (after dedup and baseline filter),
-    minutes, hosts, time span. No labels."""
+def raw_alert_counts(merged: Path) -> dict[str, int]:
+    """Rows per scenario in merged.jsonl = alerts before Suricata dedup and baseline-rule removal
+    (the 'loaded' line of the stats funnel). Prefix scan only, no JSON parsing; ~1 s for 2 GB."""
+    counts: dict[str, int] = {}
+    if not merged.exists():
+        return counts
+    with merged.open("rb") as f:
+        for line in f:
+            if line.startswith(b'{"scenario":"'):
+                scen = line[13:line.index(b'"', 13)].decode()
+                counts[scen] = counts.get(scen, 0) + 1
+    return counts
+
+
+def scenario_summary(parquets: list[Path], merged: Path) -> dict:
+    """Per-scenario funnel numbers for the dashboard: raw alerts, alerts analysed (after dedup and
+    baseline filter) split by sensor, minutes, hosts, time span. No labels."""
+    raw = raw_alert_counts(merged)
     out = {}
     for pq in parquets:
         if not pq.exists():
@@ -153,7 +168,11 @@ def scenario_summary(parquets: list[Path]) -> dict:
         idx = agg.index.to_frame(index=False)
         for scen, g in agg.groupby(level="scenario"):
             w = idx.loc[idx.scenario == scen, "window"]
-            out[scen] = {"run": run_name(pq.parent), "alerts": int(g["total"].sum()),
+            out[scen] = {"run": run_name(pq.parent),
+                         "raw_alerts": raw.get(scen),
+                         "alerts": int(g["total"].sum()),
+                         "alerts_by_sensor": {"wazuh": int(g["is_wazuh"].sum()), "suricata": int(g["is_suricata"].sum()),
+                                              "aminer": int(g["is_aminer"].sum())},
                          "minutes": int(w.nunique()), "hosts": int(idx.loc[idx.scenario == scen, "entity"].nunique()),
                          "start": w.min().isoformat(), "end": (w.max() + pd.Timedelta(seconds=WINDOW_S)).isoformat()}
     return out
@@ -163,7 +182,7 @@ def cmd_export(a) -> None:
     a.out_dir.mkdir(parents=True, exist_ok=True)
     runs = [a.outputs, a.outputs / "wilson_test"]
     export_minutes([r / "windows_z.parquet" for r in runs], a.feat_dir, a.out_dir)
-    summ = scenario_summary([r / "windows_z.parquet" for r in runs])
+    summ = scenario_summary([r / "windows_z.parquet" for r in runs], a.merged)
     (a.out_dir / "scenario_summary.json").write_text(json.dumps(summ, indent=1))
     print(f"{len(summ)} scenarios -> {rel(a.out_dir / 'scenario_summary.json')}")
     parts = [incident_rows(r / "incidents.json", r / "incidents_eval.csv")
@@ -222,6 +241,8 @@ def main() -> None:
     ap.add_argument("--feat-dir", type=Path, default=ROOT / "dataset" / "features",
                     help="his <scenario>_features.csv (the minute grid to join onto) and *_scores.csv")
     ap.add_argument("--out-dir", type=Path, default=ROOT / "outputs" / "model_input")
+    ap.add_argument("--merged", type=Path, default=ROOT / "dataset" / "merged.jsonl",
+                    help="export: merged alerts, only used to count raw alerts per scenario")
     ap.add_argument("--scores-dir", type=Path, default=None, help="attach: folder of *_scores.csv (default: --feat-dir)")
     ap.add_argument("--score-col", default="p_attack")
     ap.add_argument("--out-json", type=Path, default=ROOT / "outputs" / "incidents_scored.json")

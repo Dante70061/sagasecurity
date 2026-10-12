@@ -41,14 +41,29 @@ export type Incident = {
 export type IncidentGroup = "confirmed" | "below" | "unscored";
 export type RankedIncident = Incident & { rank: number; group: IncidentGroup };
 
+export type SensorCounts = { wazuh: number; suricata: number; aminer: number };
+
 export type ScenarioSummary = {
   run: string;
-  alerts: number;
+  raw_alerts: number | null; // rows in merged.jsonl before dedup and baseline removal
+  alerts: number; // after cleanup: what the stats stage analysed
+  alerts_by_sensor: SensorCounts;
   minutes: number;
   hosts: number;
   start: string;
   end: string;
 };
+
+export type HostAlerts = { entity: string; alerts: number; incidents: number };
+
+/** Everything the breakdown page needs for one incident plus the nav of its run. */
+export type IncidentPageView = {
+  queue: QueueView;
+  incident: RankedIncident;
+};
+
+export type IncidentPageResult =
+  { ok: true; view: IncidentPageView } | { ok: false; error: string };
 
 export type QueueView = {
   run: string;
@@ -57,6 +72,8 @@ export type QueueView = {
   scenarios: string[];
   summary: ScenarioSummary | null;
   counts: { incidents: number; confirmed: number; below: number; unscored: number };
+  hostAlerts: HostAlerts[]; // alerts inside host incidents, per entity, descending
+  belowNote: string | null; // e.g. "mostly recurring activity on 10.182.193.181"
   incidents: RankedIncident[];
 };
 
@@ -65,6 +82,15 @@ export type QueueResult = { ok: true; view: QueueView } | { ok: false; error: st
 export type QueueSelection = { run?: string; scenario?: string };
 
 const NAME = /^[a-z0-9_-]{1,40}$/i;
+const INCIDENT_ID = /^INC-\d{4}$/;
+
+export function parseIncidentRef(input: unknown): QueueSelection & { id: string } {
+  const sel = parseSelection(input);
+  const id = (input as { id?: unknown } | null)?.id;
+  if (typeof id !== "string" || !INCIDENT_ID.test(id))
+    throw new Error("id must look like INC-0001.");
+  return { ...sel, id };
+}
 
 export function parseSelection(input: unknown): QueueSelection {
   if (input == null) return {};
@@ -92,5 +118,20 @@ export const loadIncidentQueue = createServerFn({ method: "GET" })
     } catch (error) {
       console.error(error);
       return { ok: false, error: "The incident list could not be read." };
+    }
+  });
+
+export const loadIncidentPage = createServerFn({ method: "GET" })
+  .validator((input: unknown) => parseIncidentRef(input))
+  .handler(async ({ data }): Promise<IncidentPageResult> => {
+    try {
+      const { buildIncidentPage } = await import("./incidents.server");
+      const view = await buildIncidentPage(data.id, data.run, data.scenario);
+      return view
+        ? { ok: true, view }
+        : { ok: false, error: `No incident ${data.id} in this run.` };
+    } catch (error) {
+      console.error(error);
+      return { ok: false, error: "The incident could not be read." };
     }
   });
