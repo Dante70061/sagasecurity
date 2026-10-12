@@ -142,10 +142,30 @@ def incident_rows(inc_json: Path, eval_csv: Path) -> pd.DataFrame:
     return df[front + peak_cols + label]
 
 
+def scenario_summary(parquets: list[Path]) -> dict:
+    """Per-scenario funnel numbers for the dashboard: alerts analysed (after dedup and baseline filter),
+    minutes, hosts, time span. No labels."""
+    out = {}
+    for pq in parquets:
+        if not pq.exists():
+            continue
+        agg = pd.read_parquet(pq)
+        idx = agg.index.to_frame(index=False)
+        for scen, g in agg.groupby(level="scenario"):
+            w = idx.loc[idx.scenario == scen, "window"]
+            out[scen] = {"run": run_name(pq.parent), "alerts": int(g["total"].sum()),
+                         "minutes": int(w.nunique()), "hosts": int(idx.loc[idx.scenario == scen, "entity"].nunique()),
+                         "start": w.min().isoformat(), "end": (w.max() + pd.Timedelta(seconds=WINDOW_S)).isoformat()}
+    return out
+
+
 def cmd_export(a) -> None:
     a.out_dir.mkdir(parents=True, exist_ok=True)
     runs = [a.outputs, a.outputs / "wilson_test"]
     export_minutes([r / "windows_z.parquet" for r in runs], a.feat_dir, a.out_dir)
+    summ = scenario_summary([r / "windows_z.parquet" for r in runs])
+    (a.out_dir / "scenario_summary.json").write_text(json.dumps(summ, indent=1))
+    print(f"{len(summ)} scenarios -> {rel(a.out_dir / 'scenario_summary.json')}")
     parts = [incident_rows(r / "incidents.json", r / "incidents_eval.csv")
              for r in runs if (r / "incidents.json").exists()]
     inc = pd.concat(parts, ignore_index=True)

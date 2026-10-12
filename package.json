@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "incidents:sync": "cp outputs/incidents_scored.json src/data/incidents_scored.json && cp outputs/model_input/scenario_summary.json src/data/scenario_summary.json"
   },
   "overrides": {
     "rolldown": "1.2.1"
