@@ -36,8 +36,53 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import sagaMark from "@/assets/saga-mark.svg";
+import { parseTurns } from "@/data/ask-saga";
 
 const storageKey = "saga-security-conversation-v1";
+
+type AskEvent =
+  | { type: "status"; text: string }
+  | { type: "delta"; text: string }
+  | { type: "error"; text: string };
+
+function isAskEvent(value: unknown): value is AskEvent {
+  if (typeof value !== "object" || value === null || !("type" in value)) return false;
+  const event = value as { type?: unknown; text?: unknown };
+  return (
+    (event.type === "status" || event.type === "delta" || event.type === "error") &&
+    typeof event.text === "string"
+  );
+}
+
+async function readAskEvents(response: Response, onEvent: (event: AskEvent) => void) {
+  if (!response.body) throw new Error("The assistant returned no stream.");
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  const consume = (block: string) => {
+    const data = block
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith("data:"))
+      .map((line) => line.slice(5).trim())
+      .join("");
+    if (!data) return;
+    const parsed: unknown = JSON.parse(data);
+    if (isAskEvent(parsed)) onEvent(parsed);
+  };
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, "\n");
+    let sep = buffer.indexOf("\n\n");
+    while (sep !== -1) {
+      consume(buffer.slice(0, sep));
+      buffer = buffer.slice(sep + 2);
+      sep = buffer.indexOf("\n\n");
+    }
+  }
+  if (buffer.trim()) consume(buffer);
+}
 const suggestions = [
   { text: "Summarize the security posture", icon: ShieldCheck },
   { text: "What activity should I investigate first?", icon: Fingerprint },
@@ -72,7 +117,11 @@ export function InvestigationAssistant() {
   const [error, setError] = useState<string | null>(null);
   const [clearOpen, setClearOpen] = useState(false);
   const [ready, setReady] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [activity, setActivity] = useState<string | null>(null);
+  const [streamingId, setStreamingId] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
   useEffect(() => {
     try {
       setMessages(readHistory());
@@ -90,17 +139,106 @@ export function InvestigationAssistant() {
       setError("Browser storage is unavailable. This conversation will not be saved.");
     }
   }, [messages, ready]);
-  const send = (text: string) => {
-    if (!text.trim()) return;
-    setMessages((previous) => [
-      ...previous,
-      { id: crypto.randomUUID(), role: "user", parts: [{ type: "text", text: text.trim() }] },
-    ]);
+  const send = async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || pending) return;
+    const next: UIMessage[] = [
+      ...messages,
+      { id: crypto.randomUUID(), role: "user", parts: [{ type: "text", text: trimmed }] },
+    ];
+    setMessages(next);
     setInput("");
-    setError(
-      "The investigation service is not connected yet. Your question has been saved; no analysis has been performed.",
-    );
-    textareaRef.current?.focus({ preventScroll: true });
+    setError(null);
+    setPending(true);
+    setActivity("Explaining the merged log counts…");
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const assistantId = crypto.randomUUID();
+    let started = false;
+    const pendingTokens: string[] = [];
+    let revealed = "";
+    let frame: number | null = null;
+    const reveal = (token: string) => {
+      revealed += token;
+      const text = revealed;
+      if (!started) {
+        started = true;
+        setActivity(null);
+        setStreamingId(assistantId);
+        setMessages((previous) => [
+          ...previous,
+          { id: assistantId, role: "assistant", parts: [{ type: "text", text }] },
+        ]);
+        return;
+      }
+      setMessages((previous) =>
+        previous.map((message) =>
+          message.id === assistantId ? { ...message, parts: [{ type: "text", text }] } : message,
+        ),
+      );
+    };
+    const pump = () => {
+      if (frame !== null) return;
+      const step = () => {
+        frame = null;
+        if (controller.signal.aborted) return;
+        const token = pendingTokens.shift();
+        if (!token) return;
+        reveal(token);
+        if (pendingTokens.length) frame = window.setTimeout(step, 40);
+      };
+      frame = window.setTimeout(step, pendingTokens.length > 1 ? 40 : 0);
+    };
+    try {
+      const messages = parseTurns({
+        messages: next.flatMap((message) => {
+          const textPart = message.parts.find((part) => part.type === "text");
+          if (!textPart || textPart.type !== "text") return [];
+          if (message.role !== "user" && message.role !== "assistant") return [];
+          return [{ role: message.role, text: textPart.text }];
+        }),
+      });
+      const response = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ messages }),
+        signal: controller.signal,
+      });
+      if (!response.ok || !response.headers.get("content-type")?.includes("text/event-stream")) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        setError(payload?.error ?? "The assistant request failed. No new analysis was added.");
+        return;
+      }
+      await readAskEvents(response, (event) => {
+        if (controller.signal.aborted) return;
+        if (event.type === "status") return;
+        if (event.type === "error") {
+          setError(event.text);
+          return;
+        }
+        const parts = event.text.match(/\s*\S+\s*/g);
+        pendingTokens.push(...(parts ?? [event.text]));
+        pump();
+      });
+      await new Promise<void>((resolve) => {
+        const wait = () => {
+          if (controller.signal.aborted || (pendingTokens.length === 0 && frame === null)) resolve();
+          else requestAnimationFrame(wait);
+        };
+        wait();
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      setError("The assistant request failed. No new analysis was added.");
+    } finally {
+      if (abortRef.current === controller) {
+        setPending(false);
+        setActivity(null);
+        setStreamingId(null);
+        textareaRef.current?.focus({ preventScroll: true });
+      }
+    }
   };
   return (
     <section
@@ -128,9 +266,9 @@ export function InvestigationAssistant() {
         </Button>
       </div>
       <div className="flex items-center justify-between border-b border-border bg-background/25 px-5 py-2.5 text-[10px]">
-        <span className="flex items-center gap-2 text-muted-foreground">
-          <span className="size-1.5 rounded-full bg-warning" />
-          Awaiting dataset analysis
+          <span className="flex items-center gap-2 text-muted-foreground">
+          <span className="size-1.5 rounded-full bg-success" />
+          Explains the merged log counts
         </span>
         <span className="font-mono text-muted-foreground">SAGA / ASSISTANT</span>
       </div>
@@ -181,12 +319,25 @@ export function InvestigationAssistant() {
                   <MessageContent>
                     {message.parts.map((part, i) =>
                       part.type === "text" ? (
-                        <MessageResponse key={i}>{part.text}</MessageResponse>
+                        <MessageResponse
+                          key={i}
+                          mode={message.id === streamingId ? "streaming" : "static"}
+                          isAnimating={message.id === streamingId}
+                        >
+                          {part.text}
+                        </MessageResponse>
                       ) : null,
                     )}
                   </MessageContent>
                 </Message>
               ))}
+              {activity && (
+                <Message from="assistant">
+                  <MessageContent>
+                    <p className="text-sm text-muted-foreground">{activity}</p>
+                  </MessageContent>
+                </Message>
+              )}
             </>
           )}
         </ConversationContent>
@@ -224,7 +375,8 @@ export function InvestigationAssistant() {
               Private investigation
             </span>
             <PromptInputSubmit
-              disabled={!input.trim() || !ready}
+              disabled={!input.trim() || !ready || pending}
+              status={pending ? "submitted" : undefined}
               aria-label="Send question"
               title="Send question"
             >
@@ -234,7 +386,7 @@ export function InvestigationAssistant() {
         </PromptInput>
         <div className="mt-2.5 flex items-center justify-center gap-1.5 text-[9px] text-muted-foreground">
           <CircleHelp className="size-2.5" />
-          AI service not connected · Verify AI responses against source data
+          Explains the merged-log counts · Does not detect attacks
         </div>
       </div>
       <AlertDialog open={clearOpen} onOpenChange={setClearOpen}>
@@ -249,8 +401,12 @@ export function InvestigationAssistant() {
             <AlertDialogCancel>Keep conversation</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
+                abortRef.current?.abort();
                 setMessages([]);
                 setError(null);
+                setActivity(null);
+                setStreamingId(null);
+                setPending(false);
                 setTimeout(() => textareaRef.current?.focus({ preventScroll: true }), 0);
               }}
             >
