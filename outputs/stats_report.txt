@@ -1,188 +1,356 @@
-scenarios: ['russellmitchell']
+scenarios: ['fox', 'harrison', 'russellmitchell', 'santos', 'shaw', 'wardbeck', 'wheeler']
 settings: window=1min burn_in=0 days 12:00:00 mad_floor=0.5 event_floor=0.15 rare_max=3 volume_weight=0.5
-reading russellmitchell_merged.jsonl
+reading merged.jsonl
 
 === funnel: alerts ===
-loaded:                         41,018
-after Suricata dedup:           34,578  (-6,440 duplicate copies)
-after baseline-rule filter:     19,366  (-15,212 known-benign)
+loaded:                      1,989,257
+after Suricata dedup:        1,736,402  (-252,855 duplicate copies)
+after baseline-rule filter:  1,518,760  (-217,642 known-benign)
 
 === tools ===
 tool
-wazuh       7904
-suricata    7407
-aminer      4055
+wazuh       1274036
+suricata     202117
+aminer        42607
 
 === entities per tool (should be the same internal IPs) ===
-aminer ['10.143.0.103', '10.143.0.35', '10.143.2.4', '172.19.128.1', '172.19.130.106', '172.19.130.4', '172.19.130.68', '172.19.131.174', '192.168.231.164', '192.168.231.254', '192.168.231.56']
-suricata ['10.143.0.103', '10.143.2.4', '172.19.128.1', '172.19.130.106', '172.19.130.4', '172.19.130.68', '172.19.131.174', '192.168.230.122', '192.168.230.4', '192.168.231.254']
-wazuh ['10.143.0.103', '10.143.2.4', '172.19.128.1', '172.19.130.106', '172.19.130.4', '172.19.130.68', '172.19.131.174', '192.168.231.164', '192.168.231.254', '192.168.231.56']
+aminer ['10.132.56.1', '10.132.56.171', '10.132.57.136', '10.143.0.103', '10.143.0.35', '10.143.2.4', '10.229.0.4', '10.229.2.25', '10.229.255.254', '10.237.0.166', '10.237.0.4', '10.237.1.238', '10.237.2.255', '10.35.32.1', '10.35.33.111', '10.35.35.204', '10.35.35.206', '10.38.242.195', '10.38.242.230', '10.38.243.24', '172.17.129.140', '172.17.130.196', '172.17.130.37', '172.17.131.81', '172.19.128.1']
+suricata ['10.132.56.1', '10.132.56.171', '10.132.56.204', '10.132.56.81', '10.132.57.136', '10.143.0.103', '10.143.2.4', '10.229.0.4', '10.229.255.254', '10.237.0.1', '10.237.0.166', '10.237.0.4', '10.237.1.238', '10.237.2.255', '10.35.33.111', '10.35.35.206', '10.38.242.1', '10.38.242.195', '10.38.242.230', '10.38.243.125', '10.38.243.24', '10.70.32.4', '10.70.63.254', '172.17.128.1', '172.17.129.140']
+wazuh ['10.132.56.171', '10.132.56.204', '10.132.57.136', '10.143.0.103', '10.143.2.4', '10.229.0.32', '10.229.2.25', '10.229.255.254', '10.237.0.166', '10.237.0.4', '10.237.2.255', '10.35.32.1', '10.35.33.111', '10.35.35.206', '10.38.242.195', '10.38.242.230', '10.38.243.125', '10.38.243.24', '10.70.33.128', '172.17.129.140', '172.17.130.196', '172.17.130.37', '172.17.131.81', '172.19.128.1', '172.19.130.106']
 
 === entity alert counts ===
 scenario         entity         
-russellmitchell  10.143.2.4         10971
-                 192.168.230.4       3993
-                 172.19.131.174      1416
-                 172.19.130.4        1333
-                 172.19.130.68       1119
-                 192.168.231.56       135
-                 172.19.130.106       118
-                 192.168.231.254       91
-                 172.19.128.1          64
-                 192.168.231.164       63
-                 10.143.0.103          28
-                 10.143.0.35           27
-                 192.168.230.122        8
+wheeler          192.168.2.114      430542
+harrison         192.168.131.215    424968
+fox              10.35.35.206       419963
+harrison         172.28.255.254      23603
+                 192.168.128.1       23592
+santos           10.229.255.254      13020
+                 192.168.104.1       12834
+wheeler          10.38.242.195       12484
+wardbeck         192.168.96.4        12470
+wheeler          10.38.243.24        12170
+                 172.27.180.4        11333
+santos           192.168.104.155     11173
+russellmitchell  10.143.2.4          10949
+santos           10.229.0.4          10379
+shaw             10.70.32.4           9249
+wheeler          10.38.243.125        6661
+wardbeck         172.21.241.88        6317
+harrison         172.28.192.4         6315
+shaw             192.168.188.179      6110
+fox              192.168.128.4        6049
+wardbeck         10.132.56.81         5864
+harrison         10.237.1.238         5155
+shaw             172.24.249.224       4161
+russellmitchell  192.168.230.4        4004
+fox              172.17.130.196       2925
 
 === burn-in safety (time to first attack; must exceed burn-in) ===
-russellmitchell  3 days 03:00:59  OK
+fox              2 days 05:19:06.318994045  OK
+harrison         4 days 07:04:52.243252039  OK
+russellmitchell  3 days 02:46:38.648067951  OK
+santos           2 days 07:16:07.271758080  OK
+shaw             3 days 20:47:57.763565063  OK
+wardbeck         1 days 21:10:22.330123901  OK
+wheeler          3 days 03:30:48.420331001  OK
 
 === top Wazuh rule groups ===
 rule_groups
-web                        7696
-accesslog                  7658
-attack                     7113
-recon                       560
-web_scan                    550
-authentication_failed       136
-dovecot                      96
-invalid_login                91
-syslog                       88
-pam                          39
-apache                       32
-access_denied                32
-access_control               30
-audit                        24
-audit_selinux                24
-authentication_success       21
-sshd                         16
-appsec                        6
-authentication_failures       5
-sudo                          2
-system_error                  1
-su                            1
+web                        1271732
+accesslog                  1268028
+attack                     1178400
+recon                        91281
+web_scan                     91246
+apache                        2030
+access_denied                 2030
+authentication_failed         1892
+appsec                        1674
+syslog                        1247
+dovecot                        969
+invalid_login                  943
+pam                            779
+access_control                 368
+authentication_success         130
+audit                           88
+audit_selinux                   88
+authentication_failures         67
+sshd                            66
+system_error                    56
+sudo                            27
+su                               7
 
 === category hits (0 = group names don't match the data) ===
-web_attack      7673
-auth_fail        173
-auth_success      21
-priv               3
-audit             54
-new_rule          52
-rare_rule         24
-aminer_novel    3912
+web_attack      1269681
+auth_fail          3989
+auth_success        130
+priv                 34
+audit               456
+new_rule            609
+rare_rule           173
+aminer_novel      41574
 
 === funnel: windows ===
-entity-windows: 74,178  (from 19,366 alerts)
+entity-windows: 703,502  (from 1,518,760 alerts)
 
 === top windows by z_max ===
-                                                           total      z_max      z_reason
-scenario        entity          window                                                   
-russellmitchell 10.143.2.4      2022-01-24 03:58:00+00:00   5953  53.340133  aminer_novel
-                                2022-01-24 03:57:00+00:00   4931  38.780741    high_level
-                172.19.130.68   2022-01-24 03:57:00+00:00     92  25.524276  aminer_novel
-                192.168.231.56  2022-01-24 03:57:00+00:00     44  24.757147  aminer_novel
-                172.19.130.4    2022-01-24 03:57:00+00:00     42  23.509070  aminer_novel
-                192.168.231.164 2022-01-24 03:56:00+00:00     34  23.509070  aminer_novel
-                172.19.130.4    2022-01-24 03:56:00+00:00     27  22.214697  aminer_novel
-                                2022-01-24 09:22:00+00:00     30  19.629593  aminer_novel
-                                2022-01-24 10:15:00+00:00     21  18.483925  aminer_novel
-                                2022-01-24 09:53:00+00:00     21  18.483925  aminer_novel
-                                2022-01-24 09:57:00+00:00     21  18.483925  aminer_novel
-                10.143.2.4      2022-01-24 04:38:00+00:00     13  15.985968  aminer_novel
-                172.19.130.4    2022-01-24 10:17:00+00:00     12  15.350567  aminer_novel
-                                2022-01-24 09:51:00+00:00     14  15.350567  aminer_novel
-                                2022-01-24 09:56:00+00:00     12  15.350567  aminer_novel
-                                2022-01-24 10:13:00+00:00     14  15.350567  aminer_novel
-                                2022-01-24 09:49:00+00:00     12  15.350567  aminer_novel
-                                2022-01-24 10:12:00+00:00     12  15.350567  aminer_novel
-                10.143.2.4      2022-01-24 04:37:00+00:00     14  14.648164  aminer_novel
-                192.168.231.164 2022-01-24 03:57:00+00:00     10  13.862944  aminer_novel
+                                                  total      z_max    z_reason
+scenario entity        window                                                 
+wheeler  192.168.2.114 2022-01-30 07:51:00+00:00  27238  50.588825  high_level
+                       2022-01-30 07:54:00+00:00  26781  50.483353  high_level
+                       2022-01-30 07:52:00+00:00  26788  50.414411  high_level
+                       2022-01-30 07:44:00+00:00  26277  50.337742  high_level
+                       2022-01-30 07:53:00+00:00  26722  50.327218  high_level
+                       2022-01-30 07:47:00+00:00  26208  50.320193  high_level
+                       2022-01-30 07:46:00+00:00  26199  50.263726  high_level
+                       2022-01-30 07:49:00+00:00  26165  50.221059  high_level
+                       2022-01-30 07:50:00+00:00  25977  50.181706  high_level
+                       2022-01-30 07:45:00+00:00  25654  50.170933  high_level
+                       2022-01-30 07:48:00+00:00  25501  50.120428  high_level
+                       2022-01-30 07:43:00+00:00  24704  49.918225  high_level
+                       2022-01-30 07:41:00+00:00  23207  49.522221  high_level
+                       2022-01-30 07:42:00+00:00  22967  49.386162  high_level
+                       2022-01-30 07:55:00+00:00  21833  49.080070  high_level
+fox      10.35.35.206  2022-01-18 12:21:00+00:00  22117  49.011999  high_level
+wheeler  192.168.2.114 2022-01-30 07:40:00+00:00  21752  49.007722  high_level
+fox      10.35.35.206  2022-01-18 12:32:00+00:00  21869  48.969099  high_level
+                       2022-01-18 12:36:00+00:00  21853  48.934579  high_level
+                       2022-01-18 12:35:00+00:00  21678  48.891176  high_level
 
 === phase recall by threshold (precision = flagged windows inside an attack) ===
-top  5.0%:  1,278 flagged | phases 10/10 | precision 6%
-top  2.0%:  1,278 flagged | phases 10/10 | precision 6%
-top  1.0%:  1,237 flagged | phases 10/10 | precision 6%
-top  0.5%:    164 flagged | phases 9/10 | precision 13%
+top  5.0%: 23,256 flagged | phases 68/69 | precision 3%
+top  2.0%: 11,116 flagged | phases 68/69 | precision 3%
+top  1.0%:  5,573 flagged | phases 65/69 | precision 5%
+top  0.5%:  2,485 flagged | phases 65/69 | precision 9%
 
 === best window inside each phase (real detection = attacked host + sensible reason) ===
-          scenario                 phase  rank     of  top_pct           entity     z        reason  alerts
-0  russellmitchell         network_scans     5  74178     0.01  192.168.231.164  23.5  aminer_novel      34
-1  russellmitchell         service_scans     2  74178     0.00       10.143.2.4  38.8    high_level    4931
-2  russellmitchell                  dirb     2  74178     0.00       10.143.2.4  38.8    high_level    4931
-3  russellmitchell                wpscan     1  74178     0.00       10.143.2.4  53.3  aminer_novel    5953
-4  russellmitchell              webshell     1  74178     0.00       10.143.2.4  53.3  aminer_novel    5953
-5  russellmitchell              cracking   165  74178     0.22   172.19.131.174   2.8     max_level       1
-6  russellmitchell         reverse_shell    19  74178     0.03       10.143.2.4  14.6  aminer_novel      14
-7  russellmitchell  privilege_escalation    12  74178     0.02       10.143.2.4  16.0  aminer_novel      13
-8  russellmitchell          service_stop    33  74178     0.04     10.143.0.103   7.3  aminer_novel       2
-9  russellmitchell               dnsteal    33  74178     0.04     10.143.0.103   7.3  aminer_novel       2
+           scenario                 phase  rank      of  top_pct           entity     z        reason  alerts
+0   russellmitchell         network_scans     1   73996     0.00       10.143.2.4  38.8    high_level    4931
+1   russellmitchell         service_scans     1   73996     0.00       10.143.2.4  38.8    high_level    4931
+2   russellmitchell                  dirb     1   73996     0.00       10.143.2.4  38.8    high_level    4931
+3   russellmitchell                wpscan     1   73996     0.00       10.143.2.4  38.8    high_level    4931
+4   russellmitchell              webshell     1   73996     0.00       10.143.2.4  38.8    high_level    4931
+5   russellmitchell              cracking     1   73996     0.00       10.143.2.4  38.8    high_level    4931
+6   russellmitchell         reverse_shell     3   73996     0.00       10.143.2.4  13.9      new_rule      14
+7   russellmitchell  privilege_escalation     3   73996     0.00       10.143.2.4  13.9      new_rule      14
+8   russellmitchell          service_stop  1233   73996     1.67     10.143.0.103   2.2  aminer_novel       2
+9   russellmitchell               dnsteal    41   73996     0.06    192.168.230.4   4.8     max_level      20
+10              fox         network_scans    20  111536     0.02     10.35.35.206  46.5    high_level   19426
+11              fox         service_scans    16  111536     0.01     10.35.35.206  48.6    high_level   20598
+12              fox                wpscan    16  111536     0.01     10.35.35.206  48.6    high_level   20598
+13              fox                  dirb     1  111536     0.00     10.35.35.206  49.0    high_level   22117
+14              fox              webshell     3  111536     0.00     10.35.35.206  48.9    high_level   21853
+15              fox              cracking     3  111536     0.00     10.35.35.206  48.9    high_level   21853
+16              fox         reverse_shell    22  111536     0.02     10.35.35.206  11.9      new_rule      18
+17              fox  privilege_escalation    22  111536     0.02     10.35.35.206  11.9      new_rule      18
+18              fox          service_stop    31  111536     0.03     10.35.33.111   7.3      new_rule       2
+19              fox               dnsteal    31  111536     0.03     10.35.33.111   7.3      new_rule       2
+20         harrison         network_scans    31  100800     0.03  192.168.131.215   9.2      new_rule       9
+21         harrison         service_scans    25  100800     0.02  192.168.131.215  46.4    high_level   15082
+22         harrison                wpscan    13  100800     0.01  192.168.131.215  46.8    high_level   15924
+23         harrison                  dirb     1  100800     0.00  192.168.131.215  47.1    high_level   16724
+24         harrison              webshell    15  100800     0.01  192.168.131.215  46.8    high_level   15876
+25         harrison              cracking    15  100800     0.01  192.168.131.215  46.8    high_level   15876
+26         harrison         reverse_shell    29  100800     0.03  192.168.131.215  20.3     rare_rule      46
+27         harrison  privilege_escalation    29  100800     0.03  192.168.131.215  20.3     rare_rule      46
+28         harrison          service_stop   265  100800     0.26   172.28.255.254   4.6    high_level       3
+29         harrison               dnsteal    31  100800     0.03     172.28.192.4   9.2    high_level      24
+30           santos         network_scans     1   74776     0.00  192.168.104.155  42.1    high_level   11079
+31           santos         service_scans     1   74776     0.00  192.168.104.155  42.1    high_level   11079
+32           santos                  dirb     1   74776     0.00  192.168.104.155  42.1    high_level   11079
+33           santos                wpscan     1   74776     0.00  192.168.104.155  42.1    high_level   11079
+34           santos              webshell     1   74776     0.00  192.168.104.155  42.1    high_level   11079
+35           santos              cracking     1   74776     0.00  192.168.104.155  42.1    high_level   11079
+36           santos         reverse_shell     2   74776     0.00  192.168.104.155  18.1      new_rule      46
+37           santos  privilege_escalation     2   74776     0.00  192.168.104.155  18.1      new_rule      46
+38           santos          service_stop     7   74776     0.01  192.168.104.218   9.2      new_rule       3
+39           santos               dnsteal     7   74776     0.01  192.168.104.218   9.2      new_rule       3
+40             shaw         network_scans     1  136336     0.00  192.168.188.179  38.7    high_level    4904
+41             shaw         service_scans     1  136336     0.00  192.168.188.179  38.7    high_level    4904
+42             shaw                wpscan     1  136336     0.00  192.168.188.179  38.7    high_level    4904
+43             shaw                  dirb     1  136336     0.00  192.168.188.179  38.7    high_level    4904
+44             shaw              webshell     1  136336     0.00  192.168.188.179  38.7    high_level    4904
+45             shaw              cracking     1  136336     0.00  192.168.188.179  38.7    high_level    4904
+46             shaw         reverse_shell     4  136336     0.00  192.168.188.179  13.9     rare_rule      28
+47             shaw  privilege_escalation     4  136336     0.00  192.168.188.179  13.9     rare_rule      28
+48             shaw          service_stop    24  136336     0.02    192.168.3.116   7.3      new_rule       2
+49             shaw               dnsteal    24  136336     0.02    192.168.3.116   7.3      new_rule       2
+50         wardbeck         network_scans     1   92794     0.00    172.21.241.88  38.2    high_level    5174
+51         wardbeck         service_scans     1   92794     0.00    172.21.241.88  38.2    high_level    5174
+52         wardbeck                wpscan     1   92794     0.00    172.21.241.88  38.2    high_level    5174
+53         wardbeck                  dirb     1   92794     0.00    172.21.241.88  38.2    high_level    5174
+54         wardbeck              webshell     1   92794     0.00    172.21.241.88  38.2    high_level    5174
+55         wardbeck              cracking     1   92794     0.00    172.21.241.88  38.2    high_level    5174
+56         wardbeck         reverse_shell     3   92794     0.00    172.21.241.88  11.9  auth_success      38
+57         wardbeck  privilege_escalation     3   92794     0.00    172.21.241.88  11.9  auth_success      38
+58         wardbeck          service_stop  2083   92794     2.24      10.132.56.1   0.0    high_level       0
+59         wardbeck               dnsteal   423   92794     0.46     192.168.96.4   3.9     max_level       4
+60          wheeler         network_scans    13  113264     0.01    192.168.2.114  49.5    high_level   23207
+61          wheeler         service_scans    13  113264     0.01    192.168.2.114  49.5    high_level   23207
+62          wheeler                wpscan     2  113264     0.00    192.168.2.114  50.5    high_level   26781
+63          wheeler                  dirb     1  113264     0.00    192.168.2.114  50.6    high_level   27238
+64          wheeler              webshell     2  113264     0.00    192.168.2.114  50.5    high_level   26781
+65          wheeler         reverse_shell    19  113264     0.02    192.168.2.114  18.5     rare_rule      28
+66          wheeler  privilege_escalation    19  113264     0.02    192.168.2.114  18.5     rare_rule      28
+67          wheeler          service_stop    36  113264     0.03    192.168.3.116   7.3      new_rule       2
+68          wheeler               dnsteal    36  113264     0.03    192.168.3.116   7.3      new_rule       2
+
+=== what the missed phases produced (few/none distinctive = invisible to IDS) ===
+
+--- russellmitchell / service_stop: 2 alerts (01-24 13:50:38 to 01-24 13:50:40) ---
+tool    entity        detector                                                      
+aminer  10.143.0.103  AMiner: New service_start parameter combination in Audit logs.    1
+                      AMiner: New service_stop parameter combination in Audit logs.     1
+
+--- harrison / service_stop: 87 alerts (02-08 09:14:59 to 02-08 09:15:01) ---
+tool      entity           detector                                                      
+suricata  192.168.128.1    20101: IDS event.                                                 18
+          172.28.255.254   20101: IDS event.                                                 17
+          10.237.1.238     20101: IDS event.                                                 16
+          172.28.192.4     20101: IDS event.                                                 16
+          10.237.0.166     20101: IDS event.                                                  8
+          10.237.2.255     20101: IDS event.                                                  8
+aminer    192.168.131.109  AMiner: New service_start parameter combination in Audit logs.     1
+                           AMiner: New service_stop parameter combination in Audit logs.      1
+suricata  10.237.0.1       20101: IDS event.                                                  1
+          172.28.255.254   20152: Multiple IDS alerts for same id.                            1
+
+--- wardbeck / service_stop: 0 alerts (01-20 22:12:27 to 01-20 22:12:29) ---
+
+--- wardbeck / dnsteal: 4 alerts (01-20 22:12:29 to 01-20 23:12:29) ---
+tool      entity        detector         
+suricata  192.168.96.4  20101: IDS event.    4
 
 === attacker view (alerts grouped by source IP across hosts) ===
-20 source IPs with >= 20 alerts, 114,120 actor-windows
-                                                           total  n_targets  n_ports      z_max    z_reason
-scenario        entity          window                                                                     
-russellmitchell 172.19.131.174  2022-01-24 03:57:00+00:00   5027          5        2  16.902107  web_attack
-                                2022-01-24 03:58:00+00:00   5953          1        0  15.993308  web_attack
-                192.168.230.122 2022-01-24 03:57:00+00:00    105          5        2   5.780744  web_attack
-                                2022-01-24 03:56:00+00:00     75          5        0   4.330733       total
-                172.19.130.4    2022-01-24 03:57:00+00:00      6          2        3   2.772589     n_ports
-                                2022-01-24 12:43:00+00:00      6          1        3   2.772589     n_ports
-                                2022-01-24 09:22:00+00:00      6          1        3   2.772589     n_ports
-                                2022-01-24 08:32:00+00:00      6          1        3   2.772589     n_ports
-                                2022-01-24 15:30:00+00:00      6          1        3   2.772589     n_ports
-                                2022-01-22 12:18:00+00:00      6          1        3   2.772589     n_ports
-                                2022-01-24 16:22:00+00:00      6          1        3   2.772589     n_ports
-                                2022-01-24 09:58:00+00:00      4          1        2   2.197225     n_ports
-                3.33.220.150    2022-01-23 19:46:00+00:00      4          2        1   2.197225   n_targets
-                13.107.42.14    2022-01-23 11:38:00+00:00      4          2        1   2.197225   n_targets
-                172.19.130.4    2022-01-23 16:47:00+00:00      4          1        2   2.197225     n_ports
+303 source IPs with >= 20 alerts, 2,139,432 actor-windows
+                                                   total  n_targets  n_ports      z_max    z_reason
+scenario entity         window                                                                     
+wheeler  10.38.243.125  2022-01-30 07:51:00+00:00  27239          2        1  20.400581  web_attack
+                        2022-01-30 07:52:00+00:00  26788          1        0  20.370404  web_attack
+                        2022-01-30 07:54:00+00:00  26781          1        0  20.366779  web_attack
+                        2022-01-30 07:53:00+00:00  26722          1        0  20.361936  web_attack
+                        2022-01-30 07:44:00+00:00  26278          2        1  20.330857  web_attack
+                        2022-01-30 07:47:00+00:00  26208          1        0  20.324923  web_attack
+                        2022-01-30 07:46:00+00:00  26200          2        1  20.323842  web_attack
+                        2022-01-30 07:49:00+00:00  26165          1        0  20.323147  web_attack
+                        2022-01-30 07:50:00+00:00  25977          1        0  20.304520  web_attack
+                        2022-01-30 07:45:00+00:00  25655          2        1  20.279884  web_attack
+                        2022-01-30 07:48:00+00:00  25501          1        0  20.267769  web_attack
+                        2022-01-30 07:43:00+00:00  24705          2        1  20.202709  web_attack
+                        2022-01-30 07:41:00+00:00  23207          1        0  20.077610  web_attack
+                        2022-01-30 07:42:00+00:00  22969          2        1  20.053179  web_attack
+fox      172.17.130.196 2022-01-18 12:21:00+00:00  22117          1        0  19.983088  web_attack
 
 === attacker view: best window inside each phase ===
-          scenario                 phase  rank      of  top_pct           entity     z      reason  alerts
-0  russellmitchell         network_scans     4  114120     0.00  192.168.230.122   4.3       total      75
-1  russellmitchell         service_scans     1  114120     0.00   172.19.131.174  16.9  web_attack    5027
-2  russellmitchell                  dirb     1  114120     0.00   172.19.131.174  16.9  web_attack    5027
-3  russellmitchell                wpscan     1  114120     0.00   172.19.131.174  16.9  web_attack    5027
-4  russellmitchell              webshell     2  114120     0.00   172.19.131.174  16.0  web_attack    5953
-5  russellmitchell              cracking   143  114120     0.13   172.19.131.174   1.4   n_targets       3
-6  russellmitchell         reverse_shell   143  114120     0.13   172.19.131.174   1.4   n_targets       3
-7  russellmitchell  privilege_escalation   143  114120     0.13   172.19.131.174   1.4   n_targets       3
-8  russellmitchell          service_stop   961  114120     0.84      10.143.3.65   0.0   n_targets       0
-9  russellmitchell               dnsteal    12  114120     0.01     172.19.130.4   2.2     n_ports       4
+           scenario                 phase  rank      of  top_pct           entity     z      reason  alerts
+0   russellmitchell         network_scans     1   96764     0.00   172.19.131.174  16.9  web_attack    5027
+1   russellmitchell         service_scans     1   96764     0.00   172.19.131.174  16.9  web_attack    5027
+2   russellmitchell                  dirb     1   96764     0.00   172.19.131.174  16.9  web_attack    5027
+3   russellmitchell                wpscan     1   96764     0.00   172.19.131.174  16.9  web_attack    5027
+4   russellmitchell              webshell     1   96764     0.00   172.19.131.174  16.9  web_attack    5027
+5   russellmitchell              cracking     1   96764     0.00   172.19.131.174  16.9  web_attack    5027
+6   russellmitchell         reverse_shell   143   96764     0.15   172.19.131.174   1.4   n_targets       3
+7   russellmitchell  privilege_escalation   143   96764     0.15   172.19.131.174   1.4   n_targets       3
+8   russellmitchell          service_stop   938   96764     0.97    13.107.21.200   0.0   n_targets       0
+9   russellmitchell               dnsteal    12   96764     0.01     172.19.130.4   2.2     n_ports       4
+10              fox         network_scans    20  230043     0.01   172.17.130.196  19.2  web_attack   19426
+11              fox         service_scans    16  230043     0.01   172.17.130.196  19.8  web_attack   20598
+12              fox                wpscan    16  230043     0.01   172.17.130.196  19.8  web_attack   20598
+13              fox                  dirb     1  230043     0.00   172.17.130.196  20.0  web_attack   22117
+14              fox              webshell     3  230043     0.00   172.17.130.196  20.0  web_attack   21853
+15              fox              cracking     3  230043     0.00   172.17.130.196  20.0  web_attack   21853
+16              fox         reverse_shell   170  230043     0.07   172.17.130.196   1.4   n_targets       1
+17              fox  privilege_escalation   170  230043     0.07   172.17.130.196   1.4   n_targets       1
+18              fox          service_stop   170  230043     0.07    192.168.128.4   1.4   n_targets       1
+19              fox               dnsteal   170  230043     0.07   172.17.130.196   1.4   n_targets       1
+20         harrison         network_scans    30  288000     0.01   172.28.192.242   5.3  web_attack      88
+21         harrison         service_scans    25  288000     0.01     10.237.1.238  19.2  web_attack   15081
+22         harrison                wpscan    13  288000     0.00     10.237.1.238  19.3  web_attack   15924
+23         harrison                  dirb     1  288000     0.00     10.237.1.238  19.4  web_attack   16724
+24         harrison              webshell    15  288000     0.01     10.237.1.238  19.3  web_attack   15876
+25         harrison              cracking    15  288000     0.01     10.237.1.238  19.3  web_attack   15876
+26         harrison         reverse_shell   113  288000     0.04  151.101.194.217   2.2     n_ports       4
+27         harrison  privilege_escalation   113  288000     0.04     10.237.2.255   2.2     n_ports       4
+28         harrison          service_stop   113  288000     0.04   18.211.116.125   2.2   n_targets       4
+29         harrison               dnsteal    40  288000     0.01     10.237.2.255   3.2     n_ports       8
+30           santos         network_scans     1  218576     0.00   172.21.128.119  17.9  web_attack   11079
+31           santos         service_scans     1  218576     0.00   172.21.128.119  17.9  web_attack   11079
+32           santos                  dirb     1  218576     0.00   172.21.128.119  17.9  web_attack   11079
+33           santos                wpscan     1  218576     0.00   172.21.128.119  17.9  web_attack   11079
+34           santos              webshell     1  218576     0.00   172.21.128.119  17.9  web_attack   11079
+35           santos              cracking     1  218576     0.00   172.21.128.119  17.9  web_attack   11079
+36           santos         reverse_shell   407  218576     0.19   172.21.129.224   1.4   n_targets       2
+37           santos  privilege_escalation   407  218576     0.19   172.21.128.119   1.4   n_targets       1
+38           santos          service_stop  1745  218576     0.80       10.229.0.4   0.4     n_rules       4
+39           santos               dnsteal   407  218576     0.19   172.21.129.224   1.4   n_targets       2
+40             shaw         network_scans     1  374924     0.00   172.24.249.224  16.9  web_attack    4904
+41             shaw         service_scans     1  374924     0.00   172.24.249.224  16.9  web_attack    4904
+42             shaw                wpscan     1  374924     0.00   172.24.249.224  16.9  web_attack    4904
+43             shaw                  dirb     1  374924     0.00   172.24.249.224  16.9  web_attack    4904
+44             shaw              webshell     1  374924     0.00   172.24.249.224  16.9  web_attack    4904
+45             shaw              cracking     1  374924     0.00   172.24.249.224  16.9  web_attack    4904
+46             shaw         reverse_shell    42  374924     0.01      10.70.32.61   3.7       total      41
+47             shaw  privilege_escalation    42  374924     0.01      10.70.32.61   3.7       total      41
+48             shaw          service_stop   676  374924     0.18       10.70.32.4   0.0   n_targets       0
+49             shaw               dnsteal   676  374924     0.18       10.70.32.4   0.0   n_targets       0
+50         wardbeck         network_scans     1  456832     0.00     10.132.56.81  16.8  web_attack    5207
+51         wardbeck         service_scans     1  456832     0.00     10.132.56.81  16.8  web_attack    5207
+52         wardbeck                wpscan     1  456832     0.00     10.132.56.81  16.8  web_attack    5207
+53         wardbeck                  dirb     1  456832     0.00     10.132.56.81  16.8  web_attack    5207
+54         wardbeck              webshell     1  456832     0.00     10.132.56.81  16.8  web_attack    5207
+55         wardbeck              cracking     1  456832     0.00     10.132.56.81  16.8  web_attack    5207
+56         wardbeck         reverse_shell   383  456832     0.08    10.132.56.171   1.4   n_targets       2
+57         wardbeck  privilege_escalation   383  456832     0.08    10.132.56.171   1.4   n_targets       2
+58         wardbeck          service_stop  1650  456832     0.36    10.132.56.171   0.0   n_targets       0
+59         wardbeck               dnsteal  1650  456832     0.36    10.132.56.171   0.0   n_targets       0
+60          wheeler         network_scans    13  474293     0.00    10.38.243.125  20.1  web_attack   23207
+61          wheeler         service_scans    13  474293     0.00    10.38.243.125  20.1  web_attack   23207
+62          wheeler                wpscan     3  474293     0.00    10.38.243.125  20.4  web_attack   26781
+63          wheeler                  dirb     1  474293     0.00    10.38.243.125  20.4  web_attack   27239
+64          wheeler              webshell     3  474293     0.00    10.38.243.125  20.4  web_attack   26781
+65          wheeler         reverse_shell   188  474293     0.04    10.38.242.195   3.2     n_ports       8
+66          wheeler  privilege_escalation   188  474293     0.04    10.38.242.195   3.2     n_ports       8
+67          wheeler          service_stop  7979  474293     1.68    10.38.242.195   0.0   n_targets       0
+68          wheeler               dnsteal   188  474293     0.04    10.38.242.195   3.2     n_ports       8
 
-=== incidents (FLAG_Z=4.0, merge gap=0 days 00:10:00) ===
-19,366 alerts -> 61 incidents; 15 overlap an attack phase (25%)
-[host + actor] russellmitchell: 61 incidents, phases covered 9/10  missed: ['cracking']
-[host only   ] russellmitchell: 59 incidents, phases covered 9/10  missed: ['cracking']
-[actor only  ] russellmitchell: 2 incidents, phases covered 5/10  missed: ['cracking', 'reverse_shell', 'privilege_escalation', 'service_stop', 'dnsteal']
+=== incidents (FLAG_Z=4.0, merge gap=0 days 00:10:00, budget=40/scenario, eval tolerance=0 days 00:02:00) ===
+1,518,760 alerts -> 1,772 incidents (130 overlap an attack phase); top 40 per scenario -> 280 handed off
+phases covered per scenario (all incidents / within budget / budget host-only / budget actor-only):
+       scenario  phases  incidents  all  budget  budget_host  budget_actor budget_precision     missed_in_budget
+            fox      10        159   10      10           10             6              30%                     
+       harrison      10        340   10       9            9             6              32%         service_stop
+russellmitchell      10        124    9       8            8             6              30% service_stop,dnsteal
+         santos      10        247   10      10           10             6              15%                     
+           shaw      10        220   10       8            8             6              12% service_stop,dnsteal
+       wardbeck      10        233    8       8            8             6              15% service_stop,dnsteal
+        wheeler       9        449    9       7            7             5              15% service_stop,dnsteal
 
 top 25 incidents:
-incident_id  kind        scenario          entity                     start  peak_z  n_alerts   top_reason                                           phases
-   INC-0001  host russellmitchell      10.143.2.4 2022-01-24T03:56:00+00:00    53.3     10886 aminer_novel network_scans,service_scans,dirb,wpscan,webshell
-   INC-0002  host russellmitchell   172.19.130.68 2022-01-24T03:56:00+00:00    25.5       101 aminer_novel          network_scans,service_scans,dirb,wpscan
-   INC-0003  host russellmitchell  192.168.231.56 2022-01-24T03:57:00+00:00    24.8        44 aminer_novel                        service_scans,dirb,wpscan
-   INC-0004  host russellmitchell    172.19.130.4 2022-01-24T03:56:00+00:00    23.5        69 aminer_novel          network_scans,service_scans,dirb,wpscan
-   INC-0005  host russellmitchell 192.168.231.164 2022-01-24T03:56:00+00:00    23.5        44 aminer_novel          network_scans,service_scans,dirb,wpscan
-   INC-0006  host russellmitchell    172.19.130.4 2022-01-24T09:22:00+00:00    19.6        30 aminer_novel                                                 
-   INC-0007  host russellmitchell    172.19.130.4 2022-01-24T09:47:00+00:00    18.5       102 aminer_novel                                                 
-   INC-0008  host russellmitchell    172.19.130.4 2022-01-24T10:09:00+00:00    18.5        72 aminer_novel                                                 
-   INC-0009 actor russellmitchell  172.19.131.174 2022-01-24T03:57:00+00:00    16.9     10980        total               service_scans,dirb,wpscan,webshell
-   INC-0010  host russellmitchell      10.143.2.4 2022-01-24T04:37:00+00:00    16.0        27 aminer_novel               reverse_shell,privilege_escalation
-   INC-0011  host russellmitchell    10.143.0.103 2022-01-24T03:57:00+00:00     9.2         4 aminer_novel                        service_scans,dirb,wpscan
-   INC-0012  host russellmitchell      10.143.2.4 2022-01-21T14:06:00+00:00     9.2         3 auth_success                                                 
-   INC-0013  host russellmitchell      10.143.2.4 2022-01-23T16:30:00+00:00     9.2         3 auth_success                                                 
-   INC-0014  host russellmitchell  172.19.130.106 2022-01-24T03:57:00+00:00     9.2         9     new_rule                        service_scans,dirb,wpscan
-   INC-0015  host russellmitchell    172.19.130.4 2022-01-21T15:05:00+00:00     9.2         8     new_rule                                                 
-   INC-0016  host russellmitchell    172.19.130.4 2022-01-23T16:24:00+00:00     9.2         3 auth_success                                                 
-   INC-0017  host russellmitchell  172.19.131.174 2022-01-23T14:54:00+00:00     9.2         7 aminer_novel                                                 
-   INC-0018  host russellmitchell 192.168.231.164 2022-01-22T14:07:00+00:00     9.2         6     new_rule                                                 
-   INC-0019  host russellmitchell    10.143.0.103 2022-01-24T00:00:00+00:00     7.3         2 aminer_novel                                                 
-   INC-0020  host russellmitchell    10.143.0.103 2022-01-24T13:50:00+00:00     7.3         2 aminer_novel                             service_stop,dnsteal
-   INC-0021  host russellmitchell      10.143.2.4 2022-01-24T00:00:00+00:00     7.3         2 aminer_novel                                                 
-   INC-0022  host russellmitchell    172.19.128.1 2022-01-24T00:00:00+00:00     7.3         2 aminer_novel                                                 
-   INC-0023  host russellmitchell  172.19.130.106 2022-01-24T00:01:00+00:00     7.3         2 aminer_novel                                                 
-   INC-0024  host russellmitchell    172.19.130.4 2022-01-22T08:05:00+00:00     7.3         2 aminer_novel                                                 
-   INC-0025  host russellmitchell   172.19.130.68 2022-01-22T06:25:00+00:00     7.3         2 aminer_novel                                                 
+incident_id  kind        scenario          entity                     start  peak_z  n_alerts top_reason                                                    phases  rank_in_scenario
+   INC-0001  host         wheeler   192.168.2.114 2022-01-30T07:39:00+00:00    50.6    430476 high_level          network_scans,service_scans,wpscan,dirb,webshell                 1
+   INC-0002  host             fox    10.35.35.206 2022-01-18T12:17:00+00:00    49.0    419862 high_level network_scans,service_scans,wpscan,dirb,webshell,cracking                 1
+   INC-0003  host        harrison 192.168.131.215 2022-02-08T07:28:00+00:00    47.1    424788 high_level               service_scans,wpscan,dirb,webshell,cracking                 1
+   INC-0004  host          santos 192.168.104.155 2022-01-17T11:21:00+00:00    42.1     11093 high_level network_scans,service_scans,dirb,wpscan,webshell,cracking                 1
+   INC-0005  host russellmitchell      10.143.2.4 2022-01-24T03:56:00+00:00    38.8     10889 high_level network_scans,service_scans,dirb,wpscan,webshell,cracking                 1
+   INC-0006  host            shaw 192.168.188.179 2022-01-29T14:38:00+00:00    38.7      6001 high_level network_scans,service_scans,wpscan,dirb,webshell,cracking                 1
+   INC-0007  host        wardbeck   172.21.241.88 2022-01-23T12:11:00+00:00    38.2      6041 high_level network_scans,service_scans,wpscan,dirb,webshell,cracking                 1
+   INC-0008 actor         wheeler   10.38.243.125 2022-01-30T07:39:00+00:00    20.4    430549      total          network_scans,service_scans,wpscan,dirb,webshell                 2
+   INC-0009  host        harrison 192.168.131.215 2022-02-08T08:36:00+00:00    20.3        59  rare_rule               cracking,reverse_shell,privilege_escalation                 2
+   INC-0010 actor             fox  172.17.130.196 2022-01-18T12:17:00+00:00    20.0    419923      total network_scans,service_scans,wpscan,dirb,webshell,cracking                 2
+   INC-0011 actor        harrison    10.237.1.238 2022-02-08T07:28:00+00:00    19.4    424785      total               service_scans,wpscan,dirb,webshell,cracking                 3
+   INC-0012  host         wheeler   192.168.2.114 2022-01-30T17:51:00+00:00    18.5        38  rare_rule                        reverse_shell,privilege_escalation                 3
+   INC-0013  host          santos 192.168.104.155 2022-01-17T11:58:00+00:00    18.1        46   new_rule               cracking,reverse_shell,privilege_escalation                 2
+   INC-0014 actor          santos  172.21.128.119 2022-01-17T11:21:00+00:00    17.9     11133      total network_scans,service_scans,dirb,wpscan,webshell,cracking                 3
+   INC-0016 actor            shaw  172.24.249.224 2022-01-29T14:38:00+00:00    16.9      6001      total network_scans,service_scans,wpscan,dirb,webshell,cracking                 2
+   INC-0015 actor russellmitchell  172.19.131.174 2022-01-24T03:57:00+00:00    16.9     10980      total network_scans,service_scans,dirb,wpscan,webshell,cracking                 2
+   INC-0017 actor        wardbeck    10.132.56.81 2022-01-23T12:11:00+00:00    16.8      6071      total network_scans,service_scans,wpscan,dirb,webshell,cracking                 2
+   INC-0018  host          santos   172.21.131.50 2022-01-16T08:23:00+00:00    14.6        65   new_rule                                                                           4
+   INC-0019  host            shaw   10.38.242.195 2022-01-27T06:39:00+00:00    14.6        18   new_rule                                                                           3
+   INC-0020  host russellmitchell      10.143.2.4 2022-01-24T04:37:00+00:00    13.9        27   new_rule               cracking,reverse_shell,privilege_escalation                 3
+   INC-0021  host            shaw 192.168.188.179 2022-01-29T15:20:00+00:00    13.9        46   new_rule               cracking,reverse_shell,privilege_escalation                 4
+   INC-0022  host            shaw 192.168.188.179 2022-01-27T03:25:00+00:00    13.0         7   new_rule                                                                           5
+   INC-0023  host             fox    10.35.35.206 2022-01-18T13:14:00+00:00    11.9        20   new_rule               cracking,reverse_shell,privilege_escalation                 3
+   INC-0024  host russellmitchell   172.19.130.68 2022-01-24T03:56:00+00:00    11.9       101   new_rule network_scans,service_scans,dirb,wpscan,webshell,cracking                 4
+   INC-0025  host          santos   172.21.131.50 2022-01-16T00:48:00+00:00    11.9         9   new_rule                                                                           5
 
 wrote /Users/matt/IdeaProjects/sagasecurity/outputs/: windows_z.parquet, incidents.json, incidents_eval.csv, stats_report.txt, plots/

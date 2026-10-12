@@ -1,0 +1,188 @@
+scenarios: ['wilson']
+settings: window=1min burn_in=0 days 12:00:00 mad_floor=0.5 event_floor=0.15 rare_max=3 volume_weight=0.5
+reading merged.jsonl
+
+=== funnel: alerts ===
+loaded:                        633,021
+after Suricata dedup:          557,920  (-75,101 duplicate copies)
+after baseline-rule filter:    490,300  (-67,620 known-benign)
+
+=== tools ===
+tool
+wazuh       427607
+suricata     54481
+aminer        8212
+
+=== entities per tool (should be the same internal IPs) ===
+aminer ['10.182.192.1', '10.182.193.181', '10.182.193.78', '10.182.194.196', '10.182.194.5', '172.26.240.200', '172.26.242.35', '172.26.243.167', '192.168.224.185', '192.168.239.254']
+suricata ['10.182.192.1', '10.182.193.181', '10.182.193.78', '10.182.194.196', '10.182.194.5', '172.26.240.200', '172.26.243.167', '192.168.224.4', '192.168.226.71', '192.168.239.254']
+wazuh ['10.182.192.1', '10.182.193.181', '10.182.193.78', '10.182.194.196', '10.182.194.5', '172.26.240.200', '172.26.243.167', '192.168.224.185', '192.168.226.198', '192.168.239.254']
+
+=== entity alert counts ===
+scenario  entity         
+wilson    172.26.243.167     434870
+          10.182.193.181      18146
+          10.182.194.5        18083
+          192.168.224.4       11932
+          10.182.193.78        6560
+          192.168.239.254       173
+          192.168.226.198       154
+          192.168.224.185       140
+          10.182.192.1          127
+          10.182.194.196         73
+          172.26.240.200         34
+          192.168.226.71          6
+          172.26.242.35           2
+
+=== burn-in safety (time to first attack; must exceed burn-in) ===
+wilson           3 days 05:35:38.204704046  OK
+
+=== top Wazuh rule groups ===
+rule_groups
+web                        427150
+accesslog                  425876
+attack                     395930
+recon                       30557
+web_scan                    30548
+apache                        661
+access_denied                 661
+appsec                        613
+authentication_failed         315
+syslog                        268
+pam                           177
+dovecot                       165
+invalid_login                 160
+access_control                 58
+authentication_success         55
+audit                          24
+audit_selinux                  24
+sshd                           24
+authentication_failures        13
+system_error                   11
+sudo                            8
+su                              1
+
+=== category hits (0 = group names don't match the data) ===
+web_attack      426487
+auth_fail          989
+auth_success        55
+priv                 9
+audit               82
+new_rule            82
+rare_rule           19
+aminer_novel      7983
+
+=== funnel: windows ===
+entity-windows: 108,160  (from 490,300 alerts)
+
+=== top windows by z_max ===
+                                                   total      z_max    z_reason
+scenario entity         window                                                 
+wilson   172.26.243.167 2022-02-07 11:04:00+00:00  22472  49.296621  high_level
+                        2022-02-07 11:02:00+00:00  21940  49.113847  high_level
+                        2022-02-07 11:05:00+00:00  22414  49.092757  high_level
+                        2022-02-07 11:17:00+00:00  22188  49.058873  high_level
+                        2022-02-07 11:14:00+00:00  22052  49.003441  high_level
+                        2022-02-07 11:10:00+00:00  21975  48.977701  high_level
+                        2022-02-07 11:09:00+00:00  21955  48.969099  high_level
+                        2022-02-07 11:18:00+00:00  21880  48.956175  high_level
+                        2022-02-07 11:03:00+00:00  21084  48.768123  high_level
+                        2022-02-07 11:00:00+00:00  21107  48.745908  high_level
+                        2022-02-07 11:06:00+00:00  21086  48.705734  high_level
+                        2022-02-07 11:16:00+00:00  21117  48.701255  high_level
+                        2022-02-07 11:07:00+00:00  21102  48.696773  high_level
+                        2022-02-07 11:15:00+00:00  21004  48.687800  high_level
+                        2022-02-07 11:13:00+00:00  20946  48.665316  high_level
+                        2022-02-07 11:08:00+00:00  20742  48.606499  high_level
+                        2022-02-07 11:12:00+00:00  20688  48.574611  high_level
+                        2022-02-07 11:01:00+00:00  20463  48.560899  high_level
+                        2022-02-07 11:11:00+00:00  20230  48.436198  high_level
+                        2022-02-07 11:19:00+00:00  16157  46.925224  high_level
+
+=== phase recall by threshold (precision = flagged windows inside an attack) ===
+top  5.0%:  7,570 flagged | phases 10/10 | precision 4%
+top  2.0%:  1,554 flagged | phases 10/10 | precision 6%
+top  1.0%:  1,433 flagged | phases 10/10 | precision 6%
+top  0.5%:    326 flagged | phases 10/10 | precision 14%
+
+=== best window inside each phase (real detection = attacked host + sensible reason) ===
+  scenario                 phase  rank      of  top_pct          entity     z      reason  alerts
+0   wilson         network_scans    10  108160     0.01  172.26.243.167  48.7  high_level   21107
+1   wilson         service_scans    10  108160     0.01  172.26.243.167  48.7  high_level   21107
+2   wilson                wpscan     4  108160     0.00  172.26.243.167  49.1  high_level   22188
+3   wilson                  dirb     1  108160     0.00  172.26.243.167  49.3  high_level   22472
+4   wilson              webshell     8  108160     0.01  172.26.243.167  49.0  high_level   21880
+5   wilson              cracking     8  108160     0.01  172.26.243.167  49.0  high_level   21880
+6   wilson         reverse_shell    23  108160     0.02  172.26.243.167  13.9   rare_rule      20
+7   wilson  privilege_escalation    23  108160     0.02  172.26.243.167  13.9   rare_rule      20
+8   wilson          service_stop    52  108160     0.05  172.26.240.200   7.3    new_rule       2
+9   wilson               dnsteal    27  108160     0.02   10.182.193.78   9.2  high_level      12
+
+=== attacker view (alerts grouped by source IP across hosts) ===
+67 source IPs with >= 20 alerts, 557,440 actor-windows
+                                                  total  n_targets  n_ports      z_max    z_reason
+scenario entity        window                                                                     
+wilson   10.182.193.78 2022-02-07 11:04:00+00:00  22472          1        0  20.015875  web_attack
+                       2022-02-07 11:05:00+00:00  22414          1        0  20.009108  web_attack
+                       2022-02-07 11:17:00+00:00  22188          1        0  19.994775  web_attack
+                       2022-02-07 11:14:00+00:00  22052          1        0  19.977770  web_attack
+                       2022-02-07 11:02:00+00:00  21940          1        0  19.971241  web_attack
+                       2022-02-07 11:10:00+00:00  21975          1        0  19.970688  web_attack
+                       2022-02-07 11:09:00+00:00  21955          1        0  19.969213  web_attack
+                       2022-02-07 11:18:00+00:00  21880          1        0  19.961915  web_attack
+                       2022-02-07 11:06:00+00:00  21086          1        0  19.891848  web_attack
+                       2022-02-07 11:16:00+00:00  21117          1        0  19.889931  web_attack
+                       2022-02-07 11:07:00+00:00  21102          1        0  19.888971  web_attack
+                       2022-02-07 11:00:00+00:00  21107          1        0  19.887147  web_attack
+                       2022-02-07 11:03:00+00:00  21084          1        0  19.884070  web_attack
+                       2022-02-07 11:15:00+00:00  21004          1        0  19.883396  web_attack
+                       2022-02-07 11:13:00+00:00  20946          1        0  19.872781  web_attack
+
+=== attacker view: best window inside each phase ===
+  scenario                 phase  rank      of  top_pct          entity     z      reason  alerts
+0   wilson         network_scans    12  557440     0.00   10.182.193.78  19.9  web_attack   21107
+1   wilson         service_scans    12  557440     0.00   10.182.193.78  19.9  web_attack   21107
+2   wilson                wpscan     3  557440     0.00   10.182.193.78  20.0  web_attack   22188
+3   wilson                  dirb     1  557440     0.00   10.182.193.78  20.0  web_attack   22472
+4   wilson              webshell     8  557440     0.00   10.182.193.78  20.0  web_attack   21880
+5   wilson              cracking     8  557440     0.00   10.182.193.78  20.0  web_attack   21880
+6   wilson         reverse_shell   161  557440     0.03  10.182.193.181   3.6     n_ports      10
+7   wilson  privilege_escalation   161  557440     0.03  10.182.193.181   3.6     n_ports      10
+8   wilson          service_stop   680  557440     0.12  10.182.193.181   2.8     n_ports       6
+9   wilson               dnsteal    33  557440     0.01  10.182.193.181   4.4     n_ports      16
+
+=== incidents (FLAG_Z=4.0, merge gap=0 days 00:10:00, budget=40/scenario, eval tolerance=0 days 00:02:00) ===
+490,300 alerts -> 504 incidents (31 overlap an attack phase); top 40 per scenario -> 40 handed off
+phases covered per scenario (all incidents / within budget / budget host-only / budget actor-only):
+scenario  phases  incidents  all  budget  budget_host  budget_actor budget_precision missed_in_budget
+  wilson      10        504   10      10           10             6              25%                 
+
+top 25 incidents:
+incident_id  kind scenario          entity                     start  peak_z  n_alerts   top_reason                                                    phases  rank_in_scenario
+   INC-0001  host   wilson  172.26.243.167 2022-02-07T10:59:00+00:00    49.3    434651   high_level network_scans,service_scans,wpscan,dirb,webshell,cracking                 1
+   INC-0002 actor   wilson   10.182.193.78 2022-02-07T10:59:00+00:00    20.0    434748        total network_scans,service_scans,wpscan,dirb,webshell,cracking                 2
+   INC-0003  host   wilson  172.26.243.167 2022-02-07T11:48:00+00:00    13.9        23    rare_rule               cracking,reverse_shell,privilege_escalation                 3
+   INC-0004  host   wilson    10.182.194.5 2022-02-07T10:59:00+00:00    11.9       105     new_rule                          network_scans,service_scans,dirb                 4
+   INC-0005  host   wilson  10.182.193.181 2022-02-04T19:52:00+00:00    10.7         6 auth_success                                                                           5
+   INC-0006  host   wilson  10.182.193.181 2022-02-05T19:44:00+00:00    10.7         6     new_rule                                                                           6
+   INC-0024  host   wilson  172.26.243.167 2022-02-05T19:44:00+00:00     9.2         6 auth_success                                                                          24
+   INC-0020  host   wilson  10.182.193.181 2022-02-08T08:07:00+00:00     9.2       386   high_level                                                                          20
+   INC-0021  host   wilson   10.182.193.78 2022-02-06T11:15:00+00:00     9.2        12   high_level                                                   dnsteal                21
+   INC-0022  host   wilson   10.182.193.78 2022-02-08T08:25:00+00:00     9.2        90   high_level                                                                          22
+   INC-0023  host   wilson  172.26.243.167 2022-02-03T19:51:00+00:00     9.2         3 auth_success                                                                          23
+   INC-0028  host   wilson   192.168.224.4 2022-02-07T10:57:00+00:00     9.2        54   high_level                          network_scans,service_scans,dirb                28
+   INC-0025  host   wilson 192.168.224.185 2022-02-07T10:59:00+00:00     9.2        44     new_rule                          network_scans,service_scans,dirb                25
+   INC-0027  host   wilson   192.168.224.4 2022-02-05T16:35:00+00:00     9.2        64   high_level                                                                          27
+   INC-0018  host   wilson  10.182.193.181 2022-02-06T13:56:00+00:00     9.2       243 auth_success                                                                          18
+   INC-0029  host   wilson   192.168.224.4 2022-02-08T15:23:00+00:00     9.2        80   high_level                                                                          29
+   INC-0019  host   wilson  10.182.193.181 2022-02-07T09:39:00+00:00     9.2        84   high_level                                                                          19
+   INC-0026  host   wilson   192.168.224.4 2022-02-05T06:14:00+00:00     9.2       160   high_level                                                                          26
+   INC-0017  host   wilson  10.182.193.181 2022-02-06T12:18:00+00:00     9.2       356   high_level                                                                          17
+   INC-0007  host   wilson  10.182.193.181 2022-02-03T17:51:00+00:00     9.2        84   high_level                                                                           7
+   INC-0015  host   wilson  10.182.193.181 2022-02-06T09:27:00+00:00     9.2       372 auth_success                                                                          15
+   INC-0014  host   wilson  10.182.193.181 2022-02-06T09:05:00+00:00     9.2        16   high_level                                                                          14
+   INC-0013  host   wilson  10.182.193.181 2022-02-05T13:46:00+00:00     9.2        77 auth_success                                                                          13
+   INC-0012  host   wilson  10.182.193.181 2022-02-05T08:41:00+00:00     9.2       218   high_level                                                                          12
+   INC-0011  host   wilson  10.182.193.181 2022-02-05T06:16:00+00:00     9.2        52   high_level                                                                          11
+
+wrote outputs/wilson_test/: windows_z.parquet, incidents.json, incidents_eval.csv, stats_report.txt, plots/
