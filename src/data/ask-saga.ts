@@ -1,6 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
+import { parseSelection, type QueueSelection } from "./incidents";
 
 type Turn = { role: "user" | "assistant"; text: string };
+
+export type AskContext = QueueSelection;
+
+/** Which incident run/scenario the evidence pack should describe. Optional; defaults server-side. */
+export function parseContext(input: unknown): AskContext {
+  if (typeof input !== "object" || input === null) return {};
+  const { run, scenario } = input as { run?: unknown; scenario?: unknown };
+  return parseSelection({ run: run ?? undefined, scenario: scenario ?? undefined });
+}
 
 export type AskSagaResult = { ok: true; text: string } | { ok: false; error: string };
 
@@ -30,8 +40,8 @@ export function parseTurns(input: unknown): Turn[] {
 }
 
 export const askSaga = createServerFn({ method: "POST" })
-  .validator((input: unknown) => ({ messages: parseTurns(input) }))
+  .validator((input: unknown) => ({ messages: parseTurns(input), context: parseContext(input) }))
   .handler(async ({ data }): Promise<AskSagaResult> => {
     const { answer } = await import("./ask-saga.server");
-    return answer(data.messages);
+    return answer(data.messages, data.context);
   });

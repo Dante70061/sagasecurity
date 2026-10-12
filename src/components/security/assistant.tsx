@@ -85,9 +85,9 @@ async function readAskEvents(response: Response, onEvent: (event: AskEvent) => v
   if (buffer.trim()) consume(buffer);
 }
 const suggestions = [
-  { text: "Triage every flagged incident", icon: ShieldCheck },
-  { text: "Why was the top-ranked incident flagged?", icon: Fingerprint },
-  { text: "Which incidents are a single alert?", icon: ChartNoAxesCombined },
+  { text: "Summarize the attack", icon: ShieldCheck },
+  { text: "Which IP is the attacker?", icon: Fingerprint },
+  { text: "What should I investigate next?", icon: ChartNoAxesCombined },
 ];
 
 function readHistory(): UIMessage[] {
@@ -112,7 +112,13 @@ function readHistory(): UIMessage[] {
   );
 }
 
-export function InvestigationAssistant() {
+export function InvestigationAssistant({
+  run,
+  scenario,
+}: {
+  run: string;
+  scenario: string | null;
+}) {
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [input, setInput] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -203,7 +209,7 @@ export function InvestigationAssistant() {
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ messages }),
+        body: JSON.stringify({ messages, run, ...(scenario ? { scenario } : {}) }),
         signal: controller.signal,
       });
       if (!response.ok || !response.headers.get("content-type")?.includes("text/event-stream")) {
@@ -277,7 +283,8 @@ export function InvestigationAssistant() {
                 <span className="kicker">Your investigation partner</span>
                 <h3 className="mt-2 text-xl font-medium">Clarity in every signal.</h3>
                 <p className="mx-auto mt-3 max-w-80 text-xs leading-6 text-muted-foreground">
-                  Ranked windows are ready. Ask for a verdict on each flagged incident.
+                  Ask about the ranked incidents: what happened, in what order, who did it, and what
+                  to check next.
                 </p>
               </div>
               <div className="assistant-suggestions">
@@ -357,7 +364,7 @@ export function InvestigationAssistant() {
         <PromptInput allowAttachments={false} maxFiles={0} onSubmit={({ text }) => send(text)}>
           <PromptInputTextarea
             aria-label="Ask Saga a security question"
-            placeholder="Ask Saga to triage a flagged incident..."
+            placeholder="Ask Saga about the ranked incidents..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             ref={textareaRef}
