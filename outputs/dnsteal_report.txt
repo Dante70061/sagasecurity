@@ -1,0 +1,98 @@
+DNS exfiltration diagnostic: 'dnsteal' hour vs same hour 24h earlier (dev scenarios only)
+
+
+=== russellmitchell: 328 alerts during, 528 same hour day before ===
+    tool                             host                     detector/signature  during  day_before  ratio
+suricata 34.238.185.255 -> 172.19.131.174    SURICATA TLS invalid record/traffic       4           0    5.0
+suricata 34.238.185.255 -> 172.19.131.174 SURICATA TLS invalid handshake message       4           0    5.0
+suricata  34.238.185.255 -> 192.168.230.4 SURICATA TLS invalid handshake message       4           0    5.0
+suricata  34.238.185.255 -> 192.168.230.4    SURICATA TLS invalid record/traffic       4           0    5.0
+suricata 172.19.131.174 -> 34.238.185.255 SURICATA TLS invalid handshake message       4           0    5.0
+suricata 172.19.131.174 -> 34.238.185.255    SURICATA TLS invalid record/traffic       4           0    5.0
+suricata  192.168.230.4 -> 34.238.185.255    SURICATA TLS invalid record/traffic       4           0    5.0
+suricata  192.168.230.4 -> 34.238.185.255 SURICATA TLS invalid handshake message       4           0    5.0
+suricata    172.19.130.4 -> 172.19.130.68    SURICATA TLS invalid record/traffic      50          12    3.9
+suricata    172.19.130.4 -> 172.19.130.68 SURICATA TLS invalid handshake message      50          12    3.9
+suricata    172.19.130.68 -> 172.19.130.4 SURICATA TLS invalid handshake message      50          12    3.9
+suricata    172.19.130.68 -> 172.19.130.4    SURICATA TLS invalid record/traffic      50          12    3.9
+suricata    34.209.131.4 -> 192.168.230.4    SURICATA TLS invalid record/traffic       2           0    3.0
+suricata    34.209.131.4 -> 192.168.230.4 SURICATA TLS invalid handshake message       2           0    3.0
+suricata    192.168.230.4 -> 34.209.131.4 SURICATA TLS invalid handshake message       2           0    3.0
+
+=== fox: 42 alerts during, 546 same hour day before ===
+    tool                           host                       detector/signature  during  day_before  ratio
+  aminer                192.168.255.254      AMiner: High entropy in DNS domain.       3           0    4.0
+  aminer                     10.35.32.1      AMiner: High entropy in DNS domain.       3           0    4.0
+suricata 172.17.130.196 -> 172.17.128.1 ET INFO Observed DNS Query to .cloud TLD       2           0    3.0
+suricata 44.236.255.83 -> 192.168.128.4   SURICATA TLS invalid handshake message       2           0    3.0
+suricata 44.236.255.83 -> 192.168.128.4      SURICATA TLS invalid record/traffic       2           0    3.0
+suricata 192.168.128.4 -> 44.236.255.83   SURICATA TLS invalid handshake message       2           0    3.0
+suricata 192.168.128.4 -> 44.236.255.83      SURICATA TLS invalid record/traffic       2           0    3.0
+suricata   128.2.42.10 -> 192.168.128.4   SURICATA TLS invalid handshake message       2           0    3.0
+suricata   128.2.42.10 -> 192.168.128.4      SURICATA TLS invalid record/traffic       2           0    3.0
+suricata   192.168.128.4 -> 128.2.42.10   SURICATA TLS invalid handshake message       2           0    3.0
+suricata   192.168.128.4 -> 128.2.42.10      SURICATA TLS invalid record/traffic       2           0    3.0
+suricata   128.2.42.52 -> 192.168.128.4   SURICATA TLS invalid handshake message       2           0    3.0
+suricata   128.2.42.52 -> 192.168.128.4      SURICATA TLS invalid record/traffic       2           0    3.0
+suricata   192.168.128.4 -> 128.2.42.52   SURICATA TLS invalid handshake message       2           0    3.0
+suricata   192.168.128.4 -> 128.2.42.52      SURICATA TLS invalid record/traffic       2           0    3.0
+
+=== harrison: 1879 alerts during, 2761 same hour day before ===
+    tool                           host                     detector/signature  during  day_before  ratio
+suricata     2.18.68.61 -> 10.237.1.238 SURICATA TLS invalid handshake message      18           0   19.0
+suricata     2.18.68.61 -> 10.237.1.238    SURICATA TLS invalid record/traffic      18           0   19.0
+suricata     2.18.68.61 -> 172.28.192.4    SURICATA TLS invalid record/traffic      18           0   19.0
+suricata     2.18.68.61 -> 172.28.192.4 SURICATA TLS invalid handshake message      18           0   19.0
+suricata     10.237.1.238 -> 2.18.68.61 SURICATA TLS invalid handshake message      18           0   19.0
+suricata     10.237.1.238 -> 2.18.68.61    SURICATA TLS invalid record/traffic      18           0   19.0
+suricata     172.28.192.4 -> 2.18.68.61    SURICATA TLS invalid record/traffic      18           0   19.0
+suricata     172.28.192.4 -> 2.18.68.61 SURICATA TLS invalid handshake message      18           0   19.0
+suricata 151.101.194.49 -> 172.28.192.4 SURICATA TLS invalid handshake message      14           0   15.0
+suricata 151.101.194.49 -> 172.28.192.4    SURICATA TLS invalid record/traffic      14           0   15.0
+suricata 151.101.194.49 -> 10.237.1.238 SURICATA TLS invalid handshake message      14           0   15.0
+suricata 151.101.194.49 -> 10.237.1.238    SURICATA TLS invalid record/traffic      14           0   15.0
+suricata 10.237.1.238 -> 151.101.194.49 SURICATA TLS invalid handshake message      14           0   15.0
+suricata 10.237.1.238 -> 151.101.194.49    SURICATA TLS invalid record/traffic      14           0   15.0
+suricata 172.28.192.4 -> 151.101.194.49    SURICATA TLS invalid record/traffic      14           0   15.0
+
+=== santos: 302 alerts during, 2014 same hour day before ===
+    tool                         host                     detector/signature  during  day_before  ratio
+suricata    81.3.192.66 -> 10.229.0.4 SURICATA TLS invalid handshake message       8           0    9.0
+suricata    81.3.192.66 -> 10.229.0.4    SURICATA TLS invalid record/traffic       8           0    9.0
+suricata    10.229.0.4 -> 81.3.192.66    SURICATA TLS invalid record/traffic       8           0    9.0
+suricata    10.229.0.4 -> 81.3.192.66 SURICATA TLS invalid handshake message       8           0    9.0
+suricata 204.79.197.203 -> 10.229.0.4    SURICATA TLS invalid record/traffic       8           0    9.0
+suricata 204.79.197.203 -> 10.229.0.4 SURICATA TLS invalid handshake message       8           0    9.0
+suricata 10.229.0.4 -> 204.79.197.203    SURICATA TLS invalid record/traffic       8           0    9.0
+suricata 10.229.0.4 -> 204.79.197.203 SURICATA TLS invalid handshake message       8           0    9.0
+suricata    81.3.192.80 -> 10.229.0.4 SURICATA TLS invalid handshake message       8           0    9.0
+suricata    81.3.192.80 -> 10.229.0.4    SURICATA TLS invalid record/traffic       8           0    9.0
+suricata    10.229.0.4 -> 81.3.192.80    SURICATA TLS invalid record/traffic       8           0    9.0
+suricata    10.229.0.4 -> 81.3.192.80 SURICATA TLS invalid handshake message       8           0    9.0
+suricata   20.44.10.122 -> 10.229.0.4 SURICATA TLS invalid handshake message       6           0    7.0
+suricata   20.44.10.122 -> 10.229.0.4    SURICATA TLS invalid record/traffic       6           0    7.0
+suricata   10.229.0.4 -> 20.44.10.122    SURICATA TLS invalid record/traffic       6           0    7.0
+
+=== shaw: 0 alerts during, 16 same hour day before ===
+(no alerts during the exfiltration hour)
+
+=== wardbeck: 8 alerts during, 8 same hour day before ===
+    tool                         host                     detector/signature  during  day_before  ratio
+suricata 34.213.76.57 -> 192.168.96.4    SURICATA TLS invalid record/traffic       2           2    1.0
+suricata 34.213.76.57 -> 192.168.96.4 SURICATA TLS invalid handshake message       2           2    1.0
+suricata 192.168.96.4 -> 34.213.76.57 SURICATA TLS invalid handshake message       2           2    1.0
+suricata 192.168.96.4 -> 34.213.76.57    SURICATA TLS invalid record/traffic       2           2    1.0
+
+=== wheeler: 105 alerts during, 509 same hour day before ===
+    tool                           host                                                       detector/signature  during  day_before  ratio
+suricata   10.38.243.125 -> 10.38.242.1                                   ET INFO Observed DNS Query to .biz TLD      24           0   25.0
+suricata   192.168.2.114 -> 192.168.0.1                                   ET INFO Observed DNS Query to .biz TLD       4           0    5.0
+  aminer                 172.27.183.254                AMiner: Unusual occurrence frequencies of DNS log events.       3           0    4.0
+  aminer                 172.27.181.174 AMiner: Unusual occurrence frequencies of Apache Access request methods.       1           0    2.0
+suricata  10.38.242.195 -> 10.38.243.24                                      SURICATA TLS invalid record/traffic      16          14    1.1
+suricata  10.38.242.195 -> 10.38.243.24                                   SURICATA TLS invalid handshake message      16          14    1.1
+suricata  10.38.243.24 -> 10.38.242.195                                      SURICATA TLS invalid record/traffic      16          14    1.1
+suricata  10.38.243.24 -> 10.38.242.195                                   SURICATA TLS invalid handshake message      16          14    1.1
+  aminer                 172.27.183.254                 AMiner: Unusual occurrence frequencies of DNS query IPs.       1           1    1.0
+suricata    10.38.243.24 -> 10.38.242.1                                   ET INFO Observed DNS Query to .biz TLD       6          10    0.6
+suricata 172.27.180.4 -> 172.27.183.254                                   ET INFO Observed DNS Query to .biz TLD       2          32    0.1
