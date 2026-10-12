@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Saga Security — investigate incident</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0F1C}
+a{color:#8CC8FF}a:hover{color:#C4E2FF}
+.num{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: #0B0F1C; color: #E6EAF5; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+
+<header style="border-bottom: 1px solid #1E2640; background: #0E1324">
+<div style="max-width: 1360px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 6px; text-decoration: none; font-size: 14px; padding: 10px 4px; min-height: 44px; box-sizing: border-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Overview</a>
+<span style="font-size: 18px; font-weight: 600">Investigate</span>
+</div>
+<div class="num" style="font-size: 12px; color: #9AA3BF">run wilson_test · scenario wilson · {{decidedCount}} of {{total}} incidents decided</div>
+</div>
+</header>
+
+<div style="max-width: 1360px; margin: 0 auto; padding: 24px 32px 64px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<nav aria-label="Incidents" style="flex: 1 1 300px; max-width: 360px; min-width: 0; background: #121831; border: 1px solid #222A44; border-radius: 14px; overflow: hidden">
+<div style="padding: 10px 16px; background: #171B2A; border-bottom: 1px solid #222A44; font-size: 12px; font-weight: 600; color: {{accent}}">Confirmed by model</div>
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{confirmed}}" as="item" hint-placeholder-count="8">
+<sc-if value="{{item.active}}" hint-placeholder-val="{{false}}">
+<button type="button" onClick="{{item.pick}}" style="text-align: left; background: #1A2140; border: none; border-bottom: 1px solid #1B2238; box-shadow: inset 3px 0 0 #8CC8FF; color: #E6EAF5; padding: 12px 16px; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 3px; min-height: 44px">
+<span style="display: flex; justify-content: space-between; gap: 8px; width: 100%"><span class="num" style="font-size: 13px; font-weight: 500">{{item.id}}</span><span class="num" style="font-size: 12px; color: #C9CFE0">p {{item.p}}</span></span>
+<span style="font-size: 12px; color: #C9CFE0">{{item.label}}</span>
+<span style="display: flex; justify-content: space-between; gap: 8px; width: 100%"><span class="num" style="font-size: 11px; color: #9AA3BF">{{item.entity}}</span><span style="font-size: 11px; color: {{accent}}">{{item.decisionLabel}}</span></span>
+</button>
+</sc-if>
+<sc-if value="{{item.inactive}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{item.pick}}" style="text-align: left; background: transparent; border: none; border-bottom: 1px solid #1B2238; color: #E6EAF5; padding: 12px 16px; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 3px; min-height: 44px">
+<span style="display: flex; justify-content: space-between; gap: 8px; width: 100%"><span class="num" style="font-size: 13px; font-weight: 500">{{item.id}}</span><span class="num" style="font-size: 12px; color: #C9CFE0">p {{item.p}}</span></span>
+<span style="font-size: 12px; color: #C9CFE0">{{item.label}}</span>
+<span style="display: flex; justify-content: space-between; gap: 8px; width: 100%"><span class="num" style="font-size: 11px; color: #9AA3BF">{{item.entity}}</span><span style="font-size: 11px; color: {{accent}}">{{item.decisionLabel}}</span></span>
+</button>
+</sc-if>
+</sc-for>
+</div>
+<div style="padding: 10px 16px; background: #141A2C; border-top: 1px solid #222A44; border-bottom: 1px solid #222A44; font-size: 12px; font-weight: 600; color: #AEB6CF">Below threshold · sample</div>
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{below}}" as="item" hint-placeholder-count="3">
+<sc-if value="{{item.active}}" hint-placeholder-val="{{false}}">
+<button type="button" onClick="{{item.pick}}" style="text-align: left; background: #1A2140; border: none; border-bottom: 1px solid #1B2238; box-shadow: inset 3px 0 0 #8CC8FF; color: #E6EAF5; padding: 12px 16px; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 3px; min-height: 44px">
+<span style="display: flex; justify-content: space-between; gap: 8px; width: 100%"><span class="num" style="font-size: 13px">{{item.id}}</span><span class="num" style="font-size: 12px; color: #9AA3BF">p {{item.p}}</span></span>
+<span style="font-size: 12px; color: #AEB6CF">{{item.label}}</span>
+<span style="font-size: 11px; color: {{accent}}">{{item.decisionLabel}}</span>
+</button>
+</sc-if>
+<sc-if value="{{item.inactive}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{item.pick}}" style="text-align: left; background: transparent; border: none; border-bottom: 1px solid #1B2238; color: #AEB6CF; padding: 12px 16px; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 3px; min-height: 44px">
+<span style="display: flex; justify-content: space-between; gap: 8px; width: 100%"><span class="num" style="font-size: 13px">{{item.id}}</span><span class="num" style="font-size: 12px; color: #9AA3BF">p {{item.p}}</span></span>
+<span style="font-size: 12px">{{item.label}}</span>
+<span style="font-size: 11px; color: {{accent}}">{{item.decisionLabel}}</span>
+</button>
+</sc-if>
+</sc-for>
+</div>
+</nav>
+
+<main aria-labelledby="inc" style="flex: 999 1 620px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+
+<section style="background: #121831; border: 1px solid #222A44; border-radius: 14px; padding: 22px 24px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<h1 id="inc" class="num" style="margin: 0; font-size: 22px; font-weight: 500">{{s.id}}</h1>
+<sc-if value="{{riskHigh}}" hint-placeholder-val="{{true}}">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #FFD2D2; background: #4A1E26; border-radius: 6px; padding: 5px 9px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg>High risk</span>
+</sc-if>
+<sc-if value="{{riskMed}}" hint-placeholder-val="{{false}}">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #FFE3B8; background: #43321A; border-radius: 6px; padding: 5px 9px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>Medium risk</span>
+</sc-if>
+<sc-if value="{{riskLow}}" hint-placeholder-val="{{false}}">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #C9CFE0; background: #232A42; border-radius: 6px; padding: 5px 9px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 3 3 5-6"></path></svg>Low risk</span>
+</sc-if>
+<span style="font-size: 12px; color: #9AA3BF">{{s.status}}</span>
+</div>
+<p style="margin: 12px 0 0; font-size: 20px; font-weight: 500; line-height: 1.35">{{s.headline}}</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 18px">
+<div style="background: #0F1426; border: 1px solid #222A44; border-radius: 10px; padding: 12px 14px"><div style="font-size: 11px; color: #9AA3BF">When (UTC)</div><div class="num" style="font-size: 13px; margin-top: 4px">{{s.when}}</div></div>
+<div style="background: #0F1426; border: 1px solid #222A44; border-radius: 10px; padding: 12px 14px"><div style="font-size: 11px; color: #9AA3BF">{{s.kind}}</div><div class="num" style="font-size: 13px; margin-top: 4px">{{s.entity}}</div></div>
+<div style="background: #0F1426; border: 1px solid #222A44; border-radius: 10px; padding: 12px 14px"><div style="font-size: 11px; color: #9AA3BF">Model · p_attack</div><div class="num" style="font-size: 13px; margin-top: 4px">{{s.p}}</div></div>
+<div style="background: #0F1426; border: 1px solid #222A44; border-radius: 10px; padding: 12px 14px"><div style="font-size: 11px; color: #9AA3BF">Alerts · peak z</div><div class="num" style="font-size: 13px; margin-top: 4px">{{s.alerts}} · {{s.z}}</div></div>
+</div>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px">
+<section aria-labelledby="wh" style="background: #121831; border: 1px solid #222A44; border-radius: 14px; padding: 20px 22px">
+<h2 id="wh" style="margin: 0 0 10px; font-size: 14px; font-weight: 600">What happened</h2>
+<p style="margin: 0; font-size: 14px; line-height: 1.65; color: #C9CFE0">{{s.summary}}</p>
+</section>
+<section aria-labelledby="rh" style="background: #121831; border: 1px solid #222A44; border-radius: 14px; padding: 20px 22px">
+<h2 id="rh" style="margin: 0 0 10px; font-size: 14px; font-weight: 600">Why it matters</h2>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.55; color: #C9CFE0">
+<sc-for list="{{s.risks}}" as="r" hint-placeholder-count="2"><li>{{r}}</li></sc-for>
+</ul>
+<sc-if value="{{hasBlind}}" hint-placeholder-val="{{false}}">
+<div style="margin-top: 14px; padding: 10px 12px; border-radius: 10px; background: #171B2A; font-size: 13px; color: #C9CFE0; line-height: 1.5"><span style="font-weight: 600; color: #E6EAF5">Not visible: </span>{{s.blind}}</div>
+</sc-if>
+</section>
+</div>
+
+<section aria-labelledby="th" style="background: #121831; border: 1px solid #222A44; border-radius: 14px; padding: 20px 22px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h2 id="th" style="margin: 0; font-size: 14px; font-weight: 600">Triage steps</h2>
+<span class="num" style="font-size: 12px; color: #9AA3BF">{{doneCount}} of {{stepCount}} done</span>
+</div>
+<div style="height: 4px; border-radius: 2px; background: #2A3352; margin: 12px 0 6px"><div style="width: {{donePct}}%; height: 4px; border-radius: 2px; background: #8CC8FF"></div></div>
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{steps}}" as="item" hint-placeholder-count="4">
+<label style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #1B2238; font-size: 14px; line-height: 1.5; cursor: pointer; min-height: 44px; box-sizing: border-box">
+<input type="checkbox" checked="{{item.checked}}" onChange="{{item.toggle}}" style="width: 18px; height: 18px; margin: 2px 0 0; accent-color: #8CC8FF; flex: none">
+<span style="color: #E6EAF5">{{item.text}}</span>
+</label>
+</sc-for>
+</div>
+</section>
+
+<section aria-labelledby="eh" style="background: #121831; border: 1px solid #222A44; border-radius: 14px; padding: 20px 22px; display: flex; flex-direction: column; gap: 18px">
+<h2 id="eh" style="margin: 0; font-size: 14px; font-weight: 600">Evidence</h2>
+<div>
+<h3 style="margin: 0 0 10px; font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: #9AA3BF">Why it was flagged</h3>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{reasons}}" as="r" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 120px 56px; gap: 12px; align-items: center; font-size: 13px">
+<span>{{r.t}}</span>
+<div style="height: 6px; border-radius: 3px; background: #2A3352"><div style="width: {{r.w}}%; height: 6px; border-radius: 3px; background: #8CC8FF"></div></div>
+<span class="num" style="text-align: right; color: #9AA3BF">{{r.zText}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div>
+<h3 style="margin: 0 0 10px; font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: #9AA3BF">Key alerts</h3>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{s.evidence}}" as="e" hint-placeholder-count="2">
+<div style="background: #0B0F1C; border: 1px solid #222A44; border-radius: 10px; padding: 10px 12px">
+<div class="num" style="font-size: 11px; color: #9AA3BF">{{e.meta}}</div>
+<div class="num" style="font-size: 12px; line-height: 1.6; margin-top: 4px; word-break: break-all">{{e.text}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{hasRules}}" hint-placeholder-val="{{true}}">
+<div>
+<h3 style="margin: 0 0 10px; font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: #9AA3BF">Top rules</h3>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px">
+<sc-for list="{{s.rules}}" as="ru" hint-placeholder-count="3">
+<div style="display: flex; justify-content: space-between; gap: 12px"><span>{{ru.t}}</span><span class="num" style="color: #9AA3BF">{{ru.c}}</span></div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</section>
+
+<section aria-labelledby="rlh" style="background: #121831; border: 1px solid #222A44; border-radius: 14px; padding: 20px 22px">
+<h2 id="rlh" style="margin: 0 0 12px; font-size: 14px; font-weight: 600">Related incidents</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{related}}" as="rl" hint-placeholder-count="2">
+<button type="button" onClick="{{rl.pick}}" style="background: #18203A; color: #E6EAF5; border: 1px solid #2A3352; border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 12px; min-height: 44px; cursor: pointer; text-align: left"><span class="num">{{rl.id}}</span> · {{rl.label}}</button>
+</sc-for>
+</div>
+</section>
+
+<section aria-labelledby="dh" style="background: #121831; border: 1px solid {{accent}}; border-radius: 14px; padding: 20px 22px">
+<h2 id="dh" style="margin: 0 0 12px; font-size: 14px; font-weight: 600">Your decision</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{decisions}}" as="d" hint-placeholder-count="3">
+<sc-if value="{{d.active}}" hint-placeholder-val="{{false}}">
+<button type="button" onClick="{{d.pick}}" aria-pressed="true" style="background: {{accent}}; color: #0B0F1C; border: 1px solid {{accent}}; border-radius: 8px; padding: 10px 16px; font-family: inherit; font-size: 13px; font-weight: 600; min-height: 44px; cursor: pointer">{{d.label}}</button>
+</sc-if>
+<sc-if value="{{d.inactive}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{d.pick}}" aria-pressed="false" style="background: transparent; color: #E6EAF5; border: 1px solid #2A3352; border-radius: 8px; padding: 10px 16px; font-family: inherit; font-size: 13px; min-height: 44px; cursor: pointer">{{d.label}}</button>
+</sc-if>
+</sc-for>
+</div>
+<label for="notes" style="display: block; font-size: 12px; color: #9AA3BF; margin: 16px 0 6px">Analyst notes</label>
+<textarea id="notes" value="{{noteText}}" onChange="{{onNotes}}" rows="3" placeholder="What you checked, who you contacted, why you decided…" style="width: 100%; box-sizing: border-box; background: #0B0F1C; color: #E6EAF5; border: 1px solid #2A3352; border-radius: 10px; padding: 12px 14px; font-family: inherit; font-size: 14px; line-height: 1.5; resize: vertical"></textarea>
+</section>
+
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#F2A23C","options":["#F2A23C","#F07A5A","#E9C46A"]},"$preview":{"width":1440,"height":1900}}'>
+const NMAP = {
+  meta: '02-07 10:59 UTC · wazuh · level 10 · src 10.182.193.78',
+  text: '"GET /HNAP1 HTTP/1.1" 404 · "Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)"'
+};
+
+const INCIDENTS = [
+  {
+    id: 'INC-0001', group: 'confirmed', risk: 'high', label: 'Web attack · intranet server',
+    entity: '172.26.243.167', kind: 'Host', when: 'Feb 7 · 10:59 – 11:21', p: '1.00', z: '49.3', alerts: '434,651',
+    headline: 'Web attack against the intranet server',
+    summary: 'In 22 minutes the intranet server received 434,651 alerts, almost all web-server 400 errors from one source whose user agent names the Nmap Scripting Engine. This is automated scanning and brute forcing of the web application, including the WordPress site.',
+    risks: ['This server is the attack target: 27 minutes later it shows privilege escalation (INC-0003).', 'A successful WordPress exploit gives the attacker code execution as the web server account.'],
+    blind: '',
+    steps: ['Pull Apache access logs for 10:50 – 11:30 and list requests that returned 200 in the middle of the 404 burst', 'Check /wp-content/uploads/ for files created on Feb 7', 'Find the true external source in the gateway NAT logs (see INC-0002)', 'Block or rate-limit that source at the edge', 'Review INC-0003 for follow-on activity'],
+    reasons: [{ t: 'High-severity alerts (Wazuh level 10+)', z: 49.3 }, { t: 'Alert volume far above its normal', z: 20.0 }, { t: 'AMiner alert volume far above normal', z: 16.1 }],
+    evidence: [NMAP],
+    rules: [{ t: '31101 · Web server 400 error code', c: '395,054' }, { t: '31151 · Multiple 400 errors from one source', c: '30,547' }, { t: 'AMiner · New request method in Apache log', c: '3,183' }],
+    related: ['INC-0002', 'INC-0003', 'INC-0004']
+  },
+  {
+    id: 'INC-0002', group: 'confirmed', risk: 'high', label: 'Attack entry point',
+    entity: '10.182.193.78', kind: 'Source IP', when: 'Feb 7 · 10:59', p: '1.00', z: '20.0', alerts: '434,748',
+    headline: 'All attack traffic entered through 10.182.193.78',
+    summary: 'This address is the source of 434,748 alerts across several hosts during the attack. It also runs the network IDS sensor and carried routine user logins days earlier, so it is most likely the gateway the attacker came through, not the attacker’s own machine.',
+    risks: ['Everything it forwards reaches internal servers.', 'The attacker’s real address is hidden behind it.'],
+    blind: 'The attacker’s true external address does not appear in these alerts.',
+    steps: ['Pull NAT and connection logs on the gateway for Feb 7, 10:30 – 12:00', 'Identify the external address behind the attack traffic and block it at the edge', 'Check which other internal hosts that address reached', 'Confirm the gateway itself was not compromised'],
+    reasons: [{ t: 'Alert volume far above its normal', z: 20.0 }, { t: 'Web-attack alerts from this source', z: null }],
+    evidence: [NMAP],
+    rules: [],
+    related: ['INC-0001', 'INC-0004', 'INC-0025']
+  },
+  {
+    id: 'INC-0003', group: 'confirmed', risk: 'high', label: 'Privilege escalation · intranet server',
+    entity: '172.26.243.167', kind: 'Host', when: 'Feb 7 · 11:48', p: '1.00', z: '13.9', alerts: '23',
+    headline: 'Privilege escalation on the intranet server',
+    summary: 'Twenty-seven minutes after the web attack, the web server account (www-data) switched to user jwilkinson and ran sudo as root. The alerts also reference the WordPress uploads directory, which points to a webshell.',
+    risks: ['Root access on a compromised server: the attacker can persist, read data and move to other hosts.', 'The jwilkinson account is compromised.'],
+    blind: 'How jwilkinson’s password was obtained. Offline password cracking leaves no trace in IDS alerts.',
+    steps: ['Isolate 172.26.243.167 from the network', 'Image the host before making changes', 'Disable jwilkinson and rotate every credential used on this server', 'Find and remove the webshell in wp-content/uploads/2022/02', 'Review auth.log and audit logs for 11:40 – 12:30'],
+    reasons: [{ t: 'Alert type rare across the whole network', z: 13.9 }, { t: 'Alert type never seen before on this host', z: null }],
+    evidence: [
+      { meta: '02-07 11:48 UTC · audit / auth', text: 'www-data (uid 33) → su jwilkinson' },
+      { meta: '02-07 11:48 UTC · auth', text: 'sudo to root · COMMAND=list' },
+      { meta: '02-07 · web root', text: '/var/www/intranet.hallbrown.wilson.com/wp-content/uploads/2022/02' }
+    ],
+    rules: [],
+    related: ['INC-0001', 'INC-0002']
+  },
+  {
+    id: 'INC-0004', group: 'confirmed', risk: 'medium', label: 'Scanned during the attack',
+    entity: '10.182.194.5', kind: 'Host', when: 'Feb 7 · 10:59', p: '1.00', z: '11.9', alerts: '105',
+    headline: 'Host probed during the attack',
+    summary: 'First-time alert types appeared on 10.182.194.5 in the same minute the scan began. That matches the host being probed by the same source.',
+    risks: ['Probing comes before exploitation; a vulnerable service here would be the next target.'],
+    blind: '',
+    steps: ['Check whether any request to this host succeeded', 'Confirm there are no new logins or processes after 10:59', 'If it was only scanned, close it together with INC-0002'],
+    reasons: [{ t: 'Alert type never seen before on this host', z: 11.9 }, { t: 'Alert volume far above its normal', z: null }],
+    evidence: [],
+    rules: [],
+    related: ['INC-0001', 'INC-0002']
+  },
+  {
+    id: 'INC-0006', group: 'confirmed', risk: 'medium', label: 'Admin login · likely routine',
+    entity: '10.182.193.181', kind: 'Host', when: 'Feb 5 · 19:44', p: '0.86', z: '10.7', alerts: '6',
+    headline: 'Admin login with first-time alert types',
+    summary: 'User ckhan logged in and used sudo two days before the attack, in the same minute as INC-0024. The model rated it 0.86, but nothing links it to the Feb 7 attack.',
+    risks: ['Probably planned maintenance, but an unexplained admin login is worth one confirmation.'],
+    blind: '',
+    steps: ['Confirm with ckhan or the change log that this was planned', 'If confirmed, dismiss as routine', 'If not, treat it as suspicious access and reset the account'],
+    reasons: [{ t: 'Alert type never seen before on this host', z: 10.7 }, { t: 'Alert type rare across the whole network', z: null }],
+    evidence: [],
+    rules: [],
+    related: ['INC-0024']
+  },
+  {
+    id: 'INC-0024', group: 'confirmed', risk: 'medium', label: 'Admin login · likely routine',
+    entity: '172.26.243.167', kind: 'Host', when: 'Feb 5 · 19:44', p: '0.86', z: '9.2', alerts: '6',
+    headline: 'Routine admin session on the intranet server',
+    summary: 'User ckhan logged in and ran routine commands (tail /var/log/syslog), in the same minute as INC-0006. Far outside the attack window.',
+    risks: ['Low on its own; flagged because successful logins are rare on this host.'],
+    blind: '',
+    steps: ['Confirm the session with ckhan or the change log', 'Dismiss as routine if confirmed'],
+    reasons: [{ t: 'Successful login, rare for this host', z: 9.2 }, { t: 'Alert type never seen before on this host', z: null }],
+    evidence: [],
+    rules: [],
+    related: ['INC-0006']
+  },
+  {
+    id: 'INC-0025', group: 'confirmed', risk: 'medium', label: 'Scanned during the attack',
+    entity: '192.168.224.185', kind: 'Host', when: 'Feb 7 · 10:59', p: '1.00', z: '9.2', alerts: '44',
+    headline: 'Host probed during the attack',
+    summary: 'First-time alert types in the minute the scan began, consistent with probing by the same source.',
+    risks: ['Probing comes before exploitation.'],
+    blind: '',
+    steps: ['Check whether any request to this host succeeded', 'If it was only scanned, close it together with INC-0002'],
+    reasons: [{ t: 'Alert type never seen before on this host', z: 9.2 }],
+    evidence: [],
+    rules: [],
+    related: ['INC-0002']
+  },
+  {
+    id: 'INC-0028', group: 'confirmed', risk: 'medium', label: 'High-severity alerts at scan start',
+    entity: '192.168.224.4', kind: 'Host', when: 'Feb 7 · 10:57', p: '1.00', z: '9.2', alerts: '54',
+    headline: 'High-severity alerts as the scan began',
+    summary: 'A burst of high-severity alerts two minutes before the web attack, consistent with the start of the scan.',
+    risks: ['Part of the same attack timeline; mainly useful for establishing when it started.'],
+    blind: '',
+    steps: ['Read the high-severity alerts and confirm they belong to the scan', 'Close together with INC-0002 if so'],
+    reasons: [{ t: 'High-severity alerts (Wazuh level 10+)', z: 9.2 }],
+    evidence: [],
+    rules: [],
+    related: ['INC-0001', 'INC-0002']
+  },
+  {
+    id: 'INC-0011', group: 'below', risk: 'low', label: 'Recurring alerts · 10.182.193.181',
+    entity: '10.182.193.181', kind: 'Host', when: 'Feb 5 · 06:16', p: '0.12', z: '9.2', alerts: '52',
+    headline: 'Recurring high-severity burst',
+    summary: 'One of many similar daily bursts on this host. The model scored it 0.12: it does not look like attack activity.',
+    risks: ['Low. The same pattern repeats on ordinary days.'],
+    blind: '',
+    steps: ['No action unless it starts showing new alert types'],
+    reasons: [{ t: 'High-severity alerts (Wazuh level 10+)', z: 9.2 }],
+    evidence: [],
+    rules: [],
+    related: []
+  },
+  {
+    id: 'INC-0017', group: 'below', risk: 'low', label: 'Recurring alerts · 10.182.193.181',
+    entity: '10.182.193.181', kind: 'Host', when: 'Feb 6 · 12:18', p: '0.03', z: '9.2', alerts: '356',
+    headline: 'Recurring high-severity burst',
+    summary: 'Another of this host’s routine bursts. The model scored it 0.03.',
+    risks: ['Low. Routine for this host.'],
+    blind: '',
+    steps: ['No action; consider tuning the rule if it keeps recurring'],
+    reasons: [{ t: 'High-severity alerts (Wazuh level 10+)', z: 9.2 }],
+    evidence: [],
+    rules: [],
+    related: []
+  },
+  {
+    id: 'INC-0021', group: 'below', risk: 'low', label: 'TLS noise',
+    entity: '10.182.193.78', kind: 'Host', when: 'Feb 6 · 11:15', p: '0.01', z: '9.2', alerts: '12',
+    headline: 'Invalid TLS handshakes (routine HTTPS noise)',
+    summary: 'Suricata flagged invalid TLS handshakes to an external service, and Wazuh raised their severity because the same signature repeated. The model scored it 0.01.',
+    risks: ['Low. Common with HTTPS traffic to cloud services.'],
+    blind: '',
+    steps: ['No action', 'Consider tuning Wazuh rules 20152 and 20162 for this signature'],
+    reasons: [{ t: 'High-severity alerts (Wazuh level 10+)', z: 9.2 }],
+    evidence: [{ meta: '02-06 11:15 UTC · suricata', text: 'SURICATA TLS invalid handshake message' }],
+    rules: [],
+    related: []
+  }
+];
+
+const DECISIONS = [['escalate', 'Escalate'], ['monitor', 'Monitor'], ['dismiss', 'Dismiss as routine']];
+
+class Component extends DCLogic {
+  renderVals() {
+    const st = this.state || {};
+    const selId = st.sel || 'INC-0001';
+    const checks = st.checks || {};
+    const decided = st.decisions || {};
+    const notes = st.notes || {};
+    const labelOf = (id) => { const d = DECISIONS.find((x) => x[0] === decided[id]); return d ? d[1] : ''; };
+    const pickFor = (id) => () => this.setState({ sel: id });
+    const row = (i) => ({
+      id: i.id, label: i.label, entity: i.entity, p: i.p,
+      active: i.id === selId, inactive: i.id !== selId,
+      decisionLabel: labelOf(i.id), pick: pickFor(i.id)
+    });
+    const s = INCIDENTS.find((i) => i.id === selId) || INCIDENTS[0];
+    const done = checks[s.id] || [];
+    const steps = s.steps.map((text, k) => ({
+      text, checked: !!done[k],
+      toggle: () => {
+        const all = Object.assign({}, this.state && this.state.checks);
+        const arr = (all[s.id] || []).slice();
+        arr[k] = !arr[k];
+        all[s.id] = arr;
+        this.setState({ checks: all });
+      }
+    }));
+    const doneCount = steps.filter((x) => x.checked).length;
+    return {
+      accent: this.props.accent ?? '#F2A23C',
+      total: INCIDENTS.length,
+      decidedCount: INCIDENTS.filter((i) => decided[i.id]).length,
+      confirmed: INCIDENTS.filter((i) => i.group === 'confirmed').map(row),
+      below: INCIDENTS.filter((i) => i.group === 'below').map(row),
+      s: Object.assign({}, s, { status: s.group === 'confirmed' ? 'Confirmed by model' : 'Below threshold' }),
+      riskHigh: s.risk === 'high', riskMed: s.risk === 'medium', riskLow: s.risk === 'low',
+      hasBlind: !!s.blind, hasRules: s.rules.length > 0,
+      steps, doneCount, stepCount: steps.length,
+      donePct: steps.length ? Math.round((doneCount / steps.length) * 100) : 0,
+      reasons: s.reasons.map((r) => ({
+        t: r.t, w: r.z == null ? 0 : Math.min(100, Math.round((r.z / 50) * 100)),
+        zText: r.z == null ? '' : 'z ' + r.z.toFixed(1)
+      })),
+      related: s.related.map((id) => {
+        const r = INCIDENTS.find((i) => i.id === id);
+        return { id, label: r ? r.label : '', pick: pickFor(id) };
+      }),
+      decisions: DECISIONS.map(([key, label]) => ({
+        label, active: decided[s.id] === key, inactive: decided[s.id] !== key,
+        pick: () => {
+          const all = Object.assign({}, this.state && this.state.decisions);
+          all[s.id] = all[s.id] === key ? undefined : key;
+          this.setState({ decisions: all });
+        }
+      })),
+      noteText: notes[s.id] || '',
+      onNotes: (e) => {
+        const all = Object.assign({}, this.state && this.state.notes);
+        all[s.id] = e.target.value;
+        this.setState({ notes: all });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
