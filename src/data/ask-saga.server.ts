@@ -222,7 +222,10 @@ export async function streamAnswer(
     evidence = await evidencePackFor(context.run, context.scenario, EVIDENCE_TOP_N);
   } catch (error) {
     console.error(error);
-    write({ type: "error", text: "The incident evidence could not be read. No new analysis was added." });
+    write({
+      type: "error",
+      text: "The incident evidence could not be read. No new analysis was added.",
+    });
     return;
   }
 

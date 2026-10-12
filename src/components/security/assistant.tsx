@@ -86,7 +86,7 @@ async function readAskEvents(response: Response, onEvent: (event: AskEvent) => v
 }
 const suggestions = [
   { text: "Summarize the attack", icon: ShieldCheck },
-  { text: "Which IP is the attacker?", icon: Fingerprint },
+  { text: "Which IP is the entry point?", icon: Fingerprint },
   { text: "What should I investigate next?", icon: ChartNoAxesCombined },
 ];
 
@@ -115,9 +115,12 @@ function readHistory(): UIMessage[] {
 export function InvestigationAssistant({
   run,
   scenario,
+  prefill = null,
 }: {
   run: string;
   scenario: string | null;
+  /** Text placed in the composer (not sent) when the page opens with ?ask=INC-xxxx. */
+  prefill?: string | null;
 }) {
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [input, setInput] = useState("");
@@ -138,6 +141,11 @@ export function InvestigationAssistant({
     setReady(true);
     textareaRef.current?.focus({ preventScroll: true });
   }, []);
+  useEffect(() => {
+    if (!prefill) return;
+    setInput(prefill);
+    textareaRef.current?.focus({ preventScroll: true });
+  }, [prefill]);
   useEffect(() => {
     if (!ready) return;
     try {
@@ -230,14 +238,19 @@ export function InvestigationAssistant({
       });
       await new Promise<void>((resolve) => {
         const wait = () => {
-          if (controller.signal.aborted || (pendingTokens.length === 0 && frame === null)) resolve();
+          if (controller.signal.aborted || (pendingTokens.length === 0 && frame === null))
+            resolve();
           else requestAnimationFrame(wait);
         };
         wait();
       });
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
-      setError(error instanceof Error ? error.message : "The assistant request failed. No new analysis was added.");
+      setError(
+        error instanceof Error
+          ? error.message
+          : "The assistant request failed. No new analysis was added.",
+      );
     } finally {
       if (abortRef.current === controller) {
         setPending(false);
@@ -248,10 +261,7 @@ export function InvestigationAssistant({
     }
   };
   return (
-    <section
-      className="panel assistant-panel"
-      aria-label="AI investigation assistant"
-    >
+    <section className="panel assistant-panel" aria-label="AI investigation assistant">
       <div className="panel-heading">
         <div className="flex items-center gap-2.5">
           <img src={sagaMark} className="h-5 w-5" alt="" />
@@ -310,7 +320,6 @@ export function InvestigationAssistant({
             </div>
           ) : (
             <>
-
               {messages.map((message) => (
                 <Message key={message.id} from={message.role}>
                   <MessageContent>
@@ -381,7 +390,6 @@ export function InvestigationAssistant({
             </PromptInputSubmit>
           </PromptInputFooter>
         </PromptInput>
-
       </div>
       <AlertDialog open={clearOpen} onOpenChange={setClearOpen}>
         <AlertDialogContent>
