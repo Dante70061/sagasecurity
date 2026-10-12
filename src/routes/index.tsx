@@ -25,13 +25,13 @@ export const Route = createFileRoute("/")({
   loader: () => loadIncidentQueue({ data: { run: DEFAULT_RUN } }),
   head: () => ({
     meta: [
-      { title: "Saga Security | Incident triage" },
+      { title: "Saga Security · Triage" },
       {
         name: "description",
         content:
           "Your AI-assisted security investigation workspace. Review ranked, model-scored incidents and ask the assistant to explain them.",
       },
-      { property: "og:title", content: "Saga Security | Incident triage" },
+      { property: "og:title", content: "Saga Security · Triage" },
       {
         property: "og:description",
         content:
