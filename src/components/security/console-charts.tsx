@@ -8,6 +8,8 @@ import type { QueueView, RankedIncident, SensorCounts } from "@/data/incidents";
 import { clockUtc, shortLabel } from "@/data/triage";
 
 const n = (v: number) => v.toLocaleString("en-US");
+const hhmm = (ms: number) => new Date(ms).toISOString().slice(11, 16);
+const plainLabel = (i: RankedIncident) => shortLabel(i).replace(/^(host|source IP) · /, "");
 
 const SENSORS: { key: keyof SensorCounts; label: string; color: string }[] = [
   { key: "wazuh", label: "Wazuh", color: "var(--sensor-wazuh)" },
@@ -27,35 +29,39 @@ function busiestDay(incidents: RankedIncident[]): { day: string; count: number }
 
 export function FunnelTiles({ view }: { view: QueueView }) {
   const s = view.summary;
-  const confirmed = view.incidents.filter((i) => i.group === "confirmed");
-  const peak = busiestDay(confirmed);
+  const cleaned =
+    s?.raw_alerts && s.raw_alerts > 0 ? Math.round((1 - s.alerts / s.raw_alerts) * 100) : null;
   const tiles = [
     {
       label: "Raw alerts",
       value: s?.raw_alerts != null ? n(s.raw_alerts) : "—",
-      hint: "Wazuh · Suricata · AMiner",
+      hint: "3 sensors",
+      title: "Wazuh, Suricata and AMiner alerts as collected",
     },
     {
       label: "After cleanup",
       value: s ? n(s.alerts) : "—",
-      hint: "duplicates and known-benign rules removed",
+      hint: cleaned != null ? `−${cleaned}% duplicates and noise` : "duplicates and noise removed",
+      title: "Suricata duplicates and known-benign rules removed",
     },
     {
       label: "Incidents",
       value: n(view.counts.incidents),
-      hint: "anomalous minutes merged by host or source IP",
+      hint: `top ${n(view.counts.incidents)} by anomaly score`,
+      title: "Unusual minutes merged by host or source IP, ranked by peak z-score",
     },
     {
-      label: "Confirmed by model",
+      label: "Needs review",
       value: n(view.counts.confirmed),
-      hint: peak ? `p_attack ≥ 0.5 · ${peak.count} on ${peak.day.slice(5)}` : "p_attack ≥ 0.5",
+      hint: "attack probability ≥ 50%",
+      title: "Incidents the window model scored at p_attack ≥ 0.5",
       accent: true,
     },
   ];
   return (
     <section aria-label="Alert funnel" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       {tiles.map((t) => (
-        <div key={t.label} className={`tile ${t.accent ? "tile-accent" : ""}`}>
+        <div key={t.label} className={`tile ${t.accent ? "tile-accent" : ""}`} title={t.title}>
           <div
             className="tile-label"
             style={t.accent ? { color: "var(--brand-accent)" } : undefined}
@@ -93,9 +99,18 @@ export function AttackTimeline({ view }: { view: QueueView }) {
     <section aria-labelledby="timeline-title" className="card px-6 py-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 id="timeline-title" className="section-title">
-          Attack window · {date} (UTC)
+          Timeline · {date} (UTC)
         </h2>
-        <span className="text-xs text-muted-foreground">confirmed incidents in time order</span>
+        <span className="flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-3 rounded-sm" style={{ background: "var(--primary)" }} />
+            host
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-3 rounded-sm" style={{ background: "var(--brand-accent)" }} />
+            source IP
+          </span>
+        </span>
       </div>
       <div
         className="relative mt-4 h-14"
@@ -120,12 +135,8 @@ export function AttackTimeline({ view }: { view: QueueView }) {
             />
           );
         })}
-        <span className="num absolute left-0 top-0 text-[11px] text-[#7c86a3]">
-          {clockUtc(new Date(t0).toISOString()).slice(6)}
-        </span>
-        <span className="num absolute right-0 top-0 text-[11px] text-[#7c86a3]">
-          {clockUtc(new Date(t1).toISOString()).slice(6)}
-        </span>
+        <span className="num absolute left-0 top-0 text-[11px] text-[#7c86a3]">{hhmm(t0)}</span>
+        <span className="num absolute right-0 top-0 text-[11px] text-[#7c86a3]">{hhmm(t1)}</span>
       </div>
       <ol className="mt-2 grid gap-x-6 gap-y-1 text-xs sm:grid-cols-2 xl:grid-cols-3">
         {onDay.map((i) => (
@@ -139,7 +150,7 @@ export function AttackTimeline({ view }: { view: QueueView }) {
             >
               {i.incident_id}
             </Link>
-            <span className="truncate text-muted-foreground">{shortLabel(i)}</span>
+            <span className="truncate text-muted-foreground">{plainLabel(i)}</span>
           </li>
         ))}
       </ol>
@@ -229,7 +240,7 @@ export function SensorDonut({ view }: { view: QueueView }) {
   return (
     <figure className="card m-0 px-5 py-4">
       <figcaption className="text-[13px] font-semibold">Alerts by sensor</figcaption>
-      <div className="mt-0.5 text-xs text-muted-foreground">{n(s.alerts)} after cleanup</div>
+      <div className="mt-0.5 text-xs text-muted-foreground">after cleanup</div>
       <div className="mt-3 flex flex-wrap items-center gap-5">
         <Donut
           data={data}
@@ -253,9 +264,7 @@ export function OutcomeDonut({ view }: { view: QueueView }) {
   return (
     <figure className="card m-0 px-5 py-4">
       <figcaption className="text-[13px] font-semibold">Incident outcome</figcaption>
-      <div className="mt-0.5 text-xs text-muted-foreground">
-        {n(c.incidents)} incidents scored by the window model
-      </div>
+      <div className="mt-0.5 text-xs text-muted-foreground">scored by model</div>
       <div className="mt-3 flex flex-wrap items-center gap-5">
         <Donut
           data={data}
@@ -274,15 +283,11 @@ export function OutcomeDonut({ view }: { view: QueueView }) {
 export function HostBars({ view }: { view: QueueView }) {
   const rows = view.hostAlerts.slice(0, 6);
   if (!rows.length) return null;
-  const total = view.hostAlerts.reduce((s, r) => s + r.alerts, 0) || 1;
   const maxLog = Math.log10((rows[0]?.alerts ?? 1) + 1) || 1;
-  const topShare = Math.round(((rows[0]?.alerts ?? 0) / total) * 100);
   return (
     <figure className="card m-0 px-5 py-4">
       <figcaption className="text-[13px] font-semibold">Alerts per host</figcaption>
-      <div className="mt-0.5 text-xs text-muted-foreground">
-        alerts inside incidents · top {rows.length} · log scale · the top host took {topShare}%
-      </div>
+      <div className="mt-0.5 text-xs text-muted-foreground">alerts in incidents · log scale</div>
       <div className="mt-3 flex flex-col gap-2 text-xs">
         {rows.map((r) => (
           <div
@@ -330,11 +335,9 @@ export function AblationPanel() {
   const colors = ["var(--sensor-wazuh)", "var(--sensor-suricata)"];
   const labels = [his.label, both.label];
   return (
-    <figure className="card col-span-full m-0 px-5 py-4">
+    <figure className="card m-0 px-5 py-4" title={ABLATION_NOTE}>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <figcaption className="text-[13px] font-semibold">
-          Adding our per-host statistics to the model
-        </figcaption>
+        <figcaption className="text-[13px] font-semibold">With per-host statistics</figcaption>
         <div className="flex flex-wrap gap-3.5 text-xs text-secondary-foreground">
           {labels.map((l, i) => (
             <span key={l} className="flex items-center gap-1.5">
@@ -344,8 +347,8 @@ export function AblationPanel() {
           ))}
         </div>
       </div>
-      <div className="mt-0.5 text-xs text-muted-foreground">{ABLATION_NOTE}</div>
-      <div className="mt-4 grid gap-6 sm:grid-cols-2">
+      <div className="mt-0.5 text-xs text-muted-foreground">7 dev scenarios · leave-one-out</div>
+      <div className="mt-3 grid gap-4">
         {panels.map((p) => (
           <div key={p.title}>
             <div className="mb-2.5 text-xs text-secondary-foreground">{p.title}</div>

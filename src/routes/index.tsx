@@ -88,6 +88,40 @@ function Picker({
   );
 }
 
+const MONTH = { month: "short", timeZone: "UTC" } as const;
+
+/** "wilson · Feb 5–7, 2022 · 10 incidents need review", all from the queue data. */
+function statusLine(view: QueueView): string {
+  const pool = view.incidents.filter((i) => i.group === "confirmed");
+  const span = pool.length ? pool : view.incidents;
+  const starts = span.map((i) => Date.parse(i.start));
+  const ends = span.map((i) => Date.parse(i.end));
+  let range = "";
+  if (starts.length) {
+    const a = new Date(Math.min(...starts));
+    const b = new Date(Math.max(...ends));
+    const ma = a.toLocaleDateString("en-US", MONTH);
+    const mb = b.toLocaleDateString("en-US", MONTH);
+    const da = a.getUTCDate();
+    const db = b.getUTCDate();
+    range =
+      ma === mb && da === db
+        ? `${ma} ${da}, ${b.getUTCFullYear()}`
+        : ma === mb
+          ? `${ma} ${da}–${db}, ${b.getUTCFullYear()}`
+          : `${ma} ${da} – ${mb} ${db}, ${b.getUTCFullYear()}`;
+  }
+  const where = view.scenario ?? view.run;
+  const need = view.counts.confirmed;
+  return [
+    where,
+    range,
+    `${need} incident${need === 1 ? "" : "s"} need${need === 1 ? "s" : ""} review`,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+}
+
 function runLabel(run: string): string {
   return run === "wilson_test"
     ? "wilson_test · held out"
@@ -180,7 +214,6 @@ function Index() {
     };
   }, []);
 
-  const heldOut = view?.run === "wilson_test";
   const top = view?.incidents[0];
 
   return (
@@ -269,26 +302,9 @@ function Index() {
         className="mx-auto flex max-w-[1360px] flex-col gap-7 px-5 pb-16 pt-8 md:px-8"
         aria-busy={loading}
       >
-        <section className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <div className="eyebrow">
-              {heldOut
-                ? "Held-out network · never seen during tuning"
-                : "Development scenarios · used for tuning"}
-            </div>
-            <h1 className="mb-1.5 mt-2.5 text-[34px] font-semibold leading-tight tracking-tight">
-              Incident triage
-            </h1>
-            <p className="m-0 max-w-[720px] text-sm leading-relaxed text-secondary-foreground">
-              Every host is compared with its own normal. Unusual minutes become incidents; a window
-              model confirms the ones that look like real attacks. The assistant explains them,
-              citing each incident.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 rounded-full border border-[#2a3352] px-3 py-2 text-xs text-secondary-foreground">
-            <ShieldCheck className="size-3.5 text-primary" aria-hidden="true" />
-            Raw alerts never reach the LLM
-          </div>
+        <section className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+          <h1 className="m-0 text-lg font-semibold">Triage</h1>
+          {view && <p className="m-0 text-xs text-muted-foreground">{statusLine(view)}</p>}
         </section>
 
         {view ? (
@@ -300,9 +316,6 @@ function Index() {
                 <h2 id="charts-title" className="section-title">
                   What the data shows
                 </h2>
-                <span className="text-xs text-muted-foreground">
-                  hover any mark for exact values
-                </span>
               </div>
               <div className="console-grid">
                 <SensorDonut view={view} />
