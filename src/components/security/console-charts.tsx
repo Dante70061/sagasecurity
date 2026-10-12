@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { Cell, Pie, PieChart } from "recharts";
 import { ABLATION_ARMS, ABLATION_NOTE, ABLATION_SOURCE } from "@/data/ablation";
 import type { QueueView, RankedIncident, SensorCounts } from "@/data/incidents";
-import { clockUtc, shortLabel } from "@/data/triage";
+import { clockUtc, riskLabel, riskLevel, shortLabel } from "@/data/triage";
 
 const n = (v: number) => v.toLocaleString("en-US");
 const hhmm = (ms: number) => new Date(ms).toISOString().slice(11, 16);
@@ -78,17 +78,30 @@ export function FunnelTiles({ view }: { view: QueueView }) {
 
 // ------------------------------------------------------------------ attack window timeline
 
+const TICK_MS = 15 * 60_000;
+const PAD_MS = 5 * 60_000;
+const RISK_COLOR = {
+  high: "var(--brand-accent)",
+  medium: "var(--risk-medium-bar)",
+  low: "#4a5372",
+} as const;
+
 export function AttackTimeline({ view }: { view: QueueView }) {
   const confirmed = view.incidents.filter((i) => i.group === "confirmed");
   const peak = busiestDay(confirmed);
   if (!peak) return null;
   const onDay = confirmed
     .filter((i) => i.start.startsWith(peak.day))
-    .sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+    .sort(
+      (a, b) =>
+        Date.parse(a.start) - Date.parse(b.start) || a.incident_id.localeCompare(b.incident_id),
+    );
   const others = confirmed.filter((i) => !i.start.startsWith(peak.day));
-  const t0 = Math.min(...onDay.map((i) => Date.parse(i.start))) - 10 * 60_000;
-  const t1 = Math.max(...onDay.map((i) => Date.parse(i.end))) + 10 * 60_000;
+  const t0 = Math.min(...onDay.map((i) => Date.parse(i.start))) - PAD_MS;
+  const t1 = Math.max(...onDay.map((i) => Date.parse(i.end))) + PAD_MS;
   const pct = (t: number) => ((t - t0) / (t1 - t0)) * 100;
+  const ticks: number[] = [];
+  for (let t = Math.ceil(t0 / TICK_MS) * TICK_MS; t <= t1; t += TICK_MS) ticks.push(t);
   const date = new Date(peak.day).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -98,66 +111,105 @@ export function AttackTimeline({ view }: { view: QueueView }) {
   return (
     <section aria-labelledby="timeline-title" className="card px-6 py-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="timeline-title" className="section-title">
-          Timeline · {date} (UTC)
-        </h2>
+        <div>
+          <h2 id="timeline-title" className="section-title">
+            Attack timeline · {date} (UTC)
+          </h2>
+          <div className="mt-0.5 text-xs text-muted-foreground">confirmed incidents</div>
+        </div>
         <span className="flex items-center gap-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-3 rounded-sm" style={{ background: "var(--primary)" }} />
-            host
+            <span className="h-2 w-3 rounded-sm" style={{ background: RISK_COLOR.high }} />
+            High risk
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-3 rounded-sm" style={{ background: "var(--brand-accent)" }} />
-            source IP
+            <span className="h-2 w-3 rounded-sm" style={{ background: RISK_COLOR.medium }} />
+            Medium risk
           </span>
         </span>
       </div>
-      <div
-        className="relative mt-4 h-14"
-        role="img"
-        aria-label={`Confirmed incidents on ${date}: ${onDay.map((i) => `${i.incident_id} at ${clockUtc(i.start).slice(6)}`).join(", ")}`}
-      >
-        <div className="absolute inset-x-0 top-7 h-px bg-[#2a3352]" />
-        {onDay.map((i) => {
-          const left = pct(Date.parse(i.start));
-          const width = Math.max(0.6, pct(Date.parse(i.end)) - left);
-          return (
-            <div
-              key={i.incident_id}
-              title={`${i.incident_id} · ${clockUtc(i.start)} to ${clockUtc(i.end)} UTC`}
-              className="absolute top-[22px] h-[14px] rounded-md"
-              style={{
-                left: `${left}%`,
-                width: `${width}%`,
-                background: i.kind === "actor" ? "var(--brand-accent)" : "var(--primary)",
-                opacity: 0.85,
-              }}
-            />
-          );
-        })}
-        <span className="num absolute left-0 top-0 text-[11px] text-[#7c86a3]">{hhmm(t0)}</span>
-        <span className="num absolute right-0 top-0 text-[11px] text-[#7c86a3]">{hhmm(t1)}</span>
+      <div className="relative mt-4">
+        <div className="lane-axis num">
+          <span />
+          <span className="relative h-5">
+            {ticks.map((t) => (
+              <span
+                key={t}
+                className="absolute top-0 -translate-x-1/2 text-[11px] text-[#7c86a3]"
+                style={{ left: `${pct(t)}%` }}
+              >
+                {hhmm(t)}
+              </span>
+            ))}
+          </span>
+        </div>
+        <div className="relative">
+          <div className="lane-grid" aria-hidden="true">
+            {ticks.map((t) => (
+              <span
+                key={t}
+                className="absolute inset-y-0 w-px bg-[#222a44]"
+                style={{ left: `${pct(t)}%` }}
+              />
+            ))}
+          </div>
+          {onDay.map((i) => {
+            const left = pct(Date.parse(i.start));
+            const width = Math.max(0, pct(Date.parse(i.end)) - left);
+            const risk = riskLevel(i);
+            return (
+              <Link
+                key={i.incident_id}
+                to="/incident/$id"
+                params={{ id: i.incident_id }}
+                search={{ run: view.run }}
+                className="lane-row"
+                title={`${i.incident_id} · ${hhmm(Date.parse(i.start))} to ${hhmm(Date.parse(i.end))} UTC · ${riskLabel(risk)}`}
+              >
+                <span className="lane-left">
+                  <span className="num w-11 shrink-0 text-foreground">
+                    {hhmm(Date.parse(i.start))}
+                  </span>
+                  <span className="num w-[72px] shrink-0 font-medium">{i.incident_id}</span>
+                  <span className="truncate text-muted-foreground">{plainLabel(i)}</span>
+                </span>
+                <span className="relative block h-5">
+                  <span
+                    className="absolute top-1 h-3 rounded-sm"
+                    style={{
+                      left: `${left}%`,
+                      width: `${width}%`,
+                      minWidth: 6,
+                      background: RISK_COLOR[risk],
+                    }}
+                  />
+                  <span className="sr-only">
+                    {hhmm(Date.parse(i.start))} to {hhmm(Date.parse(i.end))}, {riskLabel(risk)}
+                  </span>
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
-      <ol className="mt-2 grid gap-x-6 gap-y-1 text-xs sm:grid-cols-2 xl:grid-cols-3">
-        {onDay.map((i) => (
-          <li key={i.incident_id} className="flex items-baseline gap-2">
-            <span className="num text-foreground">{clockUtc(i.start).slice(6)}</span>
-            <Link
-              to="/incident/$id"
-              params={{ id: i.incident_id }}
-              search={{ run: view.run }}
-              className="num text-primary hover:underline"
-            >
-              {i.incident_id}
-            </Link>
-            <span className="truncate text-muted-foreground">{plainLabel(i)}</span>
-          </li>
-        ))}
-      </ol>
       {others.length > 0 && (
         <p className="mt-3 text-xs text-muted-foreground">
           Also confirmed on other days:{" "}
-          {others.map((i) => `${i.incident_id} (${clockUtc(i.start)})`).join(", ")}.
+          {others.map((i, k) => (
+            <span key={i.incident_id}>
+              {k > 0 ? ", " : ""}
+              <Link
+                to="/incident/$id"
+                params={{ id: i.incident_id }}
+                search={{ run: view.run }}
+                className="num text-primary hover:underline"
+              >
+                {i.incident_id}
+              </Link>
+              {` (${clockUtc(i.start)})`}
+            </span>
+          ))}
+          {"."}
         </p>
       )}
     </section>
