@@ -101,13 +101,6 @@ export function PriorityFindings({ view }: { view: LogView }) {
           </div>
         </div>
       )}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-5 py-3 text-[10px] text-muted-foreground">
-        <span className="flex items-center gap-2">
-          <span className="size-1.5 rounded-full bg-primary" />
-          Grouped from the merged log
-        </span>
-        <span>Ordered by Wazuh rule_level, then count. No confidence field in the file.</span>
-      </div>
     </section>
   );
 }

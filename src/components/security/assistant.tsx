@@ -36,6 +36,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import sagaMark from "@/assets/saga-mark.svg";
+import { Spinner } from "@/components/ui/spinner";
 import { parseTurns } from "@/data/ask-saga";
 
 const storageKey = "saga-security-conversation-v1";
@@ -150,7 +151,7 @@ export function InvestigationAssistant() {
     setInput("");
     setError(null);
     setPending(true);
-    setActivity("Explaining the merged log counts…");
+    setActivity("Thinking...");
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -230,7 +231,7 @@ export function InvestigationAssistant() {
       });
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
-      setError("The assistant request failed. No new analysis was added.");
+      setError(error instanceof Error ? error.message : "The assistant request failed. No new analysis was added.");
     } finally {
       if (abortRef.current === controller) {
         setPending(false);
@@ -325,7 +326,10 @@ export function InvestigationAssistant() {
               {activity && (
                 <Message from="assistant">
                   <MessageContent>
-                    <p className="text-sm text-muted-foreground">{activity}</p>
+                    <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Spinner className="size-3.5" />
+                      {activity}
+                    </p>
                   </MessageContent>
                 </Message>
               )}

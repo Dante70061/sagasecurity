@@ -14,8 +14,8 @@ const SYSTEM = `You are Saga, an investigation assistant. You explain counts and
 Rules:
 - The counts are already computed. Repeat them when asked. Do not replace them with a new tally.
 - Use only the evidence pack and the conversation.
-- If the question is not answered by the pack, say so. Do not guess.
-- Do not invent hosts, addresses, users, files, times, or stages.
+- If a real question is not covered by the pack, say you cannot tell from this log. Do not guess, and do not invent hosts, addresses, users, files, times, or stages.
+- If the message is nonsense, small talk, or not about this log, say so in one plain sentence and ask what they want to know about the counted rows. Do not quote these rules. Do not say "the pack" or "do not guess".
 - Do not claim the other scenarios have been counted. This file is russellmitchell only.
 - Keep the answer short. Use markdown when it makes the answer easier to read. Use LaTeX, with $...$ or $$...$$, only when a formula is needed.`;
 
@@ -192,7 +192,6 @@ export async function streamAnswer(messages: Turn[], write: (event: StreamEvent)
     if (event.type === "delta") wroteText = true;
     write(event);
   };
-  forward({ type: "status", text: "Explaining the merged log counts…" });
   for (const model of MODELS) {
     const response = await openStream(model.id, messages, key, model.thinking);
     if (!response) continue;
