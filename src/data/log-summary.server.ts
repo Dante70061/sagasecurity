@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import type { EventSlice, PeakHour } from "./log-summary";
 
 const FILE = "dataset/russellmitchell_merged.jsonl";
 
@@ -11,8 +12,6 @@ const ACCT_USER_RE = /\bacct="([^"]+)"/;
 const RUSER_RE = /\bruser=(\S+)/;
 const APACHE_USER_RE = /^(\S+) \S+ (\S+) \[/;
 const BLANK_USERS = new Set(["", "-", "?", "none", "null"]);
-
-const FAMILY_COLORS = ["var(--primary)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--muted-foreground)"];
 
 export type ActivityPoint = { time: string; events: number; baseline: number };
 
@@ -43,7 +42,8 @@ export type LogView = {
   spanLabel: string;
   hours: ActivityPoint[];
   days: ActivityPoint[];
-  distribution: { name: string; count: number; percent: number; color: string }[];
+  peakHour: PeakHour;
+  distribution: EventSlice[];
   findings: LogFinding[];
 };
 
@@ -123,6 +123,50 @@ function dayLabel(day: string): string {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 }
 
+function eventDistribution(families: Map<string, number>, total: number): EventSlice[] {
+  const ranked = [...families.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  const named: { name: string; count: number }[] = [];
+  let other = 0;
+  for (const [name, count] of ranked) {
+    if (name === "Other" || count / total < 0.01) other += count;
+    else named.push({ name, count });
+  }
+  if (other > 0) named.push({ name: "Other", count: other });
+  const slices = named.map((row) => ({
+    ...row,
+    share: total ? Math.round((row.count / total) * 1000) / 10 : 0,
+  }));
+  const drift = Math.round((100 - slices.reduce((sum, row) => sum + row.share, 0)) * 10) / 10;
+  if (slices[0] && drift) slices[0].share = Math.round((slices[0].share + drift) * 10) / 10;
+  return slices;
+}
+
+function hourSpan(start: number): string {
+  const startDate = new Date(start * 1000);
+  const endDate = new Date((start + 3600) * 1000);
+  const clock = (date: Date) => date.toISOString().slice(11, 16);
+  const day = startDate.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  return `${clock(startDate)}–${clock(endDate)} UTC, ${day}`;
+}
+
+function peakHourDetectors(counts: Map<string, number>, total: number, label: string): PeakHour {
+  const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  const top = ranked.slice(0, 5);
+  const rest = ranked.slice(5).reduce((sum, [, count]) => sum + count, 0);
+  const rows = (rest > 0 ? [...top, ["Other", rest] as const] : top).sort(
+    (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+  );
+  return {
+    label,
+    total,
+    detectors: rows.map(([detector, count]) => ({
+      detector,
+      count,
+      share: total ? Math.round((count / total) * 1000) / 10 : 0,
+    })),
+  };
+}
+
 export function readLogSummary(): { view: LogView; prompt: string } {
   if (cache) return cache;
   const text = readFileSync(join(process.cwd(), FILE), "utf8");
@@ -144,6 +188,7 @@ export function readLogSummary(): { view: LogView; prompt: string } {
   const stamps: number[] = [];
   const baselines: boolean[] = [];
   const ipAt: string[] = [];
+  const detectorAt: string[] = [];
 
   for (const line of text.split("\n")) {
     if (!line) continue;
@@ -168,6 +213,7 @@ export function readLogSummary(): { view: LogView; prompt: string } {
     tmax = Math.max(tmax, ts);
     stamps.push(ts);
     baselines.push(Boolean(row.is_baseline));
+    detectorAt.push(row.detector || "(no detector)");
 
     const source = row.source || "unknown";
     collectors.add(source);
@@ -212,6 +258,7 @@ export function readLogSummary(): { view: LogView; prompt: string } {
   let priorEvents = 0;
   const hourEvents = new Array<number>(24).fill(0);
   const hourBaseline = new Array<number>(24).fill(0);
+  const hourDetectors = Array.from({ length: 24 }, () => new Map<string, number>());
   const dayEvents = new Map<string, number>();
   const dayBaseline = new Map<string, number>();
 
@@ -225,6 +272,8 @@ export function readLogSummary(): { view: LogView; prompt: string } {
       const bucket = Math.min(23, Math.floor((ts - lastStart) / 3600));
       hourEvents[bucket] += 1;
       if (baselines[i]) hourBaseline[bucket] += 1;
+      const detector = detectorAt[i];
+      hourDetectors[bucket].set(detector, (hourDetectors[bucket].get(detector) ?? 0) + 1);
       if (ipAt[i]) lastIps.add(ipAt[i]);
     } else if (ts > priorStart && ts <= lastStart) {
       priorEvents += 1;
@@ -232,14 +281,7 @@ export function readLogSummary(): { view: LogView; prompt: string } {
     }
   }
 
-  const distribution = [...families.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, count], index) => ({
-      name,
-      count,
-      percent: events ? Math.round((count / events) * 1000) / 10 : 0,
-      color: FAMILY_COLORS[index % FAMILY_COLORS.length],
-    }));
+  const distribution = eventDistribution(families, events);
 
   const findings = [...groups.values()].sort((a, b) => (b.level ?? -1) - (a.level ?? -1) || b.count - a.count);
 
@@ -248,6 +290,12 @@ export function readLogSummary(): { view: LogView; prompt: string } {
     events: count,
     baseline: hourBaseline[index],
   }));
+  const peakIndex = hourEvents.reduce((best, count, index) => (count > hourEvents[best] ? index : best), 0);
+  const peakHour = peakHourDetectors(
+    hourDetectors[peakIndex],
+    hourEvents[peakIndex],
+    hourSpan(lastStart + peakIndex * 3600),
+  );
   const days = [...dayEvents.keys()].sort().map((day) => ({
     time: dayLabel(day),
     events: dayEvents.get(day) ?? 0,
@@ -267,6 +315,7 @@ export function readLogSummary(): { view: LogView; prompt: string } {
     spanLabel: `${new Date(tmin * 1000).toISOString().slice(0, 16).replace("T", " ")} – ${new Date(tmax * 1000).toISOString().slice(0, 16).replace("T", " ")} UTC`,
     hours,
     days,
+    peakHour,
     distribution,
     findings,
   };

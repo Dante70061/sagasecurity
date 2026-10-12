@@ -39,7 +39,7 @@ import sagaMark from "@/assets/saga-mark.svg";
 import { Spinner } from "@/components/ui/spinner";
 import { parseTurns } from "@/data/ask-saga";
 
-const storageKey = "saga-security-conversation-v1";
+const storageKey = "saga-security-conversation-v2";
 
 type AskEvent =
   | { type: "status"; text: string }
@@ -85,9 +85,9 @@ async function readAskEvents(response: Response, onEvent: (event: AskEvent) => v
   if (buffer.trim()) consume(buffer);
 }
 const suggestions = [
-  { text: "Summarize the security posture", icon: ShieldCheck },
-  { text: "What activity should I investigate first?", icon: Fingerprint },
-  { text: "Explain unusual authentication patterns", icon: ChartNoAxesCombined },
+  { text: "Triage every flagged incident", icon: ShieldCheck },
+  { text: "Why was the top-ranked incident flagged?", icon: Fingerprint },
+  { text: "Which incidents are a single alert?", icon: ChartNoAxesCombined },
 ];
 
 function readHistory(): UIMessage[] {
@@ -243,8 +243,7 @@ export function InvestigationAssistant() {
   };
   return (
     <section
-      className="panel assistant-panel focus-section"
-      id="assistant"
+      className="panel assistant-panel"
       aria-label="AI investigation assistant"
     >
       <div className="panel-heading">
@@ -278,8 +277,7 @@ export function InvestigationAssistant() {
                 <span className="kicker">Your investigation partner</span>
                 <h3 className="mt-2 text-xl font-medium">Clarity in every signal.</h3>
                 <p className="mx-auto mt-3 max-w-80 text-xs leading-6 text-muted-foreground">
-                  Ask about activity, explore patterns, and understand what matters to your security
-                  posture.
+                  Ranked windows are ready. Ask for a verdict on each flagged incident.
                 </p>
               </div>
               <div className="assistant-suggestions">
@@ -359,19 +357,20 @@ export function InvestigationAssistant() {
         <PromptInput allowAttachments={false} maxFiles={0} onSubmit={({ text }) => send(text)}>
           <PromptInputTextarea
             aria-label="Ask Saga a security question"
-            placeholder="Ask Saga about your security data..."
+            placeholder="Ask Saga to triage a flagged incident..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             ref={textareaRef}
           />
           <PromptInputFooter>
             <PromptInputSubmit
+              className="size-6 rounded-full"
               disabled={!input.trim() || !ready || pending}
               status={pending ? "submitted" : undefined}
               aria-label="Send question"
               title="Send question"
             >
-              <ArrowUp className="size-4" />
+              <ArrowUp className="size-3" />
             </PromptInputSubmit>
           </PromptInputFooter>
         </PromptInput>

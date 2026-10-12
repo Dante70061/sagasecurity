@@ -2,6 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 
 export type ActivityPoint = { time: string; events: number; baseline: number };
 
+export type PeakHourDetector = { detector: string; count: number; share: number };
+
+export type PeakHour = { label: string; total: number; detectors: PeakHourDetector[] };
+
+export type EventSlice = { name: string; count: number; share: number };
+
 export type LogFinding = {
   id: string;
   source: string;
@@ -29,7 +35,8 @@ export type LogView = {
   spanLabel: string;
   hours: ActivityPoint[];
   days: ActivityPoint[];
-  distribution: { name: string; count: number; percent: number; color: string }[];
+  peakHour: PeakHour;
+  distribution: EventSlice[];
   findings: LogFinding[];
 };
 
