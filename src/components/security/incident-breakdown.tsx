@@ -16,6 +16,7 @@ import {
   type TriageState,
 } from "@/lib/triage-storage";
 import { Highlight } from "./highlight";
+import { PathText } from "./path-text";
 import { RiskChip } from "./risk-chip";
 
 const n = (v: number) => v.toLocaleString("en-US");
@@ -86,7 +87,7 @@ export function IncidentBreakdown({
               `${clockUtc(incident.start)} → ${clockUtc(incident.end).slice(6)} · ${minutesBetween(incident.start, incident.end)} min`,
             ],
             [incident.kind === "actor" ? "Source IP" : "Host", incident.entity],
-            ["Model · p_attack", p == null ? "unavailable" : p.toFixed(3)],
+            ["Attack probability", p == null ? "unavailable" : p.toFixed(3)],
             ["Alerts · peak z", `${n(incident.n_alerts)} · ${incident.peak_z}`],
           ].map(([k, v]) => (
             <div key={k} className="subcard px-3.5 py-3">
@@ -104,16 +105,18 @@ export function IncidentBreakdown({
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section aria-labelledby="what-title" className="card px-6 py-5">
+        <section aria-labelledby="what-title" className="card min-w-0 px-6 py-5">
           <div className="mb-2.5 flex flex-wrap items-baseline justify-between gap-2">
             <h2 id="what-title" className="m-0 text-sm font-semibold">
               What happened
             </h2>
             <Reco />
           </div>
-          <p className="m-0 text-sm leading-relaxed text-secondary-foreground">{story.summary}</p>
+          <p className="m-0 min-w-0 text-sm leading-relaxed text-secondary-foreground">
+            <PathText text={story.summary} />
+          </p>
         </section>
-        <section aria-labelledby="why-title" className="card px-6 py-5">
+        <section aria-labelledby="why-title" className="card min-w-0 px-6 py-5">
           <div className="mb-2.5 flex flex-wrap items-baseline justify-between gap-2">
             <h2 id="why-title" className="m-0 text-sm font-semibold">
               Why it matters
@@ -122,7 +125,9 @@ export function IncidentBreakdown({
           </div>
           <ul className="m-0 flex flex-col gap-2 pl-4 text-sm leading-relaxed text-secondary-foreground">
             {story.risks.map((r) => (
-              <li key={r}>{r}</li>
+              <li key={r}>
+                <PathText text={r} />
+              </li>
             ))}
           </ul>
           {story.blind && (
@@ -160,7 +165,9 @@ export function IncidentBreakdown({
           {story.steps.map((text, k) => (
             <label key={text} className="check-row">
               <input type="checkbox" checked={!!state.checks[k]} onChange={() => toggleStep(k)} />
-              <span>{text}</span>
+              <span className="min-w-0">
+                <PathText text={text} />
+              </span>
             </label>
           ))}
         </div>
@@ -203,9 +210,9 @@ export function IncidentBreakdown({
                   {s.src_ip ? ` · src ${s.src_ip}` : ""}
                   {s.dst_ip ? ` · dst ${s.dst_ip}` : ""}
                 </div>
-                <div className="mt-1 text-xs">{s.detector}</div>
+                <div className="wrap-any mt-1 text-xs">{s.detector}</div>
                 {s.raw && (
-                  <div className="num mt-1 break-all text-xs leading-relaxed">
+                  <div className="num wrap-any mt-1 text-xs leading-relaxed">
                     <Highlight text={s.raw} />
                   </div>
                 )}
