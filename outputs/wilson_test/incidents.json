@@ -1,0 +1,4445 @@
+[
+  {
+    "incident_id": "INC-0001",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "172.26.243.167",
+    "start": "2022-02-07T10:59:00+00:00",
+    "end": "2022-02-07T11:21:00+00:00",
+    "peak_z": 49.3,
+    "n_windows": 22,
+    "n_alerts": 434651,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 49.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 20.0,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 20.0,
+        "text": "Wazuh alert volume far above normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 16.1,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 395054
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "count": 30547
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New request method in Apache Access log.",
+        "count": 3183
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New characters in Apache Access request.",
+        "count": 2486
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1332
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-07T10:59:33+00:00",
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:33 +0000] \"GET /HNAP1 HTTP/1.1\" 404 3277 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:33.811187029+00:00",
+        "tool": "suricata",
+        "detector": "20100: First time this IDS alert is generated.",
+        "level": 8,
+        "src_ip": "10.182.193.78",
+        "dst_ip": "172.26.243.167",
+        "raw": "02/07/2022-10:59:33.811187  [**] [1:2024364:4] ET SCAN Possible Nmap User-Agent Observed [**] [Classification: Web Application Attack] [Priority: 1] {TCP} 10.182.193.78:49980 -> 172.26.243.167:80"
+      },
+      {
+        "ts": "2022-02-07T11:20:19+00:00",
+        "tool": "wazuh",
+        "detector": "31510: CMS (WordPress or Joomla) brute force attempt.",
+        "level": 8,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:11:20:19 +0000] \"POST /wp-login.php HTTP/1.1\" 200 2674 \"https://intranet.hallbrown.wilson.com\" \"WPScan v3.8.20 (https://wpscan.com/wordpress-security-scanner)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:15+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  7 10:59:15 intranet-server sshd[5860]: Did not receive identification string from 10.182.193.78 port 57692"
+      },
+      {
+        "ts": "2022-02-07T10:59:44+00:00",
+        "tool": "wazuh",
+        "detector": "31104: Common web attack.",
+        "level": 6,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:44 +0000] \"GET /_mem_bin HTTP/1.1\" 404 363 \"-\" \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:44+00:00",
+        "tool": "wazuh",
+        "detector": "31516: Suspicious URL access.",
+        "level": 6,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:44 +0000] \"GET /.history HTTP/1.1\" 404 363 \"-\" \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:33+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:33 +0000] \"GET /nmaplowercheck1644231573 HTTP/1.1\" 404 360 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:44.495310068+00:00",
+        "tool": "wazuh",
+        "detector": "30305: Apache: Attempt to access forbidden file or directory.",
+        "level": 5,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "[Mon Feb 07 10:59:44.495310 2022] [authz_core:error] [pid 5252] [client 10.182.193.78:50462] AH01630: client denied by server configuration: /var/www/intranet.hallbrown.wilson.com/.hta"
+      },
+      {
+        "ts": "2022-02-07T10:59:57.291403055+00:00",
+        "tool": "wazuh",
+        "detector": "30306: Apache: Attempt to access forbidden directory index.",
+        "level": 5,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "[Mon Feb 07 10:59:57.291403 2022] [autoindex:error] [pid 5265] [client 10.182.193.78:50552] AH01276: Cannot serve directory /usr/share/javascript/: No matching DirectoryIndex (index.html,index.cgi,index.pl,index.php,index.xhtml,index.htm) found, and server-generated directory index forbidden by Options directive"
+      },
+      {
+        "ts": "2022-02-07T11:01:32+00:00",
+        "tool": "wazuh",
+        "detector": "31122: Web server 500 error code (Internal Error).",
+        "level": 5,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:11:01:32 +0000] \"GET /wp-admin/includes/admin.php HTTP/1.1\" 500 191 \"-\" \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\""
+      }
+    ],
+    "related": [
+      "INC-0002",
+      "INC-0004",
+      "INC-0025",
+      "INC-0028",
+      "INC-0030",
+      "INC-0032",
+      "INC-0073",
+      "INC-0077",
+      "INC-0097",
+      "INC-0119",
+      "INC-0120",
+      "INC-0121",
+      "INC-0137",
+      "INC-0202",
+      "INC-0327"
+    ]
+  },
+  {
+    "incident_id": "INC-0002",
+    "kind": "actor",
+    "scenario": "wilson",
+    "entity": "10.182.193.78",
+    "start": "2022-02-07T10:59:00+00:00",
+    "end": "2022-02-07T11:21:00+00:00",
+    "peak_z": 20.0,
+    "n_windows": 22,
+    "n_alerts": 434748,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": [
+      "10.182.193.181",
+      "10.182.194.196",
+      "10.182.194.5",
+      "172.26.240.200",
+      "172.26.243.167"
+    ],
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 20.0,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "web_attack",
+        "z": 20.0,
+        "text": "burst of web-attack alerts (scans, exploits)"
+      },
+      {
+        "feature": "auth_fail",
+        "z": 7.2,
+        "text": "spike in failed logins"
+      },
+      {
+        "feature": "n_rules",
+        "z": 4.8,
+        "text": "unusually many different alert types"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 395075
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "count": 30547
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New request method in Apache Access log.",
+        "count": 3183
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New characters in Apache Access request.",
+        "count": 2486
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1374
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-07T10:59:33+00:00",
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:33 +0000] \"GET /HNAP1 HTTP/1.1\" 404 3277 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:29.376980066+00:00",
+        "tool": "suricata",
+        "detector": "20100: First time this IDS alert is generated.",
+        "level": 8,
+        "src_ip": "10.182.193.78",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-10:59:29.376980  [**] [1:2230000:1] SURICATA TLS invalid SSLv2 header [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.193.78:38160 -> 10.182.193.181:587"
+      },
+      {
+        "ts": "2022-02-07T11:20:19+00:00",
+        "tool": "wazuh",
+        "detector": "31510: CMS (WordPress or Joomla) brute force attempt.",
+        "level": 8,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:11:20:19 +0000] \"POST /wp-login.php HTTP/1.1\" 200 2674 \"https://intranet.hallbrown.wilson.com\" \"WPScan v3.8.20 (https://wpscan.com/wordpress-security-scanner)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:15+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  7 10:59:15 mail sshd[12445]: Did not receive identification string from 10.182.193.78 port 35190"
+      },
+      {
+        "ts": "2022-02-07T10:59:29.376980066+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.193.78",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-10:59:29.376980  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.193.78:38160 -> 10.182.193.181:587"
+      },
+      {
+        "ts": "2022-02-07T10:59:44+00:00",
+        "tool": "wazuh",
+        "detector": "31104: Common web attack.",
+        "level": 6,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:44 +0000] \"GET /_mem_bin HTTP/1.1\" 404 363 \"-\" \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:44+00:00",
+        "tool": "wazuh",
+        "detector": "31516: Suspicious URL access.",
+        "level": 6,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:44 +0000] \"GET /.history HTTP/1.1\" 404 363 \"-\" \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:21+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:21 +0000] \"GET / HTTP/1.0\" 403 363 \"-\" \"-\""
+      },
+      {
+        "ts": "2022-02-07T10:59:21.341089964+00:00",
+        "tool": "wazuh",
+        "detector": "30305: Apache: Attempt to access forbidden file or directory.",
+        "level": 5,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "[Mon Feb 07 10:59:21.341090 2022] [authz_core:error] [pid 8088] [client 10.182.193.78:56334] AH01630: client denied by server configuration: /var/www/html/"
+      },
+      {
+        "ts": "2022-02-07T10:59:57.291403055+00:00",
+        "tool": "wazuh",
+        "detector": "30306: Apache: Attempt to access forbidden directory index.",
+        "level": 5,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "[Mon Feb 07 10:59:57.291403 2022] [autoindex:error] [pid 5265] [client 10.182.193.78:50552] AH01276: Cannot serve directory /usr/share/javascript/: No matching DirectoryIndex (index.html,index.cgi,index.pl,index.php,index.xhtml,index.htm) found, and server-generated directory index forbidden by Options directive"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0004",
+      "INC-0025",
+      "INC-0028",
+      "INC-0030",
+      "INC-0032",
+      "INC-0073",
+      "INC-0077",
+      "INC-0097",
+      "INC-0119",
+      "INC-0120",
+      "INC-0121",
+      "INC-0137",
+      "INC-0202",
+      "INC-0327"
+    ]
+  },
+  {
+    "incident_id": "INC-0003",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "172.26.243.167",
+    "start": "2022-02-07T11:48:00+00:00",
+    "end": "2022-02-07T11:51:00+00:00",
+    "peak_z": 13.9,
+    "n_windows": 2,
+    "n_alerts": 23,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "rare_rule",
+        "z": 13.9,
+        "text": "alert type that is rare across the whole network"
+      },
+      {
+        "feature": "new_rule",
+        "z": 13.0,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "auth_success",
+        "z": 11.9,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 2.8,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 6
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 3
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New cred_acq parameter combination in Audit logs.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5402: Successful sudo to ROOT executed.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-07T11:48:32+00:00",
+        "tool": "wazuh",
+        "detector": "5403: First time user executed sudo.",
+        "level": 4,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  7 11:48:32 intranet-server sudo: jwilkinson : TTY=pts/1 ; PWD=/var/www/intranet.hallbrown.wilson.com/wp-content/uploads/2022/02 ; USER=root ; COMMAND=list"
+      },
+      {
+        "ts": "2022-02-07T11:48:18+00:00",
+        "tool": "wazuh",
+        "detector": "5304: User successfully changed UID.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  7 11:48:18 intranet-server su[6084]: + /dev/pts/1 www-data:jwilkinson"
+      },
+      {
+        "ts": "2022-02-07T11:48:18+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  7 11:48:18 intranet-server su[6084]: pam_unix(su:session): session opened for user jwilkinson by (uid=33)"
+      },
+      {
+        "ts": "2022-02-07T11:48:39+00:00",
+        "tool": "wazuh",
+        "detector": "5402: Successful sudo to ROOT executed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  7 11:48:39 intranet-server sudo: jwilkinson : TTY=pts/1 ; PWD=/var/www/intranet.hallbrown.wilson.com/wp-content/uploads/2022/02 ; USER=root ; COMMAND=/bin/cat /etc/passwd"
+      },
+      {
+        "ts": "2022-02-07T11:48:39+00:00",
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  7 11:48:39 intranet-server sudo: pam_unix(sudo:session): session closed for user root"
+      },
+      {
+        "ts": "2022-02-07T11:50:41+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  7 11:50:41 intranet-server sshd[6122]: Accepted publickey for ckhan from 10.182.193.78 port 38234 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      },
+      {
+        "ts": "2022-02-07T11:48:08+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: High entropy in Apache Access request.",
+        "level": 0,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:11:48:08 +0000] \"GET /wp-content/uploads/2022/02/zpinqklqgo-1644232829.6164.php?wp_meta=WyJiYXNoIiwgIi1jIiwgIiAnMDwmMTk2O2V4ZWMgMTk2PD4vZGV2L3RjcC8xOTIuMTY4LjIyNi43MS80MzI5NDsgc2ggPCYxOTYgPiYxOTYgMj4mMTk2JyIsICImIl0%3D HTTP/1.1\" 200 506731 \"-\" \"python-requests/2.27.1\""
+      },
+      {
+        "ts": "2022-02-07T11:48:18+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  7 11:48:18 intranet-server su[6084]: Successful su for jwilkinson by www-data"
+      },
+      {
+        "ts": "2022-02-07T11:48:18.650000095+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New user_acct parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=USER_ACCT msg=audit(1644234498.650:3023): pid=6084 uid=33 auid=4294967295 ses=4294967295 msg='op=PAM:accounting acct=\"jwilkinson\" exe=\"/bin/su\" hostname=? addr=? terminal=/dev/pts/1 res=success'"
+      },
+      {
+        "ts": "2022-02-07T11:48:18.650000095+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New user_auth parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=USER_AUTH msg=audit(1644234498.650:3022): pid=6084 uid=33 auid=4294967295 ses=4294967295 msg='op=PAM:authentication acct=\"jwilkinson\" exe=\"/bin/su\" hostname=? addr=? terminal=/dev/pts/1 res=success'"
+      }
+    ],
+    "related": [
+      "INC-0055",
+      "INC-0184",
+      "INC-0466"
+    ]
+  },
+  {
+    "incident_id": "INC-0004",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.194.5",
+    "start": "2022-02-07T10:59:00+00:00",
+    "end": "2022-02-07T11:00:00+00:00",
+    "peak_z": 11.9,
+    "n_windows": 1,
+    "n_alerts": 105,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 11.9,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "total",
+        "z": 9.3,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 7.8,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 25
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New status code in Apache Access log.",
+        "count": 24
+      },
+      {
+        "tool": "wazuh",
+        "detector": "30305: Apache: Attempt to access forbidden file or directory.",
+        "count": 24
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 23
+      },
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 7
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-07T10:59:34+00:00",
+        "tool": "wazuh",
+        "detector": "31151: Multiple web server 400 error codes from same source ip.",
+        "level": 10,
+        "src_ip": "192.168.226.71",
+        "dst_ip": null,
+        "raw": "192.168.226.71 - - [07/Feb/2022:10:59:34 +0000] \"GET / HTTP/1.1\" 403 3255 \"-\" \"-\""
+      },
+      {
+        "ts": "2022-02-07T10:59:15+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  7 10:59:15 webserver sshd[8097]: Did not receive identification string from 10.182.193.78 port 44110"
+      },
+      {
+        "ts": "2022-02-07T10:59:33.810781956+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "192.168.226.71",
+        "dst_ip": "10.182.194.5",
+        "raw": "02/07/2022-10:59:33.810782  [**] [1:2024364:4] ET SCAN Possible Nmap User-Agent Observed [**] [Classification: Web Application Attack] [Priority: 1] {TCP} 192.168.226.71:51708 -> 10.182.194.5:80"
+      },
+      {
+        "ts": "2022-02-07T10:59:21+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:21 +0000] \"GET / HTTP/1.0\" 403 363 \"-\" \"-\""
+      },
+      {
+        "ts": "2022-02-07T10:59:21.341089964+00:00",
+        "tool": "wazuh",
+        "detector": "30305: Apache: Attempt to access forbidden file or directory.",
+        "level": 5,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "[Mon Feb 07 10:59:21.341090 2022] [authz_core:error] [pid 8088] [client 10.182.193.78:56334] AH01630: client denied by server configuration: /var/www/html/"
+      },
+      {
+        "ts": "2022-02-07T10:59:15+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  7 10:59:15 webserver sshd[8097]: Did not receive identification string from 10.182.193.78 port 44110"
+      },
+      {
+        "ts": "2022-02-07T10:59:21+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New status code in Apache Access log.",
+        "level": 0,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:21 +0000] \"GET / HTTP/1.0\" 403 363 \"-\" \"-\""
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0025",
+      "INC-0028",
+      "INC-0030",
+      "INC-0032",
+      "INC-0073",
+      "INC-0077",
+      "INC-0097",
+      "INC-0119",
+      "INC-0120",
+      "INC-0121"
+    ]
+  },
+  {
+    "incident_id": "INC-0005",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-04T19:52:00+00:00",
+    "end": "2022-02-04T19:53:00+00:00",
+    "peak_z": 10.7,
+    "n_windows": 1,
+    "n_alerts": 6,
+    "tools": [
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 10.7,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "priv",
+        "z": 4.6,
+        "text": "privilege use (sudo/su)"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5402: Successful sudo to ROOT executed.",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-04T19:52:19+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  4 19:52:19 mail systemd: pam_unix(systemd-user:session): session opened for user ckhan by (uid=0)"
+      },
+      {
+        "ts": "2022-02-04T19:52:19+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  4 19:52:19 mail sshd[7006]: Accepted publickey for ckhan from 10.182.193.78 port 41886 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      },
+      {
+        "ts": "2022-02-04T19:52:51+00:00",
+        "tool": "wazuh",
+        "detector": "5402: Successful sudo to ROOT executed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  4 19:52:51 mail sudo:    ckhan : TTY=pts/1 ; PWD=/home/ckhan ; USER=root ; COMMAND=/usr/bin/tail /var/log/syslog"
+      },
+      {
+        "ts": "2022-02-04T19:52:51+00:00",
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  4 19:52:51 mail sudo: pam_unix(sudo:session): session closed for user root"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0006",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-05T19:44:00+00:00",
+    "end": "2022-02-05T19:45:00+00:00",
+    "peak_z": 10.7,
+    "n_windows": 1,
+    "n_alerts": 6,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 10.7,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "rare_rule",
+        "z": 7.3,
+        "text": "alert type that is rare across the whole network"
+      },
+      {
+        "feature": "total",
+        "z": 3.9,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "count": 2
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New cred_disp parameter combination in Audit logs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New user_end parameter combination in Audit logs.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-05T19:44:48+00:00",
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  5 19:44:48 mail sshd[14146]: pam_unix(sshd:session): session closed for user jwilkinson"
+      },
+      {
+        "ts": "2022-02-05T19:44:48+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  5 19:44:48 mail sshd[14160]: Timeout, client not responding."
+      },
+      {
+        "ts": "2022-02-05T19:44:48.119999886+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New cred_disp parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "type=CRED_DISP msg=audit(1644090288.115:12313): pid=14146 uid=0 auid=1004 ses=106 msg='op=PAM:setcred acct=\"jwilkinson\" exe=\"/usr/sbin/sshd\" hostname=10.182.193.78 addr=10.182.193.78 terminal=ssh res=success'"
+      },
+      {
+        "ts": "2022-02-05T19:44:48.119999886+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New user_end parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "type=USER_END msg=audit(1644090288.115:12312): pid=14146 uid=0 auid=1004 ses=106 msg='op=PAM:session_close acct=\"jwilkinson\" exe=\"/usr/sbin/sshd\" hostname=10.182.193.78 addr=10.182.193.78 terminal=ssh res=success'"
+      },
+      {
+        "ts": "2022-02-05T19:44:48.140000105+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_STOP msg=audit(1644090288.143:12314): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=user@1004 comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      }
+    ],
+    "related": [
+      "INC-0024"
+    ]
+  },
+  {
+    "incident_id": "INC-0007",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-03T17:51:00+00:00",
+    "end": "2022-02-03T18:09:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 5,
+    "n_alerts": 84,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 4.4,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 77
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 5
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-03T18:02:07.157566071+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/03/2022-18:02:07.157566  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:51894 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-03T17:51:20.059357882+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/03/2022-17:51:20.059358  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:51622 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-03T18:02:33.738565922+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/03/2022-18:02:33.738566  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:51916 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-03T17:51:15.816282988+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/03/2022-17:51:15.816283  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:51618 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0149",
+      "INC-0348"
+    ]
+  },
+  {
+    "incident_id": "INC-0008",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-03T20:27:00+00:00",
+    "end": "2022-02-03T20:28:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 3,
+    "tools": [
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 2.8,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-03T20:27:19+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  3 20:27:19 mail systemd: pam_unix(systemd-user:session): session opened for user ckhan by (uid=0)"
+      },
+      {
+        "ts": "2022-02-03T20:27:19+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  3 20:27:19 mail sshd[23836]: Accepted publickey for ckhan from 10.182.193.78 port 33148 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0009",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-03T21:34:00+00:00",
+    "end": "2022-02-03T21:35:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 3,
+    "tools": [
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 2.8,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-03T21:34:17+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  3 21:34:17 mail sshd[24140]: pam_unix(sshd:session): session opened for user ckhan by (uid=0)"
+      },
+      {
+        "ts": "2022-02-03T21:34:17+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  3 21:34:17 mail sshd[24140]: Accepted publickey for ckhan from 10.182.193.78 port 33272 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      }
+    ],
+    "related": []
+  },
+  {
+    "incident_id": "INC-0010",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-04T09:06:00+00:00",
+    "end": "2022-02-04T09:07:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 6,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 3.9,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-04T09:06:35.207750082+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-09:06:35.207750  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:34318 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T09:06:35.207750082+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-09:06:35.207750  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:34318 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T09:06:47.520473957+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-09:06:47.520474  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:34350 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T09:06:27.034235954+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-09:06:27.034236  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:34310 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0079"
+    ]
+  },
+  {
+    "incident_id": "INC-0011",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-05T06:16:00+00:00",
+    "end": "2022-02-05T06:39:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 4,
+    "n_alerts": 52,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 4.8,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 46
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-05T06:38:09.918402910+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-06:38:09.918403  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:34608 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T06:16:47.830825090+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-06:16:47.830825  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:34178 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T06:26:06.456619024+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-06:26:06.456619  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:34350 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T06:16:41.084960938+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-06:16:41.084961  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:34176 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0026",
+      "INC-0067",
+      "INC-0159"
+    ]
+  },
+  {
+    "incident_id": "INC-0012",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-05T08:41:00+00:00",
+    "end": "2022-02-05T09:11:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 13,
+    "n_alerts": 218,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 6.3,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 6.3,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 201
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 9
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 6
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-05T08:47:29.591582060+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-08:47:29.591582  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:39082 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T08:41:36.944545031+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-08:41:36.944545  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:38774 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T08:44:36.044558048+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-08:44:36.044558  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:38988 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T08:41:08.000442028+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-08:41:08.000442  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:38762 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0083",
+      "INC-0142",
+      "INC-0160",
+      "INC-0201",
+      "INC-0275",
+      "INC-0367",
+      "INC-0475"
+    ]
+  },
+  {
+    "incident_id": "INC-0013",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-05T13:46:00+00:00",
+    "end": "2022-02-05T14:09:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 7,
+    "n_alerts": 77,
+    "tools": [
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "high_level",
+        "z": 4.6,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 4.2,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 66
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-05T13:46:09.010302067+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-13:46:09.010302  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:51122 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T13:52:18.009500980+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-13:52:18.009501  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:51290 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T14:07:53.880520105+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-14:07:53.880520  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:51702 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T13:46:09.010302067+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-13:46:09.010302  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:51122 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T14:01:18+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  5 14:01:18 mail sshd[17519]: pam_unix(sshd:session): session opened for user ckhan by (uid=0)"
+      },
+      {
+        "ts": "2022-02-05T14:01:18+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  5 14:01:18 mail sshd[17519]: Accepted publickey for ckhan from 10.182.193.78 port 44470 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      },
+      {
+        "ts": "2022-02-05T14:03:04+00:00",
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  5 14:03:04 mail sshd[17519]: pam_unix(sshd:session): session closed for user ckhan"
+      }
+    ],
+    "related": [
+      "INC-0069",
+      "INC-0085",
+      "INC-0107",
+      "INC-0166"
+    ]
+  },
+  {
+    "incident_id": "INC-0014",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-06T09:05:00+00:00",
+    "end": "2022-02-06T09:08:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 2,
+    "n_alerts": 16,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 4.4,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 12
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-06T09:05:04.086214066+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-09:05:04.086214  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:44970 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T09:05:15.681972027+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-09:05:15.681972  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:44992 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T09:05:53.976978064+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-09:05:53.976978  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:45018 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T09:05:04.086214066+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-09:05:04.086214  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:44970 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0108",
+      "INC-0315",
+      "INC-0316"
+    ]
+  },
+  {
+    "incident_id": "INC-0015",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-06T09:27:00+00:00",
+    "end": "2022-02-06T10:27:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 21,
+    "n_alerts": 372,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "rare_rule",
+        "z": 7.3,
+        "text": "alert type that is rare across the whole network"
+      },
+      {
+        "feature": "total",
+        "z": 5.7,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 5.7,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "high_level",
+        "z": 4.6,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 342
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 8
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 8
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "count": 3
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-06T09:45:01.015136957+00:00",
+        "tool": "suricata",
+        "detector": "20161: Multiple IDS events from same source ip (ignoring now this srcip and id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-09:45:01.015137  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:47226 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T10:06:32.190638065+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-10:06:32.190638  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:48128 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T09:27:58.695688963+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-09:27:58.695689  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:46188 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T09:50:18.072725058+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-09:50:18.072725  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:47404 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T09:27:42.200253010+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-09:27:42.200253  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:46164 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T09:55:14+00:00",
+        "tool": "wazuh",
+        "detector": "5403: First time user executed sudo.",
+        "level": 4,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  6 09:55:14 mail sudo: jwilkinson : TTY=pts/0 ; PWD=/home/jwilkinson ; USER=root ; COMMAND=/usr/bin/tail /var/log/syslog"
+      },
+      {
+        "ts": "2022-02-06T09:54:56+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  6 09:54:56 mail sshd[28189]: pam_unix(sshd:session): session opened for user jwilkinson by (uid=0)"
+      },
+      {
+        "ts": "2022-02-06T09:54:56+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  6 09:54:56 mail sshd[28189]: Accepted publickey for jwilkinson from 10.182.193.78 port 41124 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      },
+      {
+        "ts": "2022-02-06T09:55:14+00:00",
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  6 09:55:14 mail sudo: pam_unix(sudo:session): session closed for user root"
+      },
+      {
+        "ts": "2022-02-06T09:55:14.470000029+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New user_cmd parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=USER_CMD msg=audit(1644141314.474:13571): pid=28217 uid=1004 auid=1004 ses=345 msg='cwd=\"/home/jwilkinson\" cmd=7461696C202F7661722F6C6F672F7379736C6F67 terminal=pts/0 res=success'"
+      }
+    ],
+    "related": [
+      "INC-0016",
+      "INC-0087",
+      "INC-0143",
+      "INC-0144",
+      "INC-0199",
+      "INC-0316",
+      "INC-0449",
+      "INC-0477",
+      "INC-0494"
+    ]
+  },
+  {
+    "incident_id": "INC-0016",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-06T10:30:00+00:00",
+    "end": "2022-02-06T10:56:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 11,
+    "n_alerts": 149,
+    "tools": [
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "high_level",
+        "z": 7.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 5.0,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 4.8,
+        "text": "network IDS alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 135
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 8
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-06T10:31:26.091577053+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-10:31:26.091577  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:49520 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T10:30:57.066939116+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-10:30:57.066939  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:49452 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T10:51:47.206204891+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-10:51:47.206205  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:50414 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T10:30:28.761851072+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-10:30:28.761851  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:49430 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T10:36:14+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  6 10:36:14 mail systemd: pam_unix(systemd-user:session): session opened for user jwilkinson by (uid=0)"
+      },
+      {
+        "ts": "2022-02-06T10:36:14+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  6 10:36:14 mail sshd[29130]: Accepted publickey for jwilkinson from 10.182.193.78 port 41126 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      }
+    ],
+    "related": [
+      "INC-0015",
+      "INC-0088",
+      "INC-0096",
+      "INC-0477",
+      "INC-0478"
+    ]
+  },
+  {
+    "incident_id": "INC-0017",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-06T12:18:00+00:00",
+    "end": "2022-02-06T12:58:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 18,
+    "n_alerts": 356,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 5.7,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 5.7,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 334
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 13
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 6
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20161: Multiple IDS events from same source ip (ignoring now this srcip and id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-06T12:29:38.872978926+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-12:29:38.872979  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:55742 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T12:50:16.225593090+00:00",
+        "tool": "suricata",
+        "detector": "20161: Multiple IDS events from same source ip (ignoring now this srcip and id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-12:50:16.225593  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:56996 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T12:18:54.772579908+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-12:18:54.772580  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:55034 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T12:23:06.826654911+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-12:23:06.826655  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:55278 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T12:18:21.710160017+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-12:18:21.710160  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:55020 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0089",
+      "INC-0173",
+      "INC-0388",
+      "INC-0479",
+      "INC-0480"
+    ]
+  },
+  {
+    "incident_id": "INC-0018",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-06T13:56:00+00:00",
+    "end": "2022-02-06T14:45:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 16,
+    "n_alerts": 243,
+    "tools": [
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "high_level",
+        "z": 7.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 5.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 5.1,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 2.8,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 221
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 12
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-06T14:14:30.628526926+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-14:14:30.628527  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:60210 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T13:56:50.606854916+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-13:56:50.606855  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59540 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T14:13:24.842556+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-14:13:24.842556  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:60138 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T13:56:47.720707893+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/06/2022-13:56:47.720708  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59536 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-06T14:15:02+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  6 14:15:02 mail sshd[1053]: pam_unix(sshd:session): session opened for user ckhan by (uid=0)"
+      },
+      {
+        "ts": "2022-02-06T14:15:02+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  6 14:15:02 mail sshd[1053]: Accepted publickey for ckhan from 10.182.193.78 port 34952 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      },
+      {
+        "ts": "2022-02-06T14:16:29+00:00",
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  6 14:16:29 mail sshd[1053]: pam_unix(sshd:session): session closed for user ckhan"
+      }
+    ],
+    "related": [
+      "INC-0174",
+      "INC-0175",
+      "INC-0318",
+      "INC-0390"
+    ]
+  },
+  {
+    "incident_id": "INC-0019",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-07T09:39:00+00:00",
+    "end": "2022-02-07T09:51:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 6,
+    "n_alerts": 84,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 5.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 5.1,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 76
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 4
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-07T09:44:46.227667093+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-09:44:46.227667  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:56144 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-07T09:39:45.616993904+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-09:39:45.616994  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:55760 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-07T09:41:40.622265100+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-09:41:40.622265  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:55856 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-07T09:39:16.261749983+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-09:39:16.261750  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:55730 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0181",
+      "INC-0182",
+      "INC-0183",
+      "INC-0401",
+      "INC-0498"
+    ]
+  },
+  {
+    "incident_id": "INC-0020",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-08T08:07:00+00:00",
+    "end": "2022-02-08T09:06:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 18,
+    "n_alerts": 386,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 5.9,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 5.9,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 364
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 12
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 5
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 4
+      },
+      {
+        "tool": "suricata",
+        "detector": "20161: Multiple IDS events from same source ip (ignoring now this srcip and id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-08T08:07:22.608906031+00:00",
+        "tool": "suricata",
+        "detector": "20161: Multiple IDS events from same source ip (ignoring now this srcip and id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/08/2022-08:07:22.608906  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59250 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-08T08:07:56.042272091+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/08/2022-08:07:56.042272  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59292 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-08T08:07:23.041080952+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/08/2022-08:07:23.041081  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59254 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-08T08:08:56.193130970+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/08/2022-08:08:56.193131  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59324 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-08T08:07:22.608906031+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/08/2022-08:07:22.608906  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59250 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0022",
+      "INC-0093",
+      "INC-0123",
+      "INC-0190",
+      "INC-0255",
+      "INC-0412",
+      "INC-0413",
+      "INC-0467"
+    ]
+  },
+  {
+    "incident_id": "INC-0021",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.78",
+    "start": "2022-02-06T11:15:00+00:00",
+    "end": "2022-02-06T11:16:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 12,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 5.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 5.1,
+        "text": "network IDS alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 9
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-06T11:15:43.577709913+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "151.101.192.217",
+        "dst_ip": "10.182.193.78",
+        "raw": "02/06/2022-11:15:43.577710  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 151.101.192.217:443 -> 10.182.193.78:46374"
+      },
+      {
+        "ts": "2022-02-06T11:15:43.577709913+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "151.101.192.217",
+        "dst_ip": "10.182.193.78",
+        "raw": "02/06/2022-11:15:43.577710  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 151.101.192.217:443 -> 10.182.193.78:46374"
+      },
+      {
+        "ts": "2022-02-06T11:15:43.620336056+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.193.78",
+        "dst_ip": "151.101.192.217",
+        "raw": "02/06/2022-11:15:43.620336  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.193.78:46374 -> 151.101.192.217:443"
+      }
+    ],
+    "related": [
+      "INC-0088",
+      "INC-0387"
+    ]
+  },
+  {
+    "incident_id": "INC-0022",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.78",
+    "start": "2022-02-08T08:25:00+00:00",
+    "end": "2022-02-08T08:33:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 3,
+    "n_alerts": 90,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 8.9,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.9,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 85
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20100: First time this IDS alert is generated.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-08T08:32:44.718492985+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.193.78",
+        "dst_ip": "34.251.227.193",
+        "raw": "02/08/2022-08:32:44.718493  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.193.78:59404 -> 34.251.227.193:443"
+      },
+      {
+        "ts": "2022-02-08T08:25:51.699039936+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.193.78",
+        "dst_ip": "18.158.151.211",
+        "raw": "02/08/2022-08:25:51.699040  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.193.78:57994 -> 18.158.151.211:443"
+      },
+      {
+        "ts": "2022-02-08T08:32:43.953629971+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.193.78",
+        "dst_ip": "151.101.194.133",
+        "raw": "02/08/2022-08:32:43.953630  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.193.78:36548 -> 151.101.194.133:443"
+      },
+      {
+        "ts": "2022-02-08T08:31:00.501971960+00:00",
+        "tool": "suricata",
+        "detector": "20100: First time this IDS alert is generated.",
+        "level": 8,
+        "src_ip": "54.36.111.118",
+        "dst_ip": "10.182.193.78",
+        "raw": "02/08/2022-08:31:00.501972  [**] [1:2221010:1] SURICATA HTTP unable to match response to request [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 54.36.111.118:80 -> 10.182.193.78:54550"
+      },
+      {
+        "ts": "2022-02-08T08:25:51.697721004+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "18.158.151.211",
+        "dst_ip": "10.182.193.78",
+        "raw": "02/08/2022-08:25:51.697721  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 18.158.151.211:443 -> 10.182.193.78:57994"
+      }
+    ],
+    "related": [
+      "INC-0020",
+      "INC-0093",
+      "INC-0467"
+    ]
+  },
+  {
+    "incident_id": "INC-0023",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "172.26.243.167",
+    "start": "2022-02-03T19:51:00+00:00",
+    "end": "2022-02-03T19:52:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 3,
+    "tools": [
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 2.8,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-03T19:51:58+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  3 19:51:58 intranet-server sshd[19621]: pam_unix(sshd:session): session opened for user ckhan by (uid=0)"
+      },
+      {
+        "ts": "2022-02-03T19:51:58+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  3 19:51:58 intranet-server sshd[19621]: Accepted publickey for ckhan from 10.182.193.78 port 34030 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      }
+    ],
+    "related": [
+      "INC-0301"
+    ]
+  },
+  {
+    "incident_id": "INC-0024",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "172.26.243.167",
+    "start": "2022-02-05T19:44:00+00:00",
+    "end": "2022-02-05T19:47:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 2,
+    "n_alerts": 6,
+    "tools": [
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "auth_success",
+        "z": 9.2,
+        "text": "successful login, rare for this host"
+      },
+      {
+        "feature": "new_rule",
+        "z": 4.6,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "priv",
+        "z": 4.6,
+        "text": "privilege use (sudo/su)"
+      },
+      {
+        "feature": "total",
+        "z": 2.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_wazuh",
+        "z": 2.8,
+        "text": "Wazuh alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5402: Successful sudo to ROOT executed.",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-05T19:44:51+00:00",
+        "tool": "wazuh",
+        "detector": "5501: PAM: Login session opened.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  5 19:44:51 intranet-server systemd: pam_unix(systemd-user:session): session opened for user ckhan by (uid=0)"
+      },
+      {
+        "ts": "2022-02-05T19:44:51+00:00",
+        "tool": "wazuh",
+        "detector": "5715: sshd: authentication success.",
+        "level": 3,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  5 19:44:51 intranet-server sshd[29782]: Accepted publickey for ckhan from 10.182.193.78 port 52736 ssh2: RSA SHA256:8wFbiaYPevKS/wYKnePO20v0iymTcrRh4Kr+1uRS1UM"
+      },
+      {
+        "ts": "2022-02-05T19:46:05+00:00",
+        "tool": "wazuh",
+        "detector": "5402: Successful sudo to ROOT executed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  5 19:46:05 intranet-server sudo:    ckhan : TTY=pts/1 ; PWD=/home/ckhan ; USER=root ; COMMAND=/usr/bin/tail /var/log/syslog"
+      },
+      {
+        "ts": "2022-02-05T19:46:05+00:00",
+        "tool": "wazuh",
+        "detector": "5502: PAM: Login session closed.",
+        "level": 3,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  5 19:46:05 intranet-server sudo: pam_unix(sudo:session): session closed for user root"
+      }
+    ],
+    "related": [
+      "INC-0006"
+    ]
+  },
+  {
+    "incident_id": "INC-0025",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "192.168.224.185",
+    "start": "2022-02-07T10:59:00+00:00",
+    "end": "2022-02-07T11:00:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 1,
+    "n_alerts": 44,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 9.2,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "total",
+        "z": 7.6,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 7.4,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 40
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 3
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-07T10:59:15+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "192.168.226.71",
+        "dst_ip": null,
+        "raw": "Feb  7 10:59:15 wilsonahmed-mail sshd[27103]: Did not receive identification string from 192.168.226.71 port 56626"
+      },
+      {
+        "ts": "2022-02-07T10:59:33+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "192.168.226.71",
+        "dst_ip": null,
+        "raw": "192.168.226.71 - - [07/Feb/2022:10:59:33 +0000] \"POST /sdk HTTP/1.1\" 404 4013 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:13+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.226.71",
+        "dst_ip": null,
+        "raw": "Feb  7 10:59:13 wilsonahmed-mail dovecot: imap-login: Disconnected (no auth attempts in 0 secs): user=<>, rip=192.168.226.71, lip=192.168.224.185, session=<lsCwfWvXyOHAqOJH>"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0004",
+      "INC-0028",
+      "INC-0030",
+      "INC-0032",
+      "INC-0073",
+      "INC-0077",
+      "INC-0097",
+      "INC-0119",
+      "INC-0120",
+      "INC-0121"
+    ]
+  },
+  {
+    "incident_id": "INC-0026",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "192.168.224.4",
+    "start": "2022-02-05T06:14:00+00:00",
+    "end": "2022-02-05T06:21:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 2,
+    "n_alerts": 160,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 8.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.2,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 156
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-05T06:14:04.148695946+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "13.82.152.48",
+        "raw": "02/05/2022-06:14:04.148696  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:38246 -> 13.82.152.48:443"
+      },
+      {
+        "ts": "2022-02-05T06:14:04.148695946+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "13.82.152.48",
+        "raw": "02/05/2022-06:14:04.148696  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:38246 -> 13.82.152.48:443"
+      },
+      {
+        "ts": "2022-02-05T06:14:08.063189029+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "151.101.1.194",
+        "raw": "02/05/2022-06:14:08.063189  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:35220 -> 151.101.1.194:443"
+      },
+      {
+        "ts": "2022-02-05T06:14:04.146619081+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "13.82.152.48",
+        "dst_ip": "192.168.224.4",
+        "raw": "02/05/2022-06:14:04.146619  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 13.82.152.48:443 -> 192.168.224.4:38246"
+      }
+    ],
+    "related": [
+      "INC-0011",
+      "INC-0067",
+      "INC-0159",
+      "INC-0306"
+    ]
+  },
+  {
+    "incident_id": "INC-0027",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "192.168.224.4",
+    "start": "2022-02-05T16:35:00+00:00",
+    "end": "2022-02-05T16:45:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 5,
+    "n_alerts": 64,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 6.4,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 6.4,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 56
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 4
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-05T16:43:08.918018103+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "13.107.42.14",
+        "raw": "02/05/2022-16:43:08.918018  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:45110 -> 13.107.42.14:443"
+      },
+      {
+        "ts": "2022-02-05T16:35:18.164596081+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "52.212.85.16",
+        "raw": "02/05/2022-16:35:18.164596  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:52348 -> 52.212.85.16:443"
+      },
+      {
+        "ts": "2022-02-05T16:35:18.179701090+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "18.156.184.150",
+        "dst_ip": "192.168.224.4",
+        "raw": "02/05/2022-16:35:18.179701  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 18.156.184.150:443 -> 192.168.224.4:55512"
+      },
+      {
+        "ts": "2022-02-05T16:35:17.132906913+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "52.50.54.3",
+        "dst_ip": "192.168.224.4",
+        "raw": "02/05/2022-16:35:17.132907  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 52.50.54.3:443 -> 192.168.224.4:45522"
+      }
+    ],
+    "related": [
+      "INC-0224",
+      "INC-0282"
+    ]
+  },
+  {
+    "incident_id": "INC-0028",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "192.168.224.4",
+    "start": "2022-02-07T10:57:00+00:00",
+    "end": "2022-02-07T11:04:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 3,
+    "n_alerts": 54,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 7.4,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 7.4,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.4,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 49
+      },
+      {
+        "tool": "suricata",
+        "detector": "20100: First time this IDS alert is generated.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-07T10:57:53.583942890+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "52.50.54.3",
+        "raw": "02/07/2022-10:57:53.583943  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:48802 -> 52.50.54.3:443"
+      },
+      {
+        "ts": "2022-02-07T10:57:53.583942890+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "52.50.54.3",
+        "raw": "02/07/2022-10:57:53.583943  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:48802 -> 52.50.54.3:443"
+      },
+      {
+        "ts": "2022-02-07T10:57:54.754132986+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "185.33.220.240",
+        "raw": "02/07/2022-10:57:54.754133  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:50712 -> 185.33.220.240:443"
+      },
+      {
+        "ts": "2022-02-07T10:59:33.810539007+00:00",
+        "tool": "suricata",
+        "detector": "20100: First time this IDS alert is generated.",
+        "level": 8,
+        "src_ip": "192.168.226.71",
+        "dst_ip": "192.168.224.4",
+        "raw": "02/07/2022-10:59:33.810539  [**] [1:2024364:4] ET SCAN Possible Nmap User-Agent Observed [**] [Classification: Web Application Attack] [Priority: 1] {TCP} 192.168.226.71:51708 -> 192.168.224.4:80"
+      },
+      {
+        "ts": "2022-02-07T10:57:53.549508095+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "34.243.89.47",
+        "dst_ip": "192.168.224.4",
+        "raw": "02/07/2022-10:57:53.549508  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 34.243.89.47:443 -> 192.168.224.4:54504"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0004",
+      "INC-0025",
+      "INC-0030",
+      "INC-0032",
+      "INC-0073",
+      "INC-0077",
+      "INC-0097",
+      "INC-0119",
+      "INC-0120",
+      "INC-0121"
+    ]
+  },
+  {
+    "incident_id": "INC-0029",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "192.168.224.4",
+    "start": "2022-02-08T15:23:00+00:00",
+    "end": "2022-02-08T15:27:00+00:00",
+    "peak_z": 9.2,
+    "n_windows": 3,
+    "n_alerts": 80,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 9.2,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 8.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 8.1,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 75
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-08T15:23:05.950490952+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "18.190.90.63",
+        "raw": "02/08/2022-15:23:05.950491  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:34424 -> 18.190.90.63:443"
+      },
+      {
+        "ts": "2022-02-08T15:23:05.950490952+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "18.190.90.63",
+        "raw": "02/08/2022-15:23:05.950491  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:34424 -> 18.190.90.63:443"
+      },
+      {
+        "ts": "2022-02-08T15:23:07.617546082+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "192.168.224.4",
+        "dst_ip": "185.64.190.80",
+        "raw": "02/08/2022-15:23:07.617546  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.224.4:37286 -> 185.64.190.80:443"
+      },
+      {
+        "ts": "2022-02-08T15:23:03.080377102+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "104.22.34.109",
+        "dst_ip": "192.168.224.4",
+        "raw": "02/08/2022-15:23:03.080377  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 104.22.34.109:443 -> 192.168.224.4:39322"
+      }
+    ],
+    "related": [
+      "INC-0339"
+    ]
+  },
+  {
+    "incident_id": "INC-0030",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-07T10:37:00+00:00",
+    "end": "2022-02-07T11:00:00+00:00",
+    "peak_z": 8.2,
+    "n_windows": 10,
+    "n_alerts": 168,
+    "tools": [
+      "aminer",
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "total",
+        "z": 8.6,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 8.2,
+        "text": "AMiner alert volume far above normal"
+      },
+      {
+        "feature": "aminer_novel",
+        "z": 8.2,
+        "text": "AMiner flagged never-before-seen behavior"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 4.8,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "high_level",
+        "z": 4.6,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 92
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 60
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 8
+      },
+      {
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "20100: First time this IDS alert is generated.",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-07T10:41:01.538579941+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-10:41:01.538580  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59988 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-07T10:37:34.491919994+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-10:37:34.491920  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59784 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-07T10:38:59.266258955+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-10:38:59.266259  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59888 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-07T10:59:29.176386118+00:00",
+        "tool": "suricata",
+        "detector": "20100: First time this IDS alert is generated.",
+        "level": 8,
+        "src_ip": "192.168.226.71",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-10:59:29.176386  [**] [1:2230000:1] SURICATA TLS invalid SSLv2 header [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 192.168.226.71:38784 -> 10.182.193.181:587"
+      },
+      {
+        "ts": "2022-02-07T10:37:00.455336094+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/07/2022-10:37:00.455336  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:59746 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-07T10:59:15+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "Feb  7 10:59:15 mail sshd[12445]: Did not receive identification string from 10.182.193.78 port 35190"
+      },
+      {
+        "ts": "2022-02-07T10:59:34+00:00",
+        "tool": "wazuh",
+        "detector": "31101: Web server 400 error code.",
+        "level": 5,
+        "src_ip": "10.182.193.78",
+        "dst_ip": null,
+        "raw": "10.182.193.78 - - [07/Feb/2022:10:59:34 +0000] \"POST /sdk HTTP/1.1\" 404 3994 \"-\" \"Mozilla/5.0 (compatible; Nmap Scripting Engine; https://nmap.org/book/nse.html)\""
+      },
+      {
+        "ts": "2022-02-07T10:59:13+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.226.71",
+        "dst_ip": null,
+        "raw": "Feb  7 10:59:13 mail dovecot: imap-login: Disconnected (no auth attempts in 0 secs): user=<>, rip=192.168.226.71, lip=10.182.193.181, session=<+4GxfWvXBoLAqOJH>"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0004",
+      "INC-0025",
+      "INC-0028",
+      "INC-0032",
+      "INC-0073",
+      "INC-0077",
+      "INC-0097",
+      "INC-0119",
+      "INC-0120",
+      "INC-0121",
+      "INC-0183",
+      "INC-0403"
+    ]
+  },
+  {
+    "incident_id": "INC-0031",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.192.1",
+    "start": "2022-02-07T00:00:00+00:00",
+    "end": "2022-02-07T00:01:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 7.3,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_aminer",
+        "z": 2.2,
+        "text": "AMiner alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "count": 1
+      },
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-07T00:00:48.079999924+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_start parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_START msg=audit(1644192048.079:893): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      },
+      {
+        "ts": "2022-02-07T00:00:48.079999924+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New service_stop parameter combination in Audit logs.",
+        "level": 0,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "type=SERVICE_STOP msg=audit(1644192048.079:894): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=fstrim comm=\"systemd\" exe=\"/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+      }
+    ],
+    "related": [
+      "INC-0072",
+      "INC-0076",
+      "INC-0090",
+      "INC-0098"
+    ]
+  },
+  {
+    "incident_id": "INC-0032",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.192.1",
+    "start": "2022-02-07T10:59:00+00:00",
+    "end": "2022-02-07T11:00:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 2,
+    "tools": [
+      "aminer",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "new_rule",
+        "z": 7.3,
+        "text": "alert type never seen before on this host"
+      },
+      {
+        "feature": "max_level",
+        "z": 3.9,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 2.2,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "count": 1
+      },
+      {
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-07T10:59:15+00:00",
+        "tool": "wazuh",
+        "detector": "5706: sshd: insecure connection attempt (scan).",
+        "level": 6,
+        "src_ip": "192.168.226.71",
+        "dst_ip": null,
+        "raw": "Feb  7 10:59:15 inet-firewall sshd[6325]: Did not receive identification string from 192.168.226.71 port 51538"
+      },
+      {
+        "ts": "2022-02-07T10:59:15+00:00",
+        "tool": "aminer",
+        "detector": "AMiner: New event type.",
+        "level": 0,
+        "src_ip": "192.168.226.71",
+        "dst_ip": null,
+        "raw": "Feb  7 10:59:15 inet-firewall sshd[6325]: Did not receive identification string from 192.168.226.71 port 51538"
+      }
+    ],
+    "related": [
+      "INC-0001",
+      "INC-0002",
+      "INC-0004",
+      "INC-0025",
+      "INC-0028",
+      "INC-0030",
+      "INC-0073",
+      "INC-0077",
+      "INC-0097",
+      "INC-0119",
+      "INC-0120",
+      "INC-0121"
+    ]
+  },
+  {
+    "incident_id": "INC-0033",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-04T08:35:00+00:00",
+    "end": "2022-02-04T08:41:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 2,
+    "n_alerts": 16,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 7.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.8,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 4.4,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 13
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-04T08:35:01.596332073+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-08:35:01.596332  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:33310 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T08:40:24.817847013+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-08:40:24.817847  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:33454 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T08:35:01.596332073+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-08:35:01.596332  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:33310 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0150"
+    ]
+  },
+  {
+    "incident_id": "INC-0034",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-04T11:21:00+00:00",
+    "end": "2022-02-04T11:40:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 4,
+    "n_alerts": 82,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 7.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 4.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 4.8,
+        "text": "network IDS alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 77
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-04T11:25:51.540010929+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-11:25:51.540011  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:41366 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T11:21:10.893697977+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-11:21:10.893698  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:41114 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T11:39:50.008398056+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-11:39:50.008398  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:41932 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T11:21:10.893697977+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-11:21:10.893698  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:41114 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0151",
+      "INC-0152",
+      "INC-0269",
+      "INC-0356",
+      "INC-0456"
+    ]
+  },
+  {
+    "incident_id": "INC-0035",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-04T13:15:00+00:00",
+    "end": "2022-02-04T13:25:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 3,
+    "n_alerts": 56,
+    "tools": [
+      "suricata",
+      "wazuh"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 7.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 6.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 5.4,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.8,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 45
+      },
+      {
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "count": 3
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 2
+      },
+      {
+        "tool": "wazuh",
+        "detector": "2501: syslog: User authentication failure.",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-04T13:24:54.124403954+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-13:24:54.124404  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:47056 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T13:15:07.088900089+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-13:15:07.088900  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:46618 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T13:20:41.379751921+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-13:20:41.379752  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:46878 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T13:15:07.088900089+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-13:15:07.088900  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:46618 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T13:24:15+00:00",
+        "tool": "wazuh",
+        "detector": "5503: PAM: User login failed.",
+        "level": 5,
+        "src_ip": "10.182.193.181",
+        "dst_ip": null,
+        "raw": "Feb  4 13:24:15 mail auth: pam_unix(dovecot:auth): authentication failure; logname= uid=0 euid=0 tty=dovecot ruser=kristi.obrien rhost=10.182.193.181  user=kristi.obrien"
+      },
+      {
+        "ts": "2022-02-04T13:24:19+00:00",
+        "tool": "wazuh",
+        "detector": "2501: syslog: User authentication failure.",
+        "level": 5,
+        "src_ip": null,
+        "dst_ip": null,
+        "raw": "Feb  4 13:24:19 mail HORDE: [horde] FAILED LOGIN for kristi.obrien to horde (10.182.194.5) [pid 1203 on line 198 of \"/usr/share/horde/login.php\"]"
+      },
+      {
+        "ts": "2022-02-04T13:24:19+00:00",
+        "tool": "wazuh",
+        "detector": "9705: Dovecot Invalid User Login Attempt.",
+        "level": 5,
+        "src_ip": "10.182.193.181",
+        "dst_ip": "10.182.193.181",
+        "raw": "Feb  4 13:24:19 mail dovecot: imap-login: Disconnected (auth failed, 1 attempts in 4 secs): user=<kristi.obrien>, method=PLAIN, rip=10.182.193.181, lip=10.182.193.181, TLS, session=<0nfQKjHX1rgKtsG1>"
+      }
+    ],
+    "related": [
+      "INC-0154",
+      "INC-0436",
+      "INC-0473"
+    ]
+  },
+  {
+    "incident_id": "INC-0036",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-04T14:08:00+00:00",
+    "end": "2022-02-04T14:14:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 2,
+    "n_alerts": 42,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 7.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.8,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 4.8,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 4.8,
+        "text": "network IDS alert volume far above normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 39
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-04T14:08:34.422799110+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-14:08:34.422799  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:49222 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T14:13:19.373064041+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-14:13:19.373064  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:49580 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T14:08:34.422799110+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-14:08:34.422799  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:49222 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0101",
+      "INC-0155",
+      "INC-0272",
+      "INC-0359"
+    ]
+  },
+  {
+    "incident_id": "INC-0037",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-04T14:27:00+00:00",
+    "end": "2022-02-04T14:51:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 7,
+    "n_alerts": 98,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 7.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 4.8,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 90
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 4
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 2
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-04T14:35:37.601942062+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-14:35:37.601942  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:50496 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T14:27:53.933322906+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-14:27:53.933323  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:50216 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T14:38:54.211503029+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-14:38:54.211503  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:50622 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T14:27:40.190501928+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-14:27:40.190502  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:50194 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0102",
+      "INC-0122",
+      "INC-0155",
+      "INC-0156",
+      "INC-0451",
+      "INC-0470"
+    ]
+  },
+  {
+    "incident_id": "INC-0038",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-04T16:07:00+00:00",
+    "end": "2022-02-04T16:18:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 6,
+    "n_alerts": 48,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 7.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 4.4,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 41
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 4
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-04T16:07:47.960536003+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-16:07:47.960536  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:53940 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T16:08:00.213973045+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-16:08:00.213973  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:53946 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T16:12:02.831659079+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-16:12:02.831659  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:54042 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T16:07:05.624357939+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-16:07:05.624358  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:53922 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0081",
+      "INC-0273"
+    ]
+  },
+  {
+    "incident_id": "INC-0039",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-04T16:37:00+00:00",
+    "end": "2022-02-04T17:31:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 14,
+    "n_alerts": 226,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 7.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "total",
+        "z": 5.1,
+        "text": "alert volume far above its normal"
+      },
+      {
+        "feature": "is_suricata",
+        "z": 5.1,
+        "text": "network IDS alert volume far above normal"
+      },
+      {
+        "feature": "max_level",
+        "z": 5.0,
+        "text": "unusually severe alert for this host"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 209
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 9
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 5
+      },
+      {
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "count": 2
+      },
+      {
+        "tool": "suricata",
+        "detector": "20161: Multiple IDS events from same source ip (ignoring now this srcip and id).",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-04T16:53:13.760732889+00:00",
+        "tool": "suricata",
+        "detector": "20162: Multiple IDS alerts for same id (ignoring now this id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-16:53:13.760733  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:55518 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T17:04:24.541805983+00:00",
+        "tool": "suricata",
+        "detector": "20161: Multiple IDS events from same source ip (ignoring now this srcip and id).",
+        "level": 11,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-17:04:24.541806  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:55700 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T16:37:40.997051954+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-16:37:40.997052  [**] [1:2230003:1] SURICATA TLS invalid handshake message [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:54956 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T16:48:03.728883028+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-16:48:03.728883  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:55296 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-04T16:37:40.997051954+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/04/2022-16:37:40.997052  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:54956 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0157",
+      "INC-0158",
+      "INC-0305",
+      "INC-0361",
+      "INC-0362",
+      "INC-0363"
+    ]
+  },
+  {
+    "incident_id": "INC-0040",
+    "kind": "host",
+    "scenario": "wilson",
+    "entity": "10.182.193.181",
+    "start": "2022-02-05T07:52:00+00:00",
+    "end": "2022-02-05T07:53:00+00:00",
+    "peak_z": 7.3,
+    "n_windows": 1,
+    "n_alerts": 6,
+    "tools": [
+      "suricata"
+    ],
+    "targets": null,
+    "reasons": [
+      {
+        "feature": "high_level",
+        "z": 7.3,
+        "text": "high-severity alerts (Wazuh level 10+)"
+      },
+      {
+        "feature": "max_level",
+        "z": 4.8,
+        "text": "unusually severe alert for this host"
+      },
+      {
+        "feature": "total",
+        "z": 3.9,
+        "text": "alert volume far above its normal"
+      }
+    ],
+    "top_rules": [
+      {
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "count": 4
+      },
+      {
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "count": 1
+      },
+      {
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "count": 1
+      }
+    ],
+    "sample_alerts": [
+      {
+        "ts": "2022-02-05T07:52:23.980094910+00:00",
+        "tool": "suricata",
+        "detector": "20151: Multiple IDS events from same source ip.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-07:52:23.980095  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:36760 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T07:52:46.706857920+00:00",
+        "tool": "suricata",
+        "detector": "20152: Multiple IDS alerts for same id.",
+        "level": 10,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-07:52:46.706858  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:36770 -> 10.182.193.181:443"
+      },
+      {
+        "ts": "2022-02-05T07:52:11.387162924+00:00",
+        "tool": "suricata",
+        "detector": "20101: IDS event.",
+        "level": 6,
+        "src_ip": "10.182.194.5",
+        "dst_ip": "10.182.193.181",
+        "raw": "02/05/2022-07:52:11.387163  [**] [1:2230010:1] SURICATA TLS invalid record/traffic [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 10.182.194.5:36742 -> 10.182.193.181:443"
+      }
+    ],
+    "related": [
+      "INC-0082",
+      "INC-0344",
+      "INC-0484"
+    ]
+  }
+]

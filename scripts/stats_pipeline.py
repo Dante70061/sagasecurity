@@ -40,6 +40,8 @@ FLAG_Z = 4.0                        # incident threshold: z_max at or above this
 MERGE_GAP = pd.Timedelta("10min")   # flagged windows on one host closer than this merge into one incident
 MAX_INCIDENT = pd.Timedelta("60min")  # split incidents longer than this so one can't swallow a whole day
 SAMPLE_ALERTS = 10                  # raw alerts attached to each incident
+INCIDENT_BUDGET = 40                # incidents.json keeps the top N per scenario (analyst / LLM workload)
+EVAL_TOLERANCE = pd.Timedelta("2min")  # evaluation only: alerts are often logged just after a labeled phase ends
 
 # feature name -> Wazuh rule groups that count toward it
 CATEGORIES = {
@@ -52,7 +54,9 @@ CATEGORIES = {
 ROLLING = ["total", "new_rule", "high_level", "priv", "auth_fail"]   # get 60-min rolling sums
 VOLUME_FEATURES = ["total", "is_wazuh", "is_suricata", "is_aminer", "n_rules"]
 # sparse "something unusual happened" counts: usually 0, so a single 1 is meaningful
-EVENT_FEATURES = ["new_rule", "rare_rule", "aminer_novel", "auth_success", "priv", "high_level"]
+# (aminer_novel is NOT here: ~97% of AMiner alerts are "New ..." detections, so it isn't sparse;
+#  with the small floor, routine AMiner bursts on quiet hosts were scoring z~25)
+EVENT_FEATURES = ["new_rule", "rare_rule", "auth_success", "priv", "high_level"]
 
 # attacker view: group alerts by SOURCE IP across all hosts (catches scans that touch
 # each host only briefly but hit many hosts)
@@ -353,14 +357,15 @@ def mark_attacks(agg, labels) -> pd.DataFrame:
     w["in_attack"] = False
     w["phase"] = None
     for _, p in labels.iterrows():
-        m = (w.scenario == p.scenario) & (w.window < p.end) & (w.window + pd.Timedelta(WINDOW) > p.start)
+        m = overlaps(w, p)
         w.loc[m, "in_attack"] = True
         w.loc[m & w.phase.isna(), "phase"] = p.attack
     return w
 
 
 def overlaps(df, p):
-    return (df.scenario == p.scenario) & (df.window < p.end) & (df.window + pd.Timedelta(WINDOW) > p.start)
+    return ((df.scenario == p.scenario) & (df.window < p.end + EVAL_TOLERANCE)
+            & (df.window + pd.Timedelta(WINDOW) > p.start - EVAL_TOLERANCE))
 
 
 def phase_recall(w, labels, thresh_pct):
@@ -581,26 +586,45 @@ def evaluate_incidents(incidents, labels, n_alerts, say: Report) -> pd.DataFrame
     rows = []
     for inc in incidents:
         s0, e0 = pd.Timestamp(inc["start"]), pd.Timestamp(inc["end"])
-        lab = labels[(labels.scenario == inc["scenario"]) & (labels.start < e0) & (labels.end > s0)]
+        lab = labels[(labels.scenario == inc["scenario"]) & (labels.start - EVAL_TOLERANCE < e0)
+                     & (labels.end + EVAL_TOLERANCE > s0)]
         rows.append({"incident_id": inc["incident_id"], "kind": inc["kind"],
                      "scenario": inc["scenario"], "entity": inc["entity"],
                      "start": inc["start"], "peak_z": inc["peak_z"], "n_alerts": inc["n_alerts"],
                      "top_reason": inc["reasons"][0]["feature"] if inc["reasons"] else "",
                      "phases": ",".join(lab.attack)})
     ev = pd.DataFrame(rows)
+    if ev.empty:
+        say("no incidents")
+        return ev
+    ev["rank_in_scenario"] = ev.groupby("scenario")["peak_z"].rank(ascending=False, method="first").astype(int)
+    ev["in_budget"] = ev["rank_in_scenario"] <= INCIDENT_BUDGET
 
-    say.section(f"incidents (FLAG_Z={FLAG_Z}, merge gap={MERGE_GAP})")
-    n_att = (ev.phases != "").sum() if len(ev) else 0
-    say(f"{n_alerts:,} alerts -> {len(ev)} incidents; {n_att} overlap an attack phase "
-        f"({n_att / max(len(ev), 1):.0%})")
-    for view, sub in [("host + actor", ev), ("host only", ev[ev.kind == "host"]), ("actor only", ev[ev.kind == "actor"])]:
-        covered = set(",".join(sub.phases).split(",")) - {""} if len(sub) else set()
-        for scen, lab in labels.groupby("scenario"):
-            hit = [p for p in lab.attack if p in covered]
-            say(f"[{view:12s}] {scen}: {len(sub)} incidents, phases covered {len(hit)}/{len(lab)}  "
-                f"missed: {[p for p in lab.attack if p not in covered]}")
-    say("\ntop 25 incidents:")
-    say(ev.head(25).to_string(index=False))
+    say.section(f"incidents (FLAG_Z={FLAG_Z}, merge gap={MERGE_GAP}, budget={INCIDENT_BUDGET}/scenario, "
+                f"eval tolerance={EVAL_TOLERANCE})")
+    n_att = (ev.phases != "").sum()
+    say(f"{n_alerts:,} alerts -> {len(ev):,} incidents ({n_att} overlap an attack phase); "
+        f"top {INCIDENT_BUDGET} per scenario -> {int(ev.in_budget.sum())} handed off")
+
+    rows = []
+    for scen, lab in labels.groupby("scenario"):
+        se = ev[ev.scenario == scen]
+        row = {"scenario": scen, "phases": len(lab), "incidents": len(se)}
+        for name, sub in [("all", se), ("budget", se[se.in_budget]),
+                          ("budget_host", se[se.in_budget & (se.kind == "host")]),
+                          ("budget_actor", se[se.in_budget & (se.kind == "actor")])]:
+            covered = set(",".join(sub.phases).split(",")) - {""}
+            row[name] = len([p for p in lab.attack if p in covered])
+        b = se[se.in_budget]
+        row["budget_precision"] = f"{(b.phases != '').mean():.0%}" if len(b) else "-"
+        covered = set(",".join(b.phases).split(",")) - {""}
+        row["missed_in_budget"] = ",".join(p for p in lab.attack if p not in covered)
+        rows.append(row)
+    say("phases covered per scenario (all incidents / within budget / budget host-only / budget actor-only):")
+    say(pd.DataFrame(rows).to_string(index=False))
+
+    say(f"\ntop 25 incidents:")
+    say(ev.sort_values("peak_z", ascending=False).head(25).drop(columns=["in_budget"]).to_string(index=False))
     return ev
 
 
@@ -683,7 +707,9 @@ def main():
     incidents = finalize_incidents(incidents)
     ev = evaluate_incidents(incidents, labels, len(raw), say)
     import json
-    (args.out_dir / "incidents.json").write_text(json.dumps(incidents, indent=2, default=str, allow_nan=False))
+    keep = set(ev.loc[ev["in_budget"], "incident_id"]) if len(ev) else set()
+    handoff = [i for i in incidents if i["incident_id"] in keep]
+    (args.out_dir / "incidents.json").write_text(json.dumps(handoff, indent=2, default=str, allow_nan=False))
     ev.to_csv(args.out_dir / "incidents_eval.csv", index=False)
 
     agg.to_parquet(args.out_dir / "windows_z.parquet")
