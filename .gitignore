@@ -111,3 +111,7 @@ logs/
 *.temp
 .tmp/
 tmp/
+
+# Dataset: raw alert files and generated features/scores/models are large; track only the labels
+dataset/*
+!dataset/labels.csv
