@@ -1,31 +1,57 @@
 #!/usr/bin/env python3
-"""Normalize AMiner + Wazuh JSONL into one sorted event stream."""
+"""Merge AMiner + Wazuh JSONL alerts for every scenario in a folder.
+
+Usage:
+    python3 scripts/merge_alerts.py /path/to/unzipped/ait_ads
+    python3 scripts/merge_alerts.py /path/to/unzipped/ait_ads -o dataset/merged.jsonl
+
+Expects files named <scenario>_aminer.json and <scenario>_wazuh.json
+(JSON Lines, despite the .json suffix). Writes one JSONL stream.
+"""
 
 from __future__ import annotations
 
 import argparse
 import json
 import re
-from datetime import datetime, timezone
+import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterator
 
 # Apache combined / common log
 APACHE_RE = re.compile(
-    r'^(?P<ip>\S+) \S+ \S+ \[.*?\] "(?P<method>\S+)\s+(?P<path>\S+)(?:\s+HTTP/\S+)?" '
+    r'^(?P<ip>\S+) \S+ (?P<auth_user>\S+) \[.*?\] "(?P<method>\S+)\s+(?P<path>\S+)(?:\s+HTTP/\S+)?" '
     r'(?P<status>\d{3}) \S+(?: "(?P<referer>[^"]*)" "(?P<ua>[^"]*)")?'
 )
+SU_RE = re.compile(r"\bSuccessful su for (\S+) by (\S+)")
+DOVECOT_USER_RE = re.compile(r"\buser=<([^>]+)>")
+ACCEPTED_USER_RE = re.compile(r"\bAccepted \S+ for (\S+) from\b")
+FOR_USER_RE = re.compile(r"\bfor user (\S+)")
+ACCT_USER_RE = re.compile(r'\bacct="([^"]+)"')
+RUSER_RE = re.compile(r"\bruser=(\S+)")
+BLANK_USERS = {"", "-", "?", "none", "null"}
 # Suricata fast.log: {TCP} src:port -> dst:port
 SURICATA_FAST_RE = re.compile(
     r"\{(?P<proto>\w+)\}\s+(?P<src_ip>[^\s:]+):(?P<src_port>\d+)\s+->\s+"
     r"(?P<dst_ip>[^\s:]+):(?P<dst_port>\d+)"
 )
-# DNS query from <ip>
+# [**] [gid:sid:rev] signature [**]
+FAST_SIG_RE = re.compile(
+    r"\[\*\*\]\s+\[(\d+):(\d+):(\d+)\]\s+(.*?)\s+\[\*\*\]"
+)
+# "Jan 21 00:00:01 cloud-share CRON[4388]: ..."
+SYSLOG_HOST_RE = re.compile(
+    r"^[A-Z][a-z]{2}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2}\s+(\S+)"
+)
 DNS_FROM_RE = re.compile(r"\bfrom\s+(\d+\.\d+\.\d+\.\d+)\b")
-# Generic IPv4
 IPV4_RE = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
+IPV4_FULL_RE = re.compile(r"(?:\d{1,3}\.){3}\d{1,3}")
 
 BASELINE_WAZUH_RULES = {"9701", "52507"}  # Dovecot success, ClamAV update
+# eve.json and fast.log copies of one alert share a timestamp.
+# The opposite direction is a different alert (~40ms later) and must be kept.
+SURICATA_DEDUP_WINDOW_S = 0.05
 
 
 def parse_iso_ts(value: str) -> float:
@@ -33,36 +59,152 @@ def parse_iso_ts(value: str) -> float:
     return datetime.fromisoformat(value).timestamp()
 
 
+def norm_sid(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    if re.fullmatch(r"\d+\.0+", text):
+        return text.split(".", 1)[0]
+    return text or None
+
+
 def parse_apache(raw: str) -> dict[str, Any]:
-    m = APACHE_RE.match(raw)
-    if not m:
+    match = APACHE_RE.match(raw)
+    if not match:
         return {}
     out: dict[str, Any] = {
-        "src_ip": m.group("ip"),
-        "http_method": m.group("method"),
-        "http_path": m.group("path"),
-        "status": m.group("status"),
+        "src_ip": match.group("ip"),
+        "http_method": match.group("method"),
+        "http_path": match.group("path"),
+        "status": match.group("status"),
     }
-    if m.group("ua") is not None:
-        out["ua"] = m.group("ua")
-    if m.group("referer") is not None:
-        out["referer"] = m.group("referer")
+    if match.group("ua") is not None:
+        out["ua"] = match.group("ua")
+    if match.group("referer") is not None:
+        out["referer"] = match.group("referer")
+    auth_user = clean_user(match.group("auth_user"))
+    if auth_user:
+        out["user"] = auth_user
     return out
+
+
+def clean_user(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip().strip("<>\"'")
+    if text.lower() in BLANK_USERS or text.startswith("(uid="):
+        return None
+    return text or None
+
+
+def parse_users(raw: str | None) -> tuple[str | None, str | None]:
+    """Return (src_user, dst_user) parsed from a raw log line."""
+    if not raw:
+        return None, None
+    src_user = dst_user = None
+    su = SU_RE.search(raw)
+    if su:
+        dst_user = clean_user(su.group(1))
+        src_user = clean_user(su.group(2))
+    if dst_user is None:
+        for pattern in (DOVECOT_USER_RE, ACCEPTED_USER_RE, FOR_USER_RE, ACCT_USER_RE):
+            match = pattern.search(raw)
+            if match:
+                dst_user = clean_user(match.group(1))
+                if dst_user:
+                    break
+    if src_user is None:
+        remote = RUSER_RE.search(raw)
+        if remote:
+            src_user = clean_user(remote.group(1))
+    return src_user, dst_user
+
+
+def choose_user(src_user: str | None, dst_user: str | None, fallback: str | None = None) -> str | None:
+    return dst_user or src_user or fallback
+
+
+def peel_ip_port(ip: Any, port: Any) -> tuple[Any, Any]:
+    """Wazuh sometimes stores fast.log endpoints as 'ip:port' in the IP field."""
+    if isinstance(ip, str) and ":" in ip:
+        left, right = ip.rsplit(":", 1)
+        if IPV4_FULL_RE.fullmatch(left) and right.isdigit():
+            return left, port or right
+    return ip, port
 
 
 def first_ip(text: str | None) -> str | None:
     if not text:
         return None
-    m = IPV4_RE.search(text)
-    return m.group(0) if m else None
+    match = IPV4_RE.search(text)
+    return match.group(0) if match else None
 
 
-def normalize_aminer(obj: dict[str, Any]) -> dict[str, Any] | None:
+def syslog_host(raw: str | None) -> str | None:
+    if not raw:
+        return None
+    match = SYSLOG_HOST_RE.match(raw)
+    if not match:
+        return None
+    host = match.group(1)
+    # Lines with no hostname put the program here: "dnsmasq[3326]:"
+    if host in {"-", "wazuh-client"} or "[" in host or host.endswith(":"):
+        return None
+    return host
+
+
+def resolve_host(
+    ip_candidate: str | None,
+    name_candidate: str | None,
+    raw: str | None,
+) -> tuple[str | None, str | None, str | None]:
+    """Return (host, host_name, host_ip). host is 'name (ip)' when both exist."""
+    ip = ip_candidate.strip() if isinstance(ip_candidate, str) and ip_candidate.strip() else None
+    name = (
+        name_candidate.strip()
+        if isinstance(name_candidate, str) and name_candidate.strip()
+        else None
+    )
+    if name in {"wazuh-client", "-"}:
+        name = None
+    if ip and not IPV4_FULL_RE.fullmatch(ip):
+        name = name or ip
+        ip = None
+    if name and IPV4_FULL_RE.fullmatch(name):
+        ip = ip or name
+        name = None
+    if name is None:
+        parsed = syslog_host(raw)
+        if parsed and IPV4_FULL_RE.fullmatch(parsed):
+            ip = ip or parsed
+        elif parsed:
+            name = parsed
+    if name and ip and name == ip:
+        name = None
+    if name and ip:
+        host = f"{name} ({ip})"
+    else:
+        host = name or ip
+    return host, name, ip
+
+
+def parse_fast_signature(raw: str) -> tuple[str | None, str | None]:
+    match = FAST_SIG_RE.search(raw)
+    if not match:
+        return None, None
+    return match.group(2), match.group(4).strip()
+
+
+def normalize_aminer(obj: dict[str, Any], scenario: str) -> dict[str, Any] | None:
+    ac = obj.get("AnalysisComponent") or {}
+    # Cold-start rows are labeled training and are not detections.
+    if ac.get("TrainingMode") is True:
+        return None
+
     log = obj.get("LogData") or {}
     stamps = log.get("Timestamps") or []
     if not stamps:
         return None
-    ac = obj.get("AnalysisComponent") or {}
     raws = log.get("RawLogData") or []
     raw = raws[0] if raws else ""
     resources = log.get("LogResources") or []
@@ -72,7 +214,6 @@ def normalize_aminer(obj: dict[str, Any]) -> dict[str, Any] | None:
         "detector_type": ac.get("AnalysisComponentType"),
         "detector_name": ac.get("AnalysisComponentName"),
         "message": ac.get("Message"),
-        "training_mode": ac.get("TrainingMode"),
     }
     if "AffectedLogAtomValues" in ac:
         extras["affected_values"] = ac.get("AffectedLogAtomValues")
@@ -80,13 +221,24 @@ def normalize_aminer(obj: dict[str, Any]) -> dict[str, Any] | None:
     parsed = parse_apache(raw) if location and "access" in location else {}
     src_ip = parsed.get("src_ip")
     if not src_ip:
-        m = DNS_FROM_RE.search(raw)
-        src_ip = m.group(1) if m else first_ip(raw)
+        dns_from = DNS_FROM_RE.search(raw)
+        src_ip = dns_from.group(1) if dns_from else first_ip(raw)
 
-    event = {
+    aminer_id = (obj.get("AMiner") or {}).get("ID")
+    host, host_name, host_ip = resolve_host(
+        aminer_id if isinstance(aminer_id, str) else None,
+        None,
+        raw,
+    )
+    src_user, dst_user = parse_users(raw)
+
+    return {
+        "scenario": scenario,
         "ts": float(stamps[0]),
         "source": "aminer",
-        "host": (obj.get("AMiner") or {}).get("ID"),
+        "host": host,
+        "host_name": host_name,
+        "host_ip": host_ip,
         "location": location,
         "detector": ac.get("AnalysisComponentName") or ac.get("AnalysisComponentType"),
         "detector_id": str(ac.get("AnalysisComponentIdentifier"))
@@ -99,13 +251,15 @@ def normalize_aminer(obj: dict[str, Any]) -> dict[str, Any] | None:
         "http_method": parsed.get("http_method"),
         "status": parsed.get("status"),
         "ua": parsed.get("ua"),
+        "user": choose_user(src_user, dst_user, parsed.get("user")),
+        "src_user": src_user,
+        "dst_user": dst_user,
         "is_baseline": False,
         "extras": extras,
     }
-    return event
 
 
-def normalize_wazuh(obj: dict[str, Any]) -> dict[str, Any] | None:
+def normalize_wazuh(obj: dict[str, Any], scenario: str) -> dict[str, Any] | None:
     ts_raw = obj.get("@timestamp") or obj.get("timestamp")
     if not ts_raw:
         return None
@@ -117,21 +271,27 @@ def normalize_wazuh(obj: dict[str, Any]) -> dict[str, Any] | None:
     rule = obj.get("rule") or {}
     data = obj.get("data") if isinstance(obj.get("data"), dict) else {}
     agent = obj.get("agent") or {}
+    predecoder = obj.get("predecoder") if isinstance(obj.get("predecoder"), dict) else {}
     full_log = obj.get("full_log") or ""
     location = obj.get("location")
 
     rule_id = str(rule.get("id")) if rule.get("id") is not None else None
     description = rule.get("description") or ""
 
-    src_ip = data.get("srcip") or data.get("src_ip")
-    dst_ip = data.get("dstip") or data.get("dest_ip")
-    src_port = data.get("srcport") or data.get("src_port")
-    dst_port = data.get("dstport") or data.get("dest_port")
+    src_ip, src_port = peel_ip_port(
+        data.get("srcip") or data.get("src_ip"),
+        data.get("srcport") or data.get("src_port"),
+    )
+    dst_ip, dst_port = peel_ip_port(
+        data.get("dstip") or data.get("dest_ip"),
+        data.get("dstport") or data.get("dest_port"),
+    )
 
     http_path = data.get("url")
     http_method = data.get("protocol")  # web-accesslog decoder uses this for method
     status = data.get("id") if location and "access" in (location or "") else None
     ua = None
+    parsed: dict[str, Any] = {}
 
     if full_log and (not src_ip or not http_path or not ua):
         parsed = parse_apache(full_log)
@@ -141,18 +301,26 @@ def normalize_wazuh(obj: dict[str, Any]) -> dict[str, Any] | None:
         status = status or parsed.get("status")
         ua = parsed.get("ua")
 
+    fast_sid, fast_sig = (None, None)
+    if full_log and "[**]" in full_log:
+        fast_sid, fast_sig = parse_fast_signature(full_log)
+
     if location and "suricata/fast.log" in location and full_log:
-        m = SURICATA_FAST_RE.search(full_log)
-        if m:
-            src_ip = src_ip or m.group("src_ip")
-            dst_ip = dst_ip or m.group("dst_ip")
-            src_port = src_port or m.group("src_port")
-            dst_port = dst_port or m.group("dst_port")
+        match = SURICATA_FAST_RE.search(full_log)
+        if match:
+            # Decoder IPs are often "ip:port"; the raw line is the reliable copy.
+            src_ip = match.group("src_ip")
+            dst_ip = match.group("dst_ip")
+            src_port = match.group("src_port")
+            dst_port = match.group("dst_port")
 
     alert = data.get("alert") if isinstance(data.get("alert"), dict) else {}
     raw = full_log
     if not raw and alert:
         raw = alert.get("signature") or json.dumps(data, separators=(",", ":"))
+
+    signature = alert.get("signature") or fast_sig
+    signature_id = norm_sid(alert.get("signature_id")) or fast_sid
 
     extras: dict[str, Any] = {
         "rule_level": rule.get("level"),
@@ -160,20 +328,32 @@ def normalize_wazuh(obj: dict[str, Any]) -> dict[str, Any] | None:
         "decoder": (obj.get("decoder") or {}).get("name"),
         "wazuh_id": obj.get("id"),
     }
-    if alert:
-        extras["signature"] = alert.get("signature")
-        extras["signature_id"] = alert.get("signature_id")
+    if signature:
+        extras["signature"] = signature
+    if signature_id:
+        extras["signature_id"] = signature_id
     if src_port is not None:
         extras["src_port"] = str(src_port)
     if dst_port is not None:
         extras["dst_port"] = str(dst_port)
 
-    host = agent.get("ip") or agent.get("name")
+    name_candidate = predecoder.get("hostname")
+    if not name_candidate and agent.get("name") not in {None, "wazuh-client"}:
+        name_candidate = agent.get("name")
+    host, host_name, host_ip = resolve_host(agent.get("ip"), name_candidate, full_log or raw)
+
+    parsed_src, parsed_dst = parse_users(full_log or raw)
+    src_user = clean_user(data.get("srcuser")) or parsed_src
+    dst_user = clean_user(data.get("dstuser")) or parsed_dst
+    apache_user = parsed.get("user") if isinstance(parsed, dict) else None
 
     return {
+        "scenario": scenario,
         "ts": ts,
         "source": "wazuh",
         "host": host,
+        "host_name": host_name,
+        "host_ip": host_ip,
         "location": location,
         "detector": f"{rule_id}: {description}" if rule_id else description,
         "detector_id": rule_id,
@@ -184,112 +364,237 @@ def normalize_wazuh(obj: dict[str, Any]) -> dict[str, Any] | None:
         "http_method": http_method,
         "status": str(status) if status is not None else None,
         "ua": ua,
+        "user": choose_user(src_user, dst_user, apache_user),
+        "src_user": src_user,
+        "dst_user": dst_user,
         "is_baseline": rule_id in BASELINE_WAZUH_RULES,
         "extras": extras,
     }
 
 
 def iter_jsonl(path: Path) -> Iterator[dict[str, Any]]:
-    with path.open() as f:
-        for line in f:
+    with path.open() as handle:
+        for line_no, line in enumerate(handle, start=1):
             line = line.strip()
             if not line:
                 continue
-            yield json.loads(line)
+            try:
+                yield json.loads(line)
+            except json.JSONDecodeError as exc:
+                raise SystemExit(f"{path}:{line_no}: invalid JSON ({exc})") from exc
 
 
 def suricata_flow_key(event: dict[str, Any]) -> tuple | None:
-    if event["source"] != "wazuh":
-        return None
-    loc = event.get("location") or ""
-    if "suricata/" not in loc:
+    """One direction of one Suricata alert.
+
+    eve.json and fast.log share this key. The reverse direction does not.
+    """
+    location = event.get("location") or ""
+    if "suricata/" not in location:
         return None
     extras = event.get("extras") or {}
-    if not (event.get("src_ip") and event.get("dst_ip")):
+    src_ip = event.get("src_ip")
+    dst_ip = event.get("dst_ip")
+    if not src_ip or not dst_ip:
+        return None
+    signature = extras.get("signature_id") or extras.get("signature")
+    if not signature:
         return None
     return (
-        event["src_ip"],
-        extras.get("src_port"),
-        event["dst_ip"],
-        extras.get("dst_port"),
-        extras.get("signature") or event.get("detector"),
+        signature,
+        src_ip,
+        str(extras.get("src_port") or ""),
+        dst_ip,
+        str(extras.get("dst_port") or ""),
     )
 
 
-def dedup_suricata(events: list[dict[str, Any]], window_s: float = 1.0) -> list[dict[str, Any]]:
-    """Drop eve/fast duplicates of the same flow+signature within window_s."""
+def dedup_suricata(
+    events: list[dict[str, Any]],
+    window_s: float = SURICATA_DEDUP_WINDOW_S,
+) -> tuple[list[dict[str, Any]], int]:
+    """Drop only a repeated write of the same Suricata alert.
+
+    Same file, same direction, same signature, timestamps within window_s.
+    eve.json and fast.log are both kept: together with the other logs they
+    are the ~2.66M source events. The reverse direction is a different alert.
+    """
     out: list[dict[str, Any]] = []
-    recent: dict[tuple, float] = {}
+    seen: dict[tuple, float] = {}
+    dropped = 0
     for event in events:
         key = suricata_flow_key(event)
+        location = event.get("location") or ""
         if key is None:
             out.append(event)
             continue
-        prev = recent.get(key)
-        if prev is not None and abs(event["ts"] - prev) <= window_s:
+        previous = seen.get((location, key))
+        if previous is not None and abs(event["ts"] - previous) <= window_s:
+            dropped += 1
             continue
-        recent[key] = event["ts"]
+        seen[(location, key)] = event["ts"]
         out.append(event)
-    return out
+    return out, dropped
 
 
-def merge(
-    aminer_path: Path,
-    wazuh_path: Path,
+def discover_scenarios(dataset_dir: Path) -> list[tuple[str, Path | None, Path | None]]:
+    found: dict[str, dict[str, Path]] = {}
+    for path in sorted(dataset_dir.iterdir()):
+        if not path.is_file():
+            continue
+        name = path.name
+        if name.endswith("_aminer.json"):
+            scenario = name[: -len("_aminer.json")]
+            found.setdefault(scenario, {})["aminer"] = path
+        elif name.endswith("_wazuh.json"):
+            scenario = name[: -len("_wazuh.json")]
+            found.setdefault(scenario, {})["wazuh"] = path
+    if not found:
+        raise SystemExit(
+            f"No <scenario>_aminer.json or <scenario>_wazuh.json files in {dataset_dir}"
+        )
+    return [
+        (scenario, sides.get("aminer"), sides.get("wazuh"))
+        for scenario, sides in sorted(found.items())
+    ]
+
+
+def load_scenario(
+    scenario: str,
+    aminer_path: Path | None,
+    wazuh_path: Path | None,
+    *,
+    dedup: bool,
+) -> tuple[list[dict[str, Any]], dict[str, int]]:
+    stats = {
+        "aminer_seen": 0,
+        "training_dropped": 0,
+        "aminer_out": 0,
+        "wazuh_seen": 0,
+        "wazuh_out": 0,
+        "suricata_dropped": 0,
+    }
+    events: list[dict[str, Any]] = []
+
+    if aminer_path is not None:
+        print(f"  reading {aminer_path.name}", flush=True)
+        for obj in iter_jsonl(aminer_path):
+            stats["aminer_seen"] += 1
+            event = normalize_aminer(obj, scenario)
+            if event is None:
+                if (obj.get("AnalysisComponent") or {}).get("TrainingMode") is True:
+                    stats["training_dropped"] += 1
+                continue
+            events.append(event)
+        stats["aminer_out"] = stats["aminer_seen"] - stats["training_dropped"]
+
+    if wazuh_path is not None:
+        print(f"  reading {wazuh_path.name}", flush=True)
+        for obj in iter_jsonl(wazuh_path):
+            stats["wazuh_seen"] += 1
+            event = normalize_wazuh(obj, scenario)
+            if event is not None:
+                events.append(event)
+        stats["wazuh_out"] = sum(1 for event in events if event["source"] == "wazuh")
+
+    events.sort(key=lambda event: (event["ts"], event["source"], event.get("detector") or ""))
+    if dedup:
+        events, stats["suricata_dropped"] = dedup_suricata(events)
+    return events, stats
+
+
+def merge_directory(
+    dataset_dir: Path,
+    output: Path,
     *,
     dedup: bool = True,
-) -> list[dict[str, Any]]:
-    events: list[dict[str, Any]] = []
-    for obj in iter_jsonl(aminer_path):
-        ev = normalize_aminer(obj)
-        if ev:
-            events.append(ev)
-    for obj in iter_jsonl(wazuh_path):
-        ev = normalize_wazuh(obj)
-        if ev:
-            events.append(ev)
-    events.sort(key=lambda e: (e["ts"], e["source"], e.get("detector") or ""))
-    if dedup:
-        events = dedup_suricata(events)
-    return events
+) -> None:
+    scenarios = discover_scenarios(dataset_dir)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    totals = {
+        "scenarios": 0,
+        "events": 0,
+        "aminer": 0,
+        "wazuh": 0,
+        "training_dropped": 0,
+        "suricata_dropped": 0,
+        "baseline": 0,
+        "host_with_both": 0,
+    }
+
+    with output.open("w") as handle:
+        for scenario, aminer_path, wazuh_path in scenarios:
+            if aminer_path is None or wazuh_path is None:
+                missing = "aminer" if aminer_path is None else "wazuh"
+                print(f"{scenario}: missing {missing} file, merging what is present", flush=True)
+            else:
+                print(f"{scenario}", flush=True)
+            events, stats = load_scenario(scenario, aminer_path, wazuh_path, dedup=dedup)
+            for event in events:
+                handle.write(json.dumps(event, separators=(",", ":"), ensure_ascii=False))
+                handle.write("\n")
+            n_amin = sum(1 for event in events if event["source"] == "aminer")
+            n_waz = sum(1 for event in events if event["source"] == "wazuh")
+            n_base = sum(1 for event in events if event["is_baseline"])
+            n_both = sum(
+                1 for event in events if event.get("host_name") and event.get("host_ip")
+            )
+            totals["scenarios"] += 1
+            totals["events"] += len(events)
+            totals["aminer"] += n_amin
+            totals["wazuh"] += n_waz
+            totals["training_dropped"] += stats["training_dropped"]
+            totals["suricata_dropped"] += stats["suricata_dropped"]
+            totals["baseline"] += n_base
+            totals["host_with_both"] += n_both
+            print(
+                f"  out={len(events)} aminer={n_amin} wazuh={n_waz} "
+                f"training_dropped={stats['training_dropped']} "
+                f"suricata_dropped={stats['suricata_dropped']}",
+                flush=True,
+            )
+
+    print(
+        f"Wrote {totals['events']} events ({totals['scenarios']} scenarios) -> {output}\n"
+        f"  aminer={totals['aminer']} wazuh={totals['wazuh']} "
+        f"baseline={totals['baseline']} host_name+ip={totals['host_with_both']}\n"
+        f"  dropped training={totals['training_dropped']} "
+        f"suricata_dups={totals['suricata_dropped']}",
+        flush=True,
+    )
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--aminer",
+        "dataset_dir",
         type=Path,
-        default=Path("dataset/russellmitchell_aminer.json"),
-    )
-    parser.add_argument(
-        "--wazuh",
-        type=Path,
-        default=Path("dataset/russellmitchell_wazuh.json"),
+        help="Folder of <scenario>_aminer.json and <scenario>_wazuh.json files",
     )
     parser.add_argument(
         "-o",
         "--output",
         type=Path,
-        default=Path("dataset/russellmitchell_merged.jsonl"),
+        default=None,
+        help="Output JSONL (default: <dataset_dir>/merged.jsonl)",
     )
-    parser.add_argument("--no-dedup", action="store_true")
-    args = parser.parse_args()
-
-    events = merge(args.aminer, args.wazuh, dedup=not args.no_dedup)
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    with args.output.open("w") as f:
-        for event in events:
-            f.write(json.dumps(event, separators=(",", ":"), ensure_ascii=False))
-            f.write("\n")
-
-    n_amin = sum(1 for e in events if e["source"] == "aminer")
-    n_waz = sum(1 for e in events if e["source"] == "wazuh")
-    n_base = sum(1 for e in events if e["is_baseline"])
-    print(
-        f"Wrote {len(events)} events -> {args.output} "
-        f"(aminer={n_amin}, wazuh={n_waz}, baseline={n_base})"
+    parser.add_argument(
+        "--no-dedup",
+        action="store_true",
+        help="Keep duplicate Suricata eve.json and fast.log alerts",
     )
+    args = parser.parse_args(argv)
+
+    dataset_dir = args.dataset_dir.expanduser().resolve()
+    if not dataset_dir.is_dir():
+        raise SystemExit(f"Not a directory: {dataset_dir}")
+    output = (args.output or (dataset_dir / "merged.jsonl")).expanduser().resolve()
+    if output == dataset_dir or dataset_dir in output.parents and output.parent == dataset_dir:
+        # output lives beside the inputs; make sure we never overwrite a source file
+        if output.name.endswith("_aminer.json") or output.name.endswith("_wazuh.json"):
+            raise SystemExit(f"Refusing to overwrite an input file: {output}")
+    merge_directory(dataset_dir, output, dedup=not args.no_dedup)
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

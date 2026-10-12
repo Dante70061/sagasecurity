@@ -1,0 +1,119 @@
+incident,start_utc,end_utc,start_ts,end_ts,n_windows,max_score,top_features
+1,2022-01-21 00:14,2022-01-21 00:14,1642724040,1642724100,1,0.6832,wz_first_time=22.0; wz_corr_n=9.5; wz_lvl8=7.7; wz_lvl6=7.6; wz_max_rarity=3.0; wz_max_per_src=3.0
+2,2022-01-21 05:24,2022-01-21 05:24,1642742640,1642742700,1,0.7249,wz_first_time=22.0; wz_corr_n=12.3; wz_lvl8=10.0; wz_lvl6=9.9; wz_lvl10=6.5; wz_max_per_src=5.3
+3,2022-01-21 05:37,2022-01-21 05:37,1642743420,1642743480,1,0.5999,wz_corr_n=4.6; wz_lvl10=4.0; wz_lvl8=3.8; wz_lvl6=3.7; wz_max_rarity=2.7; wz_max_lvl=2.5
+4,2022-01-21 06:08,2022-01-21 06:08,1642745280,1642745340,1,0.6203,wz_audit=30.9; wz_rare_n=11.2; wz_max_rarity=3.1; wz_nonbaseline=1.7; wz_n_burst=1.5; wz_max_lvl=1.1
+5,2022-01-21 06:15,2022-01-21 06:21,1642745700,1642746120,4,0.6531,wz_audit=30.9; wz_rare_n=11.2; wz_first_time=11.0; wz_dst_ports=5.7; wz_src_ips=5.7; wz_max_per_src=5.7
+6,2022-01-21 06:29,2022-01-21 06:32,1642746540,1642746780,2,0.6203,wz_audit=30.9; wz_rare_n=11.2; wz_max_rarity=3.1; wz_nonbaseline=1.7; wz_n_burst=1.5; wz_max_lvl=1.1
+7,2022-01-21 06:49,2022-01-21 06:49,1642747740,1642747800,1,0.6324,wz_audit=30.9; wz_rare_n=11.2; wz_max_rarity=3.1; wz_rule_entropy=2.1; wz_n_burst=2.0; wz_nonbaseline=1.7
+8,2022-01-21 07:03,2022-01-21 07:03,1642748580,1642748640,1,0.6362,wz_audit=30.9; wz_rare_n=11.2; wz_max_rarity=3.1; wz_rule_entropy=2.4; wz_hosts=2.2; wz_rules=2.1
+9,2022-01-21 08:21,2022-01-21 08:23,1642753260,1642753440,2,0.6518,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_max_per_src=5.1; wz_dst_ports=5.1
+10,2022-01-21 08:30,2022-01-21 08:30,1642753800,1642753860,1,0.6117,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_max_rarity=3.0; wz_rule_entropy=2.8
+11,2022-01-21 09:14,2022-01-21 09:15,1642756440,1642756560,2,0.649,wz_first_time=11.0; wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_rule_entropy=3.3
+12,2022-01-21 09:40,2022-01-21 09:40,1642758000,1642758060,1,0.6074,wz_rare_n=12.5; wz_rule_entropy=3.6; wz_max_rarity=3.4; wz_rules=2.5; wz_nonbaseline=1.9; wz_hosts=1.6
+13,2022-01-21 10:01,2022-01-21 10:09,1642759260,1642759800,6,0.6843,wz_corr_n=7.5; wz_dst_ports=6.6; wz_lvl10=6.5; wz_max_per_src=6.4; wz_src_ips=6.3; wz_lvl8=6.1
+14,2022-01-21 10:30,2022-01-21 10:30,1642761000,1642761060,1,0.6549,wz_auth_fail=15.1; wz_rare_n=9.6; wz_max_rarity=3.2; wz_rules=2.5; wz_rule_entropy=2.4; wz_max_per_src=2.4
+15,2022-01-21 10:37,2022-01-21 10:39,1642761420,1642761600,2,0.5973,wz_rare_n=11.2; wz_corr_n=4.6; wz_ids=4.6; wz_nonbaseline=4.4; wz_src_ips=4.2; wz_lvl10=4.0
+16,2022-01-21 11:39,2022-01-21 11:39,1642765140,1642765200,1,0.6104,wz_src_ips=5.1; wz_max_per_src=4.9; wz_dst_ports=4.9; wz_corr_n=4.6; wz_ids=4.6; wz_nonbaseline=4.4
+17,2022-01-21 11:43,2022-01-21 11:43,1642765380,1642765440,1,0.6739,wz_corr_n=7.5; wz_dst_ports=6.6; wz_lvl10=6.5; wz_max_per_src=6.4; wz_src_ips=6.4; wz_lvl8=6.1
+18,2022-01-21 11:51,2022-01-21 11:51,1642765860,1642765920,1,0.7109,wz_corr_n=9.5; wz_lvl10=8.2; wz_lvl8=7.7; wz_lvl6=7.6; wz_src_ips=5.6; wz_max_per_src=5.5
+19,2022-01-21 12:58,2022-01-21 12:58,1642769880,1642769940,1,0.6605,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=5.9; wz_dst_ports=5.9
+20,2022-01-21 13:03,2022-01-21 13:04,1642770180,1642770300,2,0.6232,wz_src_ips=4.9; wz_ids=4.8; wz_dst_ports=4.7; wz_max_per_src=4.7; wz_corr_n=4.6; wz_nonbaseline=4.6
+21,2022-01-21 14:08,2022-01-21 14:08,1642774080,1642774140,1,0.6377,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_max_per_src=5.7; wz_ids=5.2
+22,2022-01-21 14:33,2022-01-21 14:33,1642775580,1642775640,1,0.6603,wz_auth_fail=15.1; wz_rare_n=9.6; wz_rule_entropy=3.7; wz_max_rarity=3.2; wz_rules=3.2; wz_nonbaseline=2.7
+23,2022-01-21 15:05,2022-01-21 15:05,1642777500,1642777560,1,0.6571,wz_auth_fail=15.1; wz_rare_n=9.6; wz_rule_entropy=3.7; wz_max_rarity=3.2; wz_rules=3.2; wz_max_per_src=3.0
+24,2022-01-21 15:38,2022-01-21 15:38,1642779480,1642779540,1,0.5954,wz_corr_n=4.6; wz_lvl10=4.0; wz_lvl8=3.8; wz_lvl6=3.7; wz_max_rarity=2.7; wz_max_per_src=2.7
+25,2022-01-21 15:48,2022-01-21 15:48,1642780080,1642780140,1,0.6474,wz_auth_fail=15.1; wz_rare_n=9.6; wz_max_rarity=3.2; wz_rule_entropy=2.8; wz_rules=2.5; wz_max_per_src=2.4
+26,2022-01-21 15:59,2022-01-21 15:59,1642780740,1642780800,1,0.6291,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_max_per_src=4.8; wz_dst_ports=4.7
+27,2022-01-21 16:03,2022-01-21 16:15,1642780980,1642781760,9,0.7462,wz_first_time=17.4; wz_rare_n=12.5; wz_corr_n=9.5; wz_lvl10=8.2; wz_lvl8=7.7; wz_lvl6=7.6
+28,2022-01-21 17:02,2022-01-21 17:02,1642784520,1642784580,1,0.6117,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_rule_entropy=3.2; wz_max_rarity=3.0
+29,2022-01-21 17:46,2022-01-21 17:46,1642787160,1642787220,1,0.6412,wz_auth_fail=15.1; wz_rare_n=9.6; wz_max_rarity=3.2; wz_rule_entropy=2.9; wz_max_per_src=2.4; wz_nonbaseline=2.1
+30,2022-01-21 18:34,2022-01-21 18:34,1642790040,1642790100,1,0.5947,wz_src_ips=4.9; wz_max_per_src=4.8; wz_dst_ports=4.7; wz_corr_n=4.6; wz_ids=4.5; wz_nonbaseline=4.3
+31,2022-01-21 19:28,2022-01-21 19:28,1642793280,1642793340,1,0.6474,wz_auth_fail=15.1; wz_rare_n=9.6; wz_max_rarity=3.2; wz_rule_entropy=2.8; wz_rules=2.5; wz_max_per_src=2.4
+32,2022-01-21 19:32,2022-01-21 19:32,1642793520,1642793580,1,0.6393,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_max_per_src=4.9; wz_ids=4.8
+33,2022-01-22 08:12,2022-01-22 08:12,1642839120,1642839180,1,0.6427,wz_auth_fail=15.1; wz_rare_n=9.6; wz_max_rarity=3.2; wz_rule_entropy=2.9; wz_max_per_src=2.4; wz_nonbaseline=2.1
+34,2022-01-22 08:29,2022-01-22 08:29,1642840140,1642840200,1,0.5912,wz_corr_n=4.6; wz_lvl10=4.0; wz_lvl8=3.8; wz_lvl6=3.7; wz_rule_entropy=3.0; wz_max_rarity=2.7
+35,2022-01-22 08:58,2022-01-22 08:58,1642841880,1642841940,1,0.6088,wz_max_per_src=4.9; wz_src_ips=4.9; wz_dst_ports=4.9; wz_corr_n=4.6; wz_ids=4.6; wz_nonbaseline=4.4
+36,2022-01-22 10:00,2022-01-22 10:00,1642845600,1642845660,1,0.6105,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_rule_entropy=3.5; wz_max_rarity=3.0
+37,2022-01-22 10:06,2022-01-22 10:07,1642845960,1642846080,2,0.6568,wz_first_time=11.0; wz_corr_n=7.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_dst_ports=5.6; wz_max_per_src=5.5
+38,2022-01-22 10:24,2022-01-22 10:28,1642847040,1642847340,3,0.7081,wz_first_time=11.0; wz_corr_n=7.5; wz_dst_ports=7.3; wz_ids=7.0; wz_max_per_src=6.9; wz_nonbaseline=6.7
+39,2022-01-22 10:45,2022-01-22 10:47,1642848300,1642848480,2,0.7006,wz_rare_n=12.5; wz_first_time=11.0; wz_corr_n=7.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=4.0
+40,2022-01-22 10:57,2022-01-22 10:57,1642849020,1642849080,1,0.6708,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=5.1; wz_nonbaseline=5.0
+41,2022-01-22 11:04,2022-01-22 11:04,1642849440,1642849500,1,0.5935,wz_ids=4.7; wz_corr_n=4.6; wz_nonbaseline=4.6; wz_dst_ports=4.0; wz_max_per_src=4.0; wz_lvl10=4.0
+42,2022-01-22 12:15,2022-01-22 12:15,1642853700,1642853760,1,0.6086,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_rule_entropy=3.5; wz_max_rarity=3.0
+43,2022-01-22 13:43,2022-01-22 13:43,1642858980,1642859040,1,0.6694,wz_corr_n=7.5; wz_dst_ports=6.7; wz_max_per_src=6.5; wz_lvl10=6.5; wz_src_ips=6.1; wz_lvl8=6.1
+44,2022-01-22 14:07,2022-01-22 14:07,1642860420,1642860480,1,0.6444,wz_auth_fail=15.1; wz_rare_n=9.6; wz_max_rarity=3.2; wz_rule_entropy=2.8; wz_rules=2.5; wz_max_per_src=2.4
+45,2022-01-22 14:14,2022-01-22 14:14,1642860840,1642860900,1,0.6114,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_max_rarity=3.0; wz_rule_entropy=2.8
+46,2022-01-22 15:04,2022-01-22 15:04,1642863840,1642863900,1,0.6089,wz_corr_n=4.6; wz_lvl10=4.0; wz_rule_entropy=4.0; wz_lvl8=3.8; wz_lvl6=3.7; wz_rules=2.9
+47,2022-01-22 15:58,2022-01-22 15:58,1642867080,1642867140,1,0.6386,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_dst_ports=4.5; wz_ids=4.3
+48,2022-01-22 16:51,2022-01-22 16:51,1642870260,1642870320,1,0.6298,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=4.7; wz_nonbaseline=4.6
+49,2022-01-22 17:50,2022-01-22 17:50,1642873800,1642873860,1,0.6167,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_max_rarity=3.0; wz_rule_entropy=2.8
+50,2022-01-23 06:25,2022-01-23 06:25,1642919100,1642919160,1,0.7107,am_dns=25.8; am_rare_n=24.3; am_max_rarity=13.2; am_detectors=8.2; am_n_burst=5.4; am_n=5.4
+51,2022-01-23 06:39,2022-01-23 06:41,1642919940,1642920120,2,0.7203,wz_first_time=11.0; wz_corr_n=9.5; wz_lvl8=7.7; wz_lvl6=7.6; wz_rare_n=7.6; wz_lvl10=6.5
+52,2022-01-23 06:45,2022-01-23 06:48,1642920300,1642920540,2,0.6378,wz_rare_n=7.6; wz_corr_n=4.6; wz_max_per_src=4.2; wz_dst_ports=4.0; wz_lvl10=4.0; wz_ids=3.8
+53,2022-01-23 06:55,2022-01-23 06:56,1642920900,1642921020,2,0.6184,wz_first_time=11.0; wz_dst_ports=5.4; wz_max_per_src=5.3; wz_src_ips=5.1; wz_ids=4.9; wz_nonbaseline=4.8
+54,2022-01-23 07:39,2022-01-23 07:39,1642923540,1642923600,1,0.6602,wz_auth_fail=15.1; wz_rare_n=9.6; wz_max_rarity=3.2; wz_rules=2.5; wz_max_per_src=2.4; wz_n=2.4
+55,2022-01-23 08:00,2022-01-23 08:00,1642924800,1642924860,1,0.6694,wz_first_time=17.4; wz_corr_n=7.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_max_rarity=3.0; wz_rule_entropy=2.9
+56,2022-01-23 08:06,2022-01-23 08:06,1642925160,1642925220,1,0.6094,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_max_rarity=3.0; wz_rules=2.5
+57,2022-01-23 08:25,2022-01-23 08:25,1642926300,1642926360,1,0.6026,wz_corr_n=4.6; wz_max_per_src=4.4; wz_dst_ports=4.3; wz_ids=4.1; wz_lvl10=4.0; wz_nonbaseline=4.0
+58,2022-01-23 08:42,2022-01-23 08:42,1642927320,1642927380,1,0.6492,wz_first_time=11.0; wz_corr_n=7.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_lvl10=4.0; wz_max_rarity=3.0
+59,2022-01-23 09:56,2022-01-23 09:58,1642931760,1642931940,2,0.6446,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_src_ips=5.4; wz_dst_ports=5.4
+60,2022-01-23 10:12,2022-01-23 10:12,1642932720,1642932780,1,0.6746,wz_corr_n=7.5; wz_dst_ports=6.7; wz_max_per_src=6.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0
+61,2022-01-23 10:22,2022-01-23 10:22,1642933320,1642933380,1,0.6017,wz_corr_n=4.6; wz_lvl10=4.0; wz_lvl8=3.8; wz_lvl6=3.7; wz_max_rarity=2.7; wz_max_lvl=2.5
+62,2022-01-23 10:35,2022-01-23 10:35,1642934100,1642934160,1,0.615,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_max_rarity=3.0; wz_n_burst=2.8
+63,2022-01-23 11:35,2022-01-23 11:35,1642937700,1642937760,1,0.6571,wz_corr_n=7.5; wz_lvl10=6.5; wz_max_per_src=6.3; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=5.9
+64,2022-01-23 12:53,2022-01-23 12:54,1642942380,1642942500,2,0.6727,wz_auth_fail=20.0; wz_rare_n=13.5; wz_corr_n=7.5; wz_lvl10=6.5; wz_max_per_src=6.3; wz_lvl8=6.1
+65,2022-01-23 13:48,2022-01-23 13:48,1642945680,1642945740,1,0.6608,wz_corr_n=7.5; wz_lvl10=6.5; wz_dst_ports=6.1; wz_lvl8=6.1; wz_lvl6=6.0; wz_max_per_src=5.9
+66,2022-01-23 14:35,2022-01-23 14:36,1642948500,1642948620,2,0.6313,wz_first_time=11.0; wz_src_ips=6.0; wz_dst_ports=6.0; wz_max_per_src=5.9; wz_ids=5.4; wz_nonbaseline=5.2
+67,2022-01-23 14:40,2022-01-23 14:40,1642948800,1642948860,1,0.6713,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_rare_n=4.8; wz_src_ips=4.7
+68,2022-01-23 15:16,2022-01-23 15:16,1642950960,1642951020,1,0.6336,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=5.2; wz_nonbaseline=5.0
+69,2022-01-23 15:20,2022-01-23 15:25,1642951200,1642951560,3,0.6907,wz_corr_n=7.5; wz_lvl10=6.5; wz_ids=6.4; wz_dst_ports=6.2; wz_nonbaseline=6.1; wz_lvl8=6.1
+70,2022-01-23 15:56,2022-01-23 15:56,1642953360,1642953420,1,0.6468,wz_auth_fail=15.1; wz_rare_n=9.6; wz_rule_entropy=3.3; wz_max_rarity=3.2; wz_rules=2.5; wz_max_per_src=2.4
+71,2022-01-23 17:08,2022-01-23 17:08,1642957680,1642957740,1,0.6328,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=5.2; wz_nonbaseline=5.0
+72,2022-01-23 18:15,2022-01-23 18:16,1642961700,1642961820,2,0.6621,wz_corr_n=7.5; wz_max_per_src=6.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=5.9
+73,2022-01-23 19:46,2022-01-23 19:46,1642967160,1642967220,1,0.7291,am_dns=25.8; am_rare_n=24.3; am_max_rarity=13.5; am_detectors=8.2; wz_ids=5.6; wz_src_ips=5.6
+74,2022-01-23 19:50,2022-01-23 19:50,1642967400,1642967460,1,0.6691,wz_corr_n=7.5; wz_lvl10=6.5; wz_src_ips=6.2; wz_lvl8=6.1; wz_lvl6=6.0; wz_dst_ports=6.0
+75,2022-01-23 19:54,2022-01-23 19:54,1642967640,1642967700,1,0.6189,wz_src_ips=4.9; wz_max_per_src=4.8; wz_dst_ports=4.7; wz_corr_n=4.6; wz_ids=4.5; wz_nonbaseline=4.3
+76,2022-01-23 20:00,2022-01-23 20:00,1642968000,1642968060,1,0.6631,am_dns=16.3; am_max_rarity=12.1; am_detectors=8.2; am_n=3.4; am_n_burst=3.4
+77,2022-01-23 20:13,2022-01-23 20:13,1642968780,1642968840,1,0.7065,wz_corr_n=9.5; wz_lvl10=8.2; wz_lvl8=7.7; wz_lvl6=7.6; wz_rare_n=4.8; wz_max_per_src=4.6
+78,2022-01-23 21:08,2022-01-23 21:08,1642972080,1642972140,1,0.6464,am_max_rarity=12.4; am_detectors=8.2; am_web=5.1; am_n_burst=3.4; am_n=3.4
+79,2022-01-23 21:14,2022-01-23 21:14,1642972440,1642972500,1,0.6464,am_max_rarity=12.4; am_detectors=8.2; am_web=5.1; am_n_burst=3.4; am_n=3.4
+80,2022-01-24 00:00,2022-01-24 00:01,1642982400,1642982520,2,0.6997,am_audit=43.8; am_detectors=13.0; am_max_rarity=12.5; am_n_burst=10.8; am_n=10.8
+81,2022-01-24 03:56,2022-01-24 03:59,1642996560,1642996800,4,0.8541,wz_scan_sig=75.7; web_uas=64.7; am_web=59.5; web_paths=54.9; web_n=54.8; web_err=54.8
+82,2022-01-24 04:14,2022-01-24 04:14,1642997640,1642997700,1,0.666,am_cpu=53.6; am_rare_n=15.3; am_max_rarity=13.5; am_detectors=8.2; am_n_burst=3.4; am_n=3.4
+83,2022-01-24 04:37,2022-01-24 04:38,1642999020,1642999140,2,0.7799,wz_priv=64.1; am_rare_n=39.6; am_audit=35.7; am_detectors=26.2; am_max_rarity=14.0; am_n=12.3
+84,2022-01-24 05:29,2022-01-24 05:29,1643002140,1643002200,1,0.666,am_cpu=53.6; am_rare_n=15.3; am_max_rarity=13.5; am_detectors=8.2; am_n_burst=3.4; am_n=3.4
+85,2022-01-24 05:43,2022-01-24 05:43,1643002980,1643003040,1,0.6372,am_max_rarity=12.4; am_detectors=8.2; am_web=5.1; am_n_burst=3.4; am_n=3.4; wz_n_burst=2.4
+86,2022-01-24 07:02,2022-01-24 07:02,1643007720,1643007780,1,0.6464,am_max_rarity=12.4; am_detectors=8.2; am_web=5.1; am_n_burst=3.4; am_n=3.4
+87,2022-01-24 08:17,2022-01-24 08:17,1643012220,1643012280,1,0.6334,wz_dst_ports=6.0; wz_max_per_src=5.9; wz_src_ips=5.8; wz_ids=5.4; wz_nonbaseline=5.2; wz_corr_n=4.6
+88,2022-01-24 08:30,2022-01-24 08:31,1643013000,1643013120,2,0.6571,wz_auth_fail=15.1; wz_first_time=11.0; wz_rare_n=9.6; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7
+89,2022-01-24 09:16,2022-01-24 09:17,1643015760,1643015880,2,0.6393,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=5.5; wz_nonbaseline=5.3
+90,2022-01-24 09:22,2022-01-24 09:22,1643016120,1643016180,1,0.7307,wz_auth_fail=15.1; am_n_burst=14.6; am_n=14.6; am_detectors=8.2; am_max_rarity=7.5; wz_max_per_src=4.0
+91,2022-01-24 09:34,2022-01-24 09:34,1643016840,1643016900,1,0.7181,wz_first_time=11.0; wz_corr_n=9.5; wz_lvl8=7.7; wz_lvl6=7.6; wz_lvl10=6.5; wz_ids=6.1
+92,2022-01-24 09:39,2022-01-24 09:39,1643017140,1643017200,1,0.6453,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=5.1; wz_nonbaseline=5.0
+93,2022-01-24 09:43,2022-01-24 09:43,1643017380,1643017440,1,0.7019,wz_corr_n=9.5; wz_lvl10=8.2; wz_lvl8=7.7; wz_lvl6=7.6; wz_ids=5.1; wz_nonbaseline=5.0
+94,2022-01-24 09:47,2022-01-24 10:00,1643017620,1643018460,8,0.7401,am_dns=16.3; wz_auth_fail=15.1; am_n_burst=13.7; am_n=13.7; am_max_rarity=12.1; am_detectors=8.2
+95,2022-01-24 10:09,2022-01-24 10:17,1643018940,1643019480,5,0.7347,wz_auth_fail=15.1; am_n_burst=13.7; am_n=13.7; am_detectors=8.2; am_max_rarity=7.5; wz_rare_n=4.8
+96,2022-01-24 10:21,2022-01-24 10:21,1643019660,1643019720,1,0.6278,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_rule_entropy=3.4; wz_max_rarity=3.0
+97,2022-01-24 10:26,2022-01-24 10:26,1643019960,1643020020,1,0.6203,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_ids=3.4; wz_nonbaseline=3.4
+98,2022-01-24 10:38,2022-01-24 10:38,1643020680,1643020740,1,0.6911,wz_corr_n=7.5; wz_dst_ports=7.1; wz_ids=7.1; wz_max_per_src=7.1; wz_nonbaseline=6.8; wz_lvl10=6.5
+99,2022-01-24 10:42,2022-01-24 10:42,1643020920,1643020980,1,0.6409,wz_corr_n=7.5; wz_lvl10=6.5; wz_lvl8=6.1; wz_lvl6=6.0; wz_ids=5.6; wz_nonbaseline=5.4
+100,2022-01-24 11:56,2022-01-24 11:56,1643025360,1643025420,1,0.6451,wz_corr_n=7.5; wz_lvl10=6.5; wz_dst_ports=6.1; wz_lvl8=6.1; wz_lvl6=6.0; wz_max_per_src=5.8
+101,2022-01-24 12:43,2022-01-24 12:43,1643028180,1643028240,1,0.5941,wz_corr_n=4.6; wz_lvl10=4.0; wz_max_per_src=3.9; wz_lvl8=3.8; wz_dst_ports=3.8; wz_lvl6=3.7
+102,2022-01-24 13:50,2022-01-24 13:50,1643032200,1643032260,1,0.6493,am_audit=21.9; am_detectors=13.0; am_max_rarity=12.5; am_n_burst=5.4; am_n=5.4; wz_max_lvl=1.1
+103,2022-01-24 13:57,2022-01-24 13:57,1643032620,1643032680,1,0.6082,wz_first_time=11.0; wz_corr_n=4.6; wz_lvl8=3.8; wz_lvl6=3.7; wz_max_rarity=3.0; wz_rule_entropy=2.7
+104,2022-01-24 14:49,2022-01-24 14:50,1643035740,1643035860,2,0.6312,wz_first_time=11.0; wz_ids=5.0; wz_src_ips=4.9; wz_nonbaseline=4.9; wz_corr_n=4.6; wz_dst_ports=4.5
+105,2022-01-24 15:00,2022-01-24 15:00,1643036400,1643036460,1,0.6095,am_dns=16.3; am_max_rarity=12.1; am_detectors=8.2; am_n_burst=3.4; am_n=3.4; wz_rule_entropy=3.0
+106,2022-01-24 16:00,2022-01-24 16:00,1643040000,1643040060,1,0.6897,am_dns=25.8; am_rare_n=15.3; am_max_rarity=13.2; am_detectors=13.0; am_n_burst=5.4; am_n=5.4
+107,2022-01-24 16:22,2022-01-24 16:23,1643041320,1643041440,2,0.6673,wz_auth_fail=15.1; wz_rare_n=9.6; wz_rule_entropy=3.8; wz_max_per_src=3.7; wz_nonbaseline=3.4; wz_max_rarity=3.2
+108,2022-01-24 17:00,2022-01-24 17:00,1643043600,1643043660,1,0.6631,am_dns=16.3; am_max_rarity=12.1; am_detectors=8.2; am_n=3.4; am_n_burst=3.4
+109,2022-01-24 17:37,2022-01-24 17:37,1643045820,1643045880,1,0.6058,wz_corr_n=4.6; wz_lvl10=4.0; wz_lvl8=3.8; wz_lvl6=3.7; wz_rule_entropy=3.6; wz_ids=3.3
+110,2022-01-24 18:02,2022-01-24 18:02,1643047320,1643047380,1,0.697,am_dns=25.8; am_rare_n=15.3; am_max_rarity=13.2; am_detectors=13.0; am_n_burst=5.4; am_n=5.4
+111,2022-01-24 19:00,2022-01-24 19:00,1643050800,1643050860,1,0.6631,am_dns=16.3; am_max_rarity=12.1; am_detectors=8.2; am_n=3.4; am_n_burst=3.4
+112,2022-01-24 20:00,2022-01-24 20:00,1643054400,1643054460,1,0.6254,am_dns=16.3; am_max_rarity=12.1; am_detectors=8.2; am_n_burst=3.4; am_n=3.4; wz_n_burst=1.3
+113,2022-01-24 20:32,2022-01-24 20:32,1643056320,1643056380,1,0.6464,am_max_rarity=12.4; am_detectors=8.2; am_web=5.1; am_n_burst=3.4; am_n=3.4
+114,2022-01-24 20:45,2022-01-24 20:45,1643057100,1643057160,1,0.6517,wz_dst_ports=5.7; wz_max_per_src=5.7; wz_src_ips=5.6; wz_ids=5.2; wz_nonbaseline=5.0; wz_corr_n=4.6
+115,2022-01-24 20:54,2022-01-24 20:54,1643057640,1643057700,1,0.6464,am_max_rarity=12.4; am_detectors=8.2; am_web=5.1; am_n_burst=3.4; am_n=3.4
+116,2022-01-24 21:00,2022-01-24 21:00,1643058000,1643058060,1,0.6284,am_dns=16.3; am_max_rarity=12.1; am_detectors=8.2; am_n_burst=3.4; am_n=3.4; wz_rule_entropy=2.1
+117,2022-01-24 22:04,2022-01-24 22:04,1643061840,1643061900,1,0.7224,am_dns=25.8; am_rare_n=15.3; am_max_rarity=13.2; am_detectors=13.0; am_n=5.4; am_n_burst=5.4
+118,2022-01-24 23:05,2022-01-24 23:05,1643065500,1643065560,1,0.6631,am_dns=16.3; am_max_rarity=12.1; am_detectors=8.2; am_n=3.4; am_n_burst=3.4
