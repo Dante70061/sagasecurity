@@ -1,156 +1,59 @@
 # Saga Security
 
-Saga Security is a dark-mode cybersecurity investigation dashboard for reviewing merged security telemetry, highlighting suspicious activity, and exploring AI-assisted investigation workflows.
+Saga Security is a SOC workspace for the [AIT Alert Dataset](https://zenodo.org/records/8263181). Each scenario is one company network over several days, and each contains a single break-in. The sensors are Wazuh, Suricata, and AMiner. The label file marks attack phases as time windows, so the unit of detection is a stretch of minutes, and a single alert line is the wrong thing to classify. Most lines are ordinary mail, web, and endpoint noise. The loud stages, such as directory brute force and WPScan, produce floods. The quiet stages, such as offline cracking and DNS exfiltration, barely appear in these alerts at all.
 
-The app is designed as a security operations workspace that surfaces:
+Eight scenarios ship with the dataset. Seven are used to fit the window model: fox, harrison, russellmitchell, santos, shaw, wardbeck, and wheeler. Wilson is held out and scored once. The dashboard opens on that holdout run, `wilson_test`.
 
-- event volume and activity trends
-- source and destination IP summaries
-- parsed identities from log data
-- priority findings grouped by severity
-- an investigation assistant for conversational analysis
+## How an incident is built
 
-## Overview
+`scripts/stats_pipeline.py` turns the merged alert stream into incidents an analyst can open.
 
-This project loads a sample merged log dataset and transforms it into a security overview that helps analysts answer questions like:
+Alerts are bucketed into one-minute windows, once per host and once per source address. Each window is scored with a robust z-score against that scenario's own background. The first 12 hours of a scenario are burn-in: the baseline is learned there and nothing is flagged. A window becomes a candidate when its peak z-score is at least 4. Candidates on the same host, or the same source address, merge into one incident when they fall within 10 minutes of each other. An incident is split at 60 minutes so one burst cannot swallow the rest of the day.
 
-- What are the most active log sources?
-- Which events stand out as abnormal?
-- Which identities and IPs appear most often?
-- What are the highest-priority findings in the dataset?
+Two kinds of incident come out of that pass:
 
-## Tech stack
+- A **host** incident is one machine's anomalous minutes.
+- An **actor** incident groups alerts by the source IP that touched many hosts. That address may be the attacker, or it may be a gateway, VPN, or firewall the attack passed through.
 
-- React 19
-- TypeScript
-- Vite
-- TanStack Router
-- TanStack Query
-- Tailwind CSS
-- Recharts
-- Vitest
-- ESLint + Prettier
+Each incident carries the features that drove the z-score, the detectors that fired, a few sample alerts, and links to related incidents. The handoff keeps the top 40 incidents per scenario. `dataset/labels.csv` is used only to measure that handoff. The file the dashboard and the assistant read has no phase names, verdicts, or other ground truth.
 
-## Features
+## How a minute is scored
 
-- Security overview dashboard with high-level metrics
-- Activity charts showing event volume over time
-- Log family distribution visualizations
-- Parsed identities and unique IP tracking
-- Severity-based findings list
-- Browser-persisted investigation conversation history
-- AI-style assistant panel for asking investigation questions
-- Local UI states for hidden or unavailable log data
+`scripts/score_windows.py` assigns every minute a probability, `p_attack`, with logistic regression. The features are the per-scenario Z-scores from `scripts/build_features.py` plus the minute features from the statistics stage. The training target is a loud phase: service scan, dirb, WPScan, webshell, reverse shell, or privilege escalation. Minutes that overlap only a quiet phase (network scan, cracking, dnsteal, service stop) are left out of training and evaluation, because calling them benign or malicious would both be a guess.
 
-## Project structure
+Dev scenarios are scored out of fold: each one is scored by a model fit on the other six. Wilson is fit on all seven dev scenarios and scored a single time. The script refuses to score wilson again once that file exists.
 
-```text
-.
-├── dataset/
-│   └── russellmitchell_merged.jsonl   # merged telemetry dataset
-├── public/
-│   └── saga-mark.svg                  # app branding asset
-├── src/
-│   ├── assets/
-│   ├── components/
-│   │   ├── ai-elements/
-│   │   ├── security/
-│   │   └── ui/
-│   ├── data/
-│   │   ├── ask-saga.ts
-│   │   ├── log-summary.server.ts
-│   │   └── log-summary.ts
-│   ├── lib/
-│   ├── routes/
-│   │   ├── __root.tsx
-│   │   └── index.tsx
-│   ├── styles.css
-│   ├── main.tsx
-│   └── app.tsx
-├── .gitignore
-├── .prettierrc
-├── bun.lock
-├── components.json
-├── eslint.config.js
-├── package.json
-├── requirements.txt
-├── roadmap.md
-├── tsconfig.json
-├── vite.config.ts
-├── vitest.config.ts
-├── README.md
-└── package-lock.json
-```
+An incident inherits the max and the mean of `p_attack` over its minutes. The queue treats **0.5** on the max as the line between "confirmed by model" and "below threshold." Incidents with no score stay in their own group. Inside a group, a higher peak z-score ranks first. `p_attack` is shown on the incident and is not itself the sort key.
 
-## Data model and analytics
+## What the assistant does
 
-The dashboard reads from `dataset/russellmitchell_merged.jsonl` and computes summary metrics such as:
+The assistant is a Gemini chat over the incidents already on screen. The server builds an evidence pack of the 25 highest-ranked incidents for the selected run and scenario: why each was flagged, which rules fired, sample alert lines, and the model score as computed. The model answers from that pack.
 
-- total event counts
-- log file counts and collector sources
-- unique IP addresses
-- identities parsed from raw lines
-- 24-hour activity comparisons
-- Wazuh-style rule-level grouping and severity classification
+A factual claim has to cite an incident id. Counts and scores are repeated as given. Log text inside the pack is data, so an instruction buried in an alert line is ignored. When the question is not about this queue, the reply is one sentence asking what to look at.
 
-The log analysis logic is implemented in `src/data/log-summary.server.ts` and is used by the UI to populate the overview, charts, and findings panels.
+For a summary, the assistant rebuilds the attack chain in time from confirmed incidents that sit close together: reconnaissance, exploitation, then post-exploitation, each step tied to an incident. Incidents far from that window, or below 0.5, are described as likely routine unless the evidence links them. If the source address also shows ordinary user logins, it is labeled an attack entry point. Offline password cracking and DNS exfiltration are called out as blind spots. A webshell followed by a privileged login on the same host is described as likely offline cracking in between, because no incident in this alert set can show that step directly.
 
-## Getting started
+The chat is a streaming `POST /api/ask`. The thread is kept in the browser, up to 80 messages, and the full thread is sent so a later question can refer to an earlier one.
 
-### Requirements
+## The page
 
-- Node.js 18+
-- npm
+**Overview** counts alerts, incidents, and how many of those incidents the model confirmed, for the run and scenario selected in Findings.
 
-### Install dependencies
+**Assistant** is the chat, beside the selected incident: entity, time span, peak z-score, model score, reasons, top rules, sample alerts, and related ids.
 
-```bash
-npm install
-```
+**Findings** is the ranked queue, with pickers for run and scenario. Confirmed, below threshold, and unscored are separate groups.
 
-### Start the development server
+## Where the pieces live
 
-```bash
-npm run dev
-```
+| Path | Role |
+| --- | --- |
+| `scripts/merge_alerts.py` | Joins each scenario's AMiner and Wazuh JSONL into one stream |
+| `scripts/build_features.py` | 60-second Z-score features, normalised per scenario |
+| `scripts/stats_pipeline.py` | Host and actor incidents, with labels kept out of the handoff |
+| `scripts/score_windows.py` | `p_attack` per minute |
+| `scripts/export_for_model.py` | Aligns the two feature sets, then attaches scores onto incidents |
+| `src/data/incidents_scored.json` | Queue the dashboard ships with |
+| `src/data/ask-saga.server.ts` | Evidence pack and assistant rules |
+| `dataset/labels.csv` | Phase answer key. The only dataset file in git |
 
-Then open the local Vite URL that appears in the terminal.
-
-### Production build
-
-```bash
-npm run build
-```
-
-### Preview the production build
-
-```bash
-npm run preview
-```
-
-### Run tests
-
-```bash
-npm test
-```
-
-## Available scripts
-
-```bash
-npm run dev         # start the Vite dev server
-npm run build       # create a production build
-npm run preview     # preview the built app locally
-npm run lint        # run ESLint
-npm run format      # format files with Prettier
-npm run test        # run Vitest tests
-```
-
-## Investigation workflow
-
-The application is structured around a security operations workflow:
-
-1. Load merged telemetry datasets
-2. Summarize signal and anomaly indicators
-3. Surface top findings by severity
-4. Let the user ask investigation questions in context
-5. Persist the conversation locally in the browser for continued analysis
+`npm run dev` serves the committed queue. `npm test` runs the incident and summary checks. Rebuilding the queue is the script order above, then `npm run incidents:sync`. Alert logs, `outputs/`, model files, and `.env` stay out of git. The assistant reads `GEMINI_API_KEY` from the environment or from `.env`.
