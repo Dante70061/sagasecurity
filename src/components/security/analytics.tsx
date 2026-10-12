@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Activity, ArrowUpRight, Database, Fingerprint, Globe, ChevronDown } from "lucide-react";
+import { Activity, Database, Fingerprint, Globe, ChevronDown } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -20,50 +20,34 @@ export function SecurityMetrics({ view }: { view: LogView }) {
     {
       label: "Events in file",
       value: view.events.toLocaleString("en-US"),
-      change: view.eventChange,
-      detail: "vs prior 24h in this file",
       icon: Activity,
     },
     {
       label: "Log files",
       value: view.logFiles.toLocaleString("en-US"),
-      change: `${view.collectors.length} collectors`,
-      detail: view.collectors.join(" · "),
       icon: Database,
     },
     {
       label: "Unique IP addresses",
       value: view.srcIps.toLocaleString("en-US"),
-      change: view.ipChange,
-      detail: "src and dst fields",
       icon: Globe,
     },
     {
       label: "Identities observed",
       value: view.identities.length.toLocaleString("en-US"),
-      change: "Parsed from raw lines",
-      detail: view.identities.join(", ") || "none",
       icon: Fingerprint,
     },
   ];
   return (
     <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-      {metrics.map(({ label, value, change, detail, icon: Icon }) => (
+      {metrics.map(({ label, value, icon: Icon }) => (
         <article className="panel metric-card" key={label}>
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs text-muted-foreground">{label}</span>
             <Icon className="size-4 text-muted-foreground" />
           </div>
-          <div className="mt-2 flex items-center justify-between gap-2">
+          <div className="mt-2">
             <span className="metric-number">{value}</span>
-            <span className="demo-badge">FILE</span>
-          </div>
-          <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px]">
-            <span className={change.startsWith("+") ? "text-success" : "text-primary"}>
-              {change.startsWith("+") && <ArrowUpRight className="mr-0.5 inline size-3" />}
-              {change}
-            </span>
-            <span className="text-muted-foreground">{detail}</span>
           </div>
         </article>
       ))}
@@ -82,7 +66,6 @@ export function SecurityAnalytics({ view }: { view: LogView }) {
             <Activity className="size-4 text-primary" />
             <h2>Activity overview</h2>
           </div>
-          <span className="demo-badge">MERGED LOG</span>
         </div>
         <div className="flex items-center justify-between px-5 pt-4">
           <div>
@@ -185,7 +168,6 @@ export function SecurityAnalytics({ view }: { view: LogView }) {
             <Database className="size-4 text-primary" />
             <h2>Event distribution</h2>
           </div>
-          <span className="demo-badge">MERGED LOG</span>
         </div>
         <div className="flex items-center justify-center gap-7 px-5 py-6">
           <div
@@ -228,9 +210,6 @@ export function SecurityAnalytics({ view }: { view: LogView }) {
               </div>
             ))}
           </div>
-        </div>
-        <div className="border-t border-border px-5 py-3 text-[11px] text-muted-foreground">
-          Grouped from the location path · {view.file}
         </div>
       </section>
     </div>

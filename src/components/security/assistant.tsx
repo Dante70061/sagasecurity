@@ -265,13 +265,7 @@ export function InvestigationAssistant() {
           <RotateCcw className="size-3.5 text-muted-foreground" />
         </Button>
       </div>
-      <div className="flex items-center justify-between border-b border-border bg-background/25 px-5 py-2.5 text-[10px]">
-          <span className="flex items-center gap-2 text-muted-foreground">
-          <span className="size-1.5 rounded-full bg-success" />
-          Explains the merged log counts
-        </span>
-        <span className="font-mono text-muted-foreground">SAGA / ASSISTANT</span>
-      </div>
+
       <Conversation className="min-h-0" aria-label="Investigation conversation">
         <ConversationContent className={messages.length ? "gap-5 p-5" : "gap-0 p-0"}>
           {!messages.length ? (
@@ -310,10 +304,7 @@ export function InvestigationAssistant() {
             </div>
           ) : (
             <>
-              <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                <LockKeyhole className="size-3" />
-                Investigation · Saved in this browser
-              </div>
+
               {messages.map((message) => (
                 <Message key={message.id} from={message.role}>
                   <MessageContent>
@@ -364,16 +355,12 @@ export function InvestigationAssistant() {
         <PromptInput allowAttachments={false} maxFiles={0} onSubmit={({ text }) => send(text)}>
           <PromptInputTextarea
             aria-label="Ask Saga a security question"
-            placeholder="Ask Saga about your security data…"
+            placeholder="Ask Saga about your security data..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             ref={textareaRef}
           />
           <PromptInputFooter>
-            <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-              <LockKeyhole className="size-3" />
-              Private investigation
-            </span>
             <PromptInputSubmit
               disabled={!input.trim() || !ready || pending}
               status={pending ? "submitted" : undefined}
@@ -384,10 +371,7 @@ export function InvestigationAssistant() {
             </PromptInputSubmit>
           </PromptInputFooter>
         </PromptInput>
-        <div className="mt-2.5 flex items-center justify-center gap-1.5 text-[9px] text-muted-foreground">
-          <CircleHelp className="size-2.5" />
-          Explains the merged-log counts · Does not detect attacks
-        </div>
+
       </div>
       <AlertDialog open={clearOpen} onOpenChange={setClearOpen}>
         <AlertDialogContent>

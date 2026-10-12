@@ -147,10 +147,6 @@ function Index() {
         )}
         <div className="mb-4 mt-7 flex items-center justify-between">
           <span className="kicker">Investigate & understand</span>
-          <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-            <LockKeyhole className="size-3" />
-            Analyst workspace
-          </span>
         </div>
         <div className="dashboard-grid">
           <InvestigationAssistant />
@@ -170,7 +166,6 @@ function Index() {
         </div>
         <div className="mb-4 mt-7 flex items-center justify-between">
           <span className="kicker">Focus on what matters</span>
-          <span className="text-[10px] text-muted-foreground">Grouped by detector. Ordered by rule level.</span>
         </div>
         {view && shown ? (
           <PriorityFindings view={view} />
@@ -179,16 +174,6 @@ function Index() {
             Findings from the merged log are hidden.
           </section>
         )}
-        <footer className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4 text-[10px] text-muted-foreground">
-          <span className="flex items-center gap-2">
-            <img src={sagaMark} alt="" className="h-4 w-3.5" />
-            Saga Security<span className="mx-1 text-border">/</span>AI-powered security intelligence
-          </span>
-          <span className="flex items-center gap-1.5">
-            <LockKeyhole className="size-3" />
-            Local conversation · Demo analytics · No live analysis
-          </span>
-        </footer>
       </main>
     </div>
   );
