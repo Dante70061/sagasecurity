@@ -9,9 +9,11 @@ import type { QueueView, RankedIncident, SensorCounts } from "@/data/incidents";
 import {
   attackChain,
   clockUtc,
+  mainCluster,
   riskLabel,
   riskLevel,
   shortLabel,
+  stageLabel,
   stageOf,
   type Stage,
 } from "@/data/triage";
@@ -202,6 +204,8 @@ export function AttackTimeline({
         Date.parse(a.start) - Date.parse(b.start) || a.incident_id.localeCompare(b.incident_id),
     );
   const others = confirmed.filter((i) => !i.start.startsWith(peak.day));
+  const cluster = new Set(mainCluster(view.incidents).map((i) => i.incident_id));
+  const stageFor = (i: RankedIncident) => (cluster.has(i.incident_id) ? stageOf(i) : null);
   const t0 = Math.min(...onDay.map((i) => Date.parse(i.start))) - PAD_MS;
   const t1 = Math.max(...onDay.map((i) => Date.parse(i.end))) + PAD_MS;
   const pct = (t: number) => ((t - t0) / (t1 - t0)) * 100;
@@ -278,8 +282,9 @@ export function AttackTimeline({
             const left = pct(Date.parse(i.start));
             const width = Math.max(0, pct(Date.parse(i.end)) - left);
             const risk = riskLevel(i);
-            const dim = highlight !== null && stageOf(i) !== highlight;
-            const text = `${hhmm(Date.parse(i.start))} ${i.incident_id} ${plainLabel(i)}`;
+            const stage = stageFor(i);
+            const dim = highlight !== null && stage !== highlight;
+            const text = `${hhmm(Date.parse(i.start))} ${i.incident_id} ${stageLabel(stage)}`;
             return (
               <Link
                 key={i.incident_id}
@@ -287,12 +292,12 @@ export function AttackTimeline({
                 params={{ id: i.incident_id }}
                 search={{ run: view.run }}
                 className={`lane-row ${dim ? "lane-dim" : ""}`}
-                title={`${text} · ${hhmm(Date.parse(i.start))} to ${hhmm(Date.parse(i.end))} UTC · ${riskLabel(risk)}`}
+                title={`${text} · ${plainLabel(i)} · ${hhmm(Date.parse(i.start))} to ${hhmm(Date.parse(i.end))} UTC · ${riskLabel(risk)}`}
               >
                 <span className="lane-left">
                   <span className="num shrink-0 text-foreground">{hhmm(Date.parse(i.start))}</span>
                   <span className="num shrink-0 font-medium">{i.incident_id}</span>
-                  <span className="truncate text-muted-foreground">{plainLabel(i)}</span>
+                  <span className="truncate text-muted-foreground">{stageLabel(stage)}</span>
                 </span>
                 <span className="relative block h-4">
                   <span

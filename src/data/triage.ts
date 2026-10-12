@@ -517,11 +517,34 @@ export type ChainStage = StageInfo & {
   incidents: RankedIncident[];
 };
 
-/** One entry per stage, in kill-chain order, from the confirmed incidents only. */
+const CLUSTER_GAP_MS = 2 * 60 * 60_000;
+
+/** The main attack window: the largest group of confirmed incidents whose consecutive start times
+ *  are less than two hours apart. Confirmed incidents outside it (e.g. admin logins two days
+ *  earlier) belong to no stage. */
+export function mainCluster(incidents: RankedIncident[]): RankedIncident[] {
+  const confirmed = incidents
+    .filter((i) => i.group === "confirmed")
+    .sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+  const clusters: RankedIncident[][] = [];
+  for (const i of confirmed) {
+    const last = clusters[clusters.length - 1];
+    const prev = last?.[last.length - 1];
+    if (last && prev && Date.parse(i.start) - Date.parse(prev.start) < CLUSTER_GAP_MS) last.push(i);
+    else clusters.push([i]);
+  }
+  return clusters.reduce<RankedIncident[]>((best, c) => (c.length > best.length ? c : best), []);
+}
+
+export function stageLabel(stage: Stage | null): string {
+  return STAGES.find((s) => s.key === stage)?.label ?? "Unclassified";
+}
+
+/** One entry per stage, in kill-chain order, from the confirmed incidents in the main cluster. */
 export function attackChain(incidents: RankedIncident[]): ChainStage[] {
-  const confirmed = incidents.filter((i) => i.group === "confirmed");
+  const cluster = mainCluster(incidents);
   return STAGES.map((stage) => {
-    const hits = confirmed
+    const hits = cluster
       .filter((i) => stageOf(i) === stage.key)
       .sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
     if (stage.notVisible)

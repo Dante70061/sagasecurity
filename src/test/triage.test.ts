@@ -5,6 +5,7 @@ import { buildQueueView } from "@/data/incidents.server";
 import {
   attackChain,
   extract,
+  mainCluster,
   featureFamily,
   narrative,
   riskLevel,
@@ -286,5 +287,46 @@ describe("attack chain", () => {
     expect(by.get("exfiltration")!.status).toBe("not_visible");
     expect(by.get("impact")!.status).toBe("none");
     for (const c of chain) for (const i of c.incidents) expect(i.group).toBe("confirmed");
+  });
+});
+
+describe("main attack cluster", () => {
+  it("scopes the wilson chain to Feb 7: the Feb 5 admin logins get no stage", async () => {
+    const view = await buildQueueView("wilson_test");
+    const cluster = mainCluster(view.incidents).map((i) => i.incident_id);
+    expect(cluster).toHaveLength(8);
+    expect(cluster).not.toContain("INC-0006");
+    expect(cluster).not.toContain("INC-0024");
+    const chain = attackChain(view.incidents);
+    const by = new Map(chain.map((c) => [c.key, c]));
+    expect(by.get("privilege_escalation")!.incidents.map((i) => i.incident_id)).toEqual([
+      "INC-0003",
+    ]);
+    expect(by.get("privilege_escalation")!.firstSeen).toBe("2022-02-07T11:48:00+00:00");
+    expect(by.get("foothold")!.firstSeen?.startsWith("2022-02-07T10:59")).toBe(true);
+    const staged = chain.flatMap((c) => c.incidents.map((i) => i.incident_id));
+    expect(staged).not.toContain("INC-0006");
+    expect(staged).not.toContain("INC-0024");
+  });
+
+  it("keeps the largest run of confirmed incidents less than two hours apart", () => {
+    const at = (id: string, iso: string, p = 1) =>
+      fake({
+        id,
+        start: iso,
+        end: iso,
+        model: { score_col: "p_attack", n_minutes: 1, p_max: p, p_mean: p, peak_minute_utc: null },
+      });
+    const rows = [
+      at("A", "2022-02-05T19:44:00+00:00"),
+      at("B", "2022-02-05T19:44:00+00:00"),
+      at("C", "2022-02-07T10:37:00+00:00"),
+      at("D", "2022-02-07T10:59:00+00:00"),
+      at("E", "2022-02-07T11:48:00+00:00"),
+      at("F", "2022-02-07T13:40:00+00:00"), // 1h52 after E: still in the cluster
+      at("G", "2022-02-07T16:00:00+00:00"), // 2h20 later: a new cluster
+      at("H", "2022-02-07T10:40:00+00:00", 0.2), // below threshold: ignored
+    ];
+    expect(mainCluster(rows).map((i) => i.incident_id)).toEqual(["C", "D", "E", "F"]);
   });
 });
