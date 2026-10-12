@@ -28,6 +28,7 @@ AUTH_FAIL_RULES = {"2501", "5503", "9705", "9751", "5706"}
 PRIV_RULES = {"5402", "5304"}                       # sudo to root, UID change
 DROP_FASTLOG_RULES = {"20101"}                      # fast.log copy of eve.json events
 RARE_FRAC = 0.001                                   # rule seen in < 0.1% of a source's alerts
+NOISE_SIG_PREFIX = "SURICATA TLS invalid"           # routine low-severity Suricata TLS noise
 BURST_LOOKBACK = 60                                 # windows, for the trailing-median burst features
 BURST_PHASES = {"service_scans", "dirb", "wpscan", "webshell", "reverse_shell", "privilege_escalation"}
 
@@ -77,6 +78,11 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
     return df[~dup_fast].reset_index(drop=True)
 
 
+def is_noise(df: pd.DataFrame) -> pd.Series:
+    """Known routine alert families: Dovecot success / ClamAV (is_baseline) and Suricata TLS-invalid noise."""
+    return (df.source == "wazuh") & (df.is_baseline | df.signature.fillna("").str.startswith(NOISE_SIG_PREFIX))
+
+
 def add_rarity(df: pd.DataFrame) -> pd.DataFrame:
     """Per-alert rarity = log(N_source / count of its rule/signature) within its own source."""
     df = df.copy()
@@ -88,11 +94,12 @@ def add_rarity(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def raw_features(df: pd.DataFrame, window_s: int) -> pd.DataFrame:
+def raw_features(df: pd.DataFrame, window_s: int, idx=None, noise: pd.DataFrame | None = None) -> pd.DataFrame:
     """One row per window (including empty ones) of non-negative counts/measures."""
     df = df.copy()
     df["win"] = (df.ts // window_s).astype(np.int64)
-    idx = pd.RangeIndex(df.win.min(), df.win.max() + 1, name="win")
+    if idx is None:
+        idx = pd.RangeIndex(df.win.min(), df.win.max() + 1, name="win")
     wz, am = df[df.source == "wazuh"], df[df.source == "aminer"]
     F = pd.DataFrame(index=idx)
 
@@ -149,6 +156,9 @@ def raw_features(df: pd.DataFrame, window_s: int) -> pd.DataFrame:
     cnt(am[am.detector.str.contains("CPU")], "am_cpu")
     cnt(am[am.is_rare], "am_rare_n")
     F["am_max_rarity"] = am.groupby("win").rarity.max().reindex(idx, fill_value=0)
+    if noise is not None:                              # --noise discount: noise gets its own count
+        nz = noise.assign(win=(noise.ts // window_s).astype(np.int64))
+        F["wz_noise_n"] = nz.groupby("win").size().reindex(idx, fill_value=0)
     return F.astype(float)
 
 
@@ -204,6 +214,8 @@ def main() -> None:
     ap.add_argument("--scenarios", help="comma-separated subset, e.g. shaw,santos (default: all)")
     ap.add_argument("--window-s", type=int, default=DEFAULT_WINDOW_S, help="window length in seconds")
     ap.add_argument("--labels", type=Path, help="labels.csv; also writes <scenario>_labels.csv")
+    ap.add_argument("--noise", choices=["keep", "discount", "drop"], default="keep",
+                    help="keep: as before | discount: noise removed from main features, counted in wz_noise_n | drop: removed")
     ap.add_argument("--stats-in", type=Path, help="reuse mean/std from another scenario (single-scenario runs)")
     ap.add_argument("--default-scenario", default="russellmitchell",
                     help="name to use for old merged files that have no `scenario` field")
@@ -217,8 +229,14 @@ def main() -> None:
 
     summary = []
     for scenario, raw in iter_scenarios(a.merged, a.default_scenario, only):
-        df = add_rarity(clean(raw))
-        L = add_bursts(np.log1p(raw_features(df, a.window_s)))
+        full, idx, noise_rows = clean(raw), None, None
+        if a.noise != "keep":
+            m = is_noise(full)
+            idx = pd.RangeIndex(int(full.ts.min() // a.window_s), int(full.ts.max() // a.window_s) + 1, name="win")
+            noise_rows = full[m] if a.noise == "discount" else None
+            full = full[~m].reset_index(drop=True)
+        df = add_rarity(full)
+        L = add_bursts(np.log1p(raw_features(df, a.window_s, idx=idx, noise=noise_rows)))
         Z, stats = zscore(L, stats_in)
         Z.insert(0, "win_start", Z.index.values * a.window_s)
         Z.insert(1, "win_start_utc", [datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
