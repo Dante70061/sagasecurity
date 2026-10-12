@@ -94,10 +94,6 @@ export function IncidentTable({ view }: { view: QueueView }) {
           )}
         </span>
       </div>
-      <div className="band">
-        <span className="band-confirmed">Confirmed by model · {confirmed.length}</span>
-        <span className="text-muted-foreground">p_attack ≥ 0.5</span>
-      </div>
       <div className="overflow-x-auto">
         <table className="q-table">
           <thead>
@@ -106,12 +102,20 @@ export function IncidentTable({ view }: { view: QueueView }) {
               <th scope="col">Incident</th>
               <th scope="col">Entity</th>
               <th scope="col">Seen (UTC)</th>
-              <th scope="col">p_attack</th>
+              <th scope="col">Attack prob.</th>
               <th scope="col">Peak z</th>
               <th scope="col">Alerts</th>
             </tr>
           </thead>
           <tbody>
+            <tr className="band-row">
+              <td colSpan={7}>
+                <div className="band">
+                  <span className="band-confirmed">Confirmed by model · {confirmed.length}</span>
+                  <span className="text-muted-foreground">attack probability ≥ 50%</span>
+                </div>
+              </td>
+            </tr>
             {confirmed.map((i) => (
               <Row key={i.incident_id} incident={i} run={view.run} dim={false} />
             ))}
@@ -123,25 +127,29 @@ export function IncidentTable({ view }: { view: QueueView }) {
               </tr>
             )}
           </tbody>
+          {below.length > 0 && (
+            <tbody>
+              <tr className="band-row">
+                <td colSpan={7}>
+                  <div className="band" style={{ background: "#141a2c" }}>
+                    <span className="font-semibold text-secondary-foreground">
+                      Below threshold · {below.length}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {view.belowNote ?? "attack probability < 50%"}
+                    </span>
+                  </div>
+                </td>
+              </tr>
+              {shownBelow.map((i) => (
+                <Row key={i.incident_id} incident={i} run={view.run} dim />
+              ))}
+            </tbody>
+          )}
         </table>
       </div>
       {below.length > 0 && (
         <>
-          <div className="band" style={{ background: "#141a2c" }}>
-            <span className="font-semibold text-secondary-foreground">
-              Below threshold · {below.length}
-            </span>
-            <span className="text-muted-foreground">{view.belowNote ?? "p_attack < 0.5"}</span>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="q-table">
-              <tbody>
-                {shownBelow.map((i) => (
-                  <Row key={i.incident_id} incident={i} run={view.run} dim />
-                ))}
-              </tbody>
-            </table>
-          </div>
           {below.length > 3 && (
             <div className="px-5 pb-4 pt-3">
               <button

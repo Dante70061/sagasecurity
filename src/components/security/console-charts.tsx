@@ -65,7 +65,7 @@ export function FunnelTiles({ view }: { view: QueueView }) {
       label: "Needs review",
       value: n(view.counts.confirmed),
       hint: "attack probability ≥ 50%",
-      title: "Incidents the window model scored at p_attack ≥ 0.5",
+      title: "Incidents the window model scored at attack probability ≥ 50%",
       accent: true,
     },
   ];

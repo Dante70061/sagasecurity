@@ -503,6 +503,9 @@
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
+.band-row td {
+  padding: 0;
+}
 .band {
   padding: 8px 20px;
   background: var(--muted);
