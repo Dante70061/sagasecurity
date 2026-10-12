@@ -326,12 +326,6 @@ export function AblationPanel() {
       max: 1,
       fmt: (v: number) => v.toFixed(2),
     },
-    {
-      title: "False positives at that budget · lower is better",
-      values: [his.falsePositivesAt1pct, both.falsePositivesAt1pct],
-      max: Math.max(his.falsePositivesAt1pct, both.falsePositivesAt1pct),
-      fmt: (v: number) => n(v),
-    },
   ];
   const colors = ["var(--sensor-wazuh)", "var(--sensor-suricata)"];
   const labels = [his.label, both.label];
@@ -351,7 +345,7 @@ export function AblationPanel() {
         </div>
       </div>
       <div className="mt-0.5 text-xs text-muted-foreground">{ABLATION_NOTE}</div>
-      <div className="mt-4 grid gap-6 sm:grid-cols-3">
+      <div className="mt-4 grid gap-6 sm:grid-cols-2">
         {panels.map((p) => (
           <div key={p.title}>
             <div className="mb-2.5 text-xs text-secondary-foreground">{p.title}</div>
