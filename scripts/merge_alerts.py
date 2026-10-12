@@ -21,9 +21,16 @@ from typing import Any, Iterator
 
 # Apache combined / common log
 APACHE_RE = re.compile(
-    r'^(?P<ip>\S+) \S+ \S+ \[.*?\] "(?P<method>\S+)\s+(?P<path>\S+)(?:\s+HTTP/\S+)?" '
+    r'^(?P<ip>\S+) \S+ (?P<auth_user>\S+) \[.*?\] "(?P<method>\S+)\s+(?P<path>\S+)(?:\s+HTTP/\S+)?" '
     r'(?P<status>\d{3}) \S+(?: "(?P<referer>[^"]*)" "(?P<ua>[^"]*)")?'
 )
+SU_RE = re.compile(r"\bSuccessful su for (\S+) by (\S+)")
+DOVECOT_USER_RE = re.compile(r"\buser=<([^>]+)>")
+ACCEPTED_USER_RE = re.compile(r"\bAccepted \S+ for (\S+) from\b")
+FOR_USER_RE = re.compile(r"\bfor user (\S+)")
+ACCT_USER_RE = re.compile(r'\bacct="([^"]+)"')
+RUSER_RE = re.compile(r"\bruser=(\S+)")
+BLANK_USERS = {"", "-", "?", "none", "null"}
 # Suricata fast.log: {TCP} src:port -> dst:port
 SURICATA_FAST_RE = re.compile(
     r"\{(?P<proto>\w+)\}\s+(?P<src_ip>[^\s:]+):(?P<src_port>\d+)\s+->\s+"
@@ -75,7 +82,46 @@ def parse_apache(raw: str) -> dict[str, Any]:
         out["ua"] = match.group("ua")
     if match.group("referer") is not None:
         out["referer"] = match.group("referer")
+    auth_user = clean_user(match.group("auth_user"))
+    if auth_user:
+        out["user"] = auth_user
     return out
+
+
+def clean_user(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip().strip("<>\"'")
+    if text.lower() in BLANK_USERS or text.startswith("(uid="):
+        return None
+    return text or None
+
+
+def parse_users(raw: str | None) -> tuple[str | None, str | None]:
+    """Return (src_user, dst_user) parsed from a raw log line."""
+    if not raw:
+        return None, None
+    src_user = dst_user = None
+    su = SU_RE.search(raw)
+    if su:
+        dst_user = clean_user(su.group(1))
+        src_user = clean_user(su.group(2))
+    if dst_user is None:
+        for pattern in (DOVECOT_USER_RE, ACCEPTED_USER_RE, FOR_USER_RE, ACCT_USER_RE):
+            match = pattern.search(raw)
+            if match:
+                dst_user = clean_user(match.group(1))
+                if dst_user:
+                    break
+    if src_user is None:
+        remote = RUSER_RE.search(raw)
+        if remote:
+            src_user = clean_user(remote.group(1))
+    return src_user, dst_user
+
+
+def choose_user(src_user: str | None, dst_user: str | None, fallback: str | None = None) -> str | None:
+    return dst_user or src_user or fallback
 
 
 def peel_ip_port(ip: Any, port: Any) -> tuple[Any, Any]:
@@ -184,6 +230,7 @@ def normalize_aminer(obj: dict[str, Any], scenario: str) -> dict[str, Any] | Non
         None,
         raw,
     )
+    src_user, dst_user = parse_users(raw)
 
     return {
         "scenario": scenario,
@@ -204,6 +251,9 @@ def normalize_aminer(obj: dict[str, Any], scenario: str) -> dict[str, Any] | Non
         "http_method": parsed.get("http_method"),
         "status": parsed.get("status"),
         "ua": parsed.get("ua"),
+        "user": choose_user(src_user, dst_user, parsed.get("user")),
+        "src_user": src_user,
+        "dst_user": dst_user,
         "is_baseline": False,
         "extras": extras,
     }
@@ -241,6 +291,7 @@ def normalize_wazuh(obj: dict[str, Any], scenario: str) -> dict[str, Any] | None
     http_method = data.get("protocol")  # web-accesslog decoder uses this for method
     status = data.get("id") if location and "access" in (location or "") else None
     ua = None
+    parsed: dict[str, Any] = {}
 
     if full_log and (not src_ip or not http_path or not ua):
         parsed = parse_apache(full_log)
@@ -291,6 +342,11 @@ def normalize_wazuh(obj: dict[str, Any], scenario: str) -> dict[str, Any] | None
         name_candidate = agent.get("name")
     host, host_name, host_ip = resolve_host(agent.get("ip"), name_candidate, full_log or raw)
 
+    parsed_src, parsed_dst = parse_users(full_log or raw)
+    src_user = clean_user(data.get("srcuser")) or parsed_src
+    dst_user = clean_user(data.get("dstuser")) or parsed_dst
+    apache_user = parsed.get("user") if isinstance(parsed, dict) else None
+
     return {
         "scenario": scenario,
         "ts": ts,
@@ -308,6 +364,9 @@ def normalize_wazuh(obj: dict[str, Any], scenario: str) -> dict[str, Any] | None
         "http_method": http_method,
         "status": str(status) if status is not None else None,
         "ua": ua,
+        "user": choose_user(src_user, dst_user, apache_user),
+        "src_user": src_user,
+        "dst_user": dst_user,
         "is_baseline": rule_id in BASELINE_WAZUH_RULES,
         "extras": extras,
     }
